@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Plain Bar Chart</title>
+		<!-- <script type="text/javascript" src="../d3/d3.v3.min.js"></script> -->
+		<script src="d3/d3.v3.min.js"></script>
+		<style type="text/css">
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: black;
+				shape-rendering: crispEdges;
+			}
+			
+			.axis text {
+				font-family: sans-serif;
+				font-size: 11px;
+			}
+		</style>
+	</head>
+	<body>
+        <a href="index.html">Back</a>
+        <br>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 300;
+			var h = 500;
+			var barPadding = 1;
+			var padding = 30;
+
+			// color scales
+		    var color = d3.scale.ordinal()
+            .range(["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34"]);
+		
+			// testing scales
+			var scale = d3.scale.linear()
+						.range([0, h - 20]); // subject to potential flipping
+			
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+			d3.tsv("data.tsv", function(error, data) {
+
+				data.forEach(function(d) {
+					d.total = (+d.d1) + (+d.d2) + (+d.d3) + (+d.d4) + (+d.d5);
+				});
+
+				scale.domain([0, d3.max(data, function(d) { return d.total; })])
+
+				console.log("testing total valuies")
+				data.forEach(function(d) {
+					console.log("total: " + d.total);
+				})
+			
+				svg.selectAll("rect")
+				   .data(data)
+				   .enter()
+				   .append("rect")
+					   .attr("x", function(d, i) {
+					   		return i * ((w - padding) / data.length) + padding;
+					   })
+					   .attr("y", function(d) {
+					   		return h - scale(d.total);
+					   })
+					   .attr("width", (w - padding) / data.length - barPadding)
+					   .attr("height", function(d) {
+					   		return scale(d.total);
+					   })
+					   .attr("fill", function(d) { return color(d.total)});
+					
+				svg.selectAll("text")
+				   .data(data)
+				   .enter()
+				   .append("text")
+				   .text(function(d) {
+				   		return d.total;
+				   })
+				   .attr("text-anchor", "middle")
+				   .attr("x", function(d, i) {
+				   		return i * ((w - padding) / data.length) + (w / data.length - barPadding) / 2 + padding;
+				   })
+				   .attr("y", function(d) {
+				   		return h - scale(d.total) + 14;
+				   })
+				   .attr("font-family", "sans-serif")
+				   .attr("font-size", "11px")
+				   .attr("fill", "white");
+
+			    var scale2 = d3.scale.linear()
+					.domain([0, d3.max(data, function(d) { return d.total})])
+					.range([h - 20, 0]); // subject to potential flipping
+
+
+				// test the axis
+				var yAxis = d3.svg.axis()
+						.scale(scale2)
+						.orient("left");
+
+				svg.append("g")
+					.attr("class", "axis")
+					.attr("transform", "translate(" + padding + ", 20)")
+					.call(yAxis);
+
+			});
+
+		</script>
+	</body>
+</html>
