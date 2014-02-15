@@ -1,5 +1,5 @@
 function select(a) {
-
+    d3.select("svg").remove();
     if (a == "plain") {
         plain();
     } else if (a == "stack") {
