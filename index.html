@@ -2,18 +2,20 @@
 
 <head>
     <title>Variety of Charts</title>
-    <style type="text/css">
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
-    <h3>Select the type of chart you want to view the contents of data.tsv with</h3>
-    <a href="pie.html">Pie Chart</a>
-    <br>
-    <a href="plainbar.html">Plain Chart</a>
-    <br>
-    <a href="stackedbar.html">Stacked Bar Chart</a>
-    <br>
-    <a href="groupedbar.html">Grouped Bar Chart</a>
+    <script src="d3/d3.v3.min.js"></script>
+    <script src="main.js"></script>
+    <p style=>Select type of visual representation for data.tsv</p>
+    <form>
+        <select name="chartpicker" onChange="select(this.options[this.selectedIndex].value)" size="1">
+            <option value="plain">Plain Bar Chart</option>
+            <option value="stack">Stacked Bar Chart</option>
+            <option value="group">Grouped Bar Chart</option>
+            <option value="pie">Pie Chart</option>
+        </select>
+    </form>
+
 </body>
