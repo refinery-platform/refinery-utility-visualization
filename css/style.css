@@ -1,10 +1,10 @@
 body {
-	font: 16px sans-serif;
+	font: 12px sans-serif;
 }
 
 .axis text {
 	font-family: sans-serif;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .axis path,
@@ -13,3 +13,5 @@ body {
 	stroke: black;
 	shape-rendering: crispEdges;
 }
+
+.legend
