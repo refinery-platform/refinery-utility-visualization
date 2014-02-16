@@ -93,6 +93,23 @@ function draw(chartType) {
                 .call(yAxis);
 
         // add the legends
+        legend(data);
+    }
+
+    function stack(data) {
+
+    }
+
+    function group(data) {
+
+    }
+
+    function pie(data) {
+
+    }
+
+    // generic legend function to be implemented later
+    function legend(data) {
         var legend = svg.selectAll(".legend")
                 .data(data.map(function(d) { return d.set; }))
                 .enter().append("g")
@@ -111,20 +128,5 @@ function draw(chartType) {
                 .attr("dy", "0.35em")
                 .style("text-anchor", "end")
                 .text(function(d) { return d; });
-
-        console.log(color.domain());
-        console.log(color.range());
-    }
-
-    function stack(data) {
-
-    }
-
-    function group(data) {
-
-    }
-
-    function pie(data) {
-
     }
 }
