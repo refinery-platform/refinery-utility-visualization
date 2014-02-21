@@ -1,5 +1,5 @@
 body {
-	font: 12px sans-serif;
+	font: 14px sans-serif;
 }
 
 .axis text {
@@ -14,3 +14,6 @@ body {
 	shape-rendering: crispEdges;
 }
 
+.menu {
+	margin-right: 30px;
+}

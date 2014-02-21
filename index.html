@@ -8,14 +8,44 @@
 <body>
     <script src="d3/d3.v3.min.js"></script>
     <script src="main.js"></script>
-    <p style=>Select type of visual representation for data.tsv</p>
-    <form>
-        <select name="chartpicker" onChange="draw(this.options[this.selectedIndex].value)" size="1">
-            <option value="plain">Plain Bar Chart</option>
-            <option value="stack">Stacked Bar Chart</option>
-            <option value="group">Grouped Bar Chart</option>
-            <option value="pie">Pie Chart</option>
-        </select>
-    </form>
+    <script src="jquery/jquery-2.1.0.min.js"></script>
+    
+    <h3>Click on the type of graph to draw</h3>
 
+    <nav id="nav">
+        <a class="menu" id="plain">Plain</a>
+        <a class="menu" id="stack">Stack</a>
+        <a class="menu" id="group">Group</a>
+        <a class="menu" id="pie">Pie</a>
+    </nav>
+    
+    <script>
+        $(document).ready(function() {
+            $("#plain").click(function(event) {
+                draw("plain");
+                event.preventDefault();
+            })
+        })
+    
+        $(document).ready(function() {
+            $("#stack").click(function(event) {
+                draw("stack");
+                event.preventDefault();
+            })
+        })
+
+        $(document).ready(function() {
+            $("#group").click(function(event) {
+                draw("group");
+                event.preventDefault();
+            })
+        })
+
+        $(document).ready(function() {
+            $("#pie").click(function(event) {
+                draw("pie");
+                event.preventDefault();
+            })
+        })
+    </script>
 </body>
