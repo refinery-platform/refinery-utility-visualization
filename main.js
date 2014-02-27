@@ -30,12 +30,12 @@ function draw(chartType) {
             plain(data);
         } else if (chartType == "stack") {
             stack(data);
+        } else if (chartType == "layer") {
+            layer(data);
         } else if (chartType == "group") {
             group(data);
         } else if (chartType == "pie") {
             pie(data);
-        } else if (chartType == "group") {
-        	layer(data);
         } else {
             alert("Invalid chart type");
         }
@@ -122,7 +122,6 @@ function draw(chartType) {
         var y = d3.scale.linear()
             .rangeRound([height, 0]);
 
-
         var xAxis = d3.svg.axis()
            .scale(x)
            .orient("bottom");
@@ -189,7 +188,38 @@ function draw(chartType) {
 
     function layer(data) {
     	// require individual grid for data
+        console.log("displaying data");
     	console.log(data);
+
+        var categories = d3.keys(data[0]).filter(function(key) { return key !== "set"; });
+
+        // we need to define a new plot for each data d1-dn
+        var plotWidth = width / categories.length - 20;
+
+        // base scale off of th enew plotWidth
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, plotWidth], 0.1)
+            .domain(data.map(function(d) { return d.set; }));
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        // we need an axis for each plot
+        var xAxes = new Array(categories.length);
+        for (var i = 0; i < xAxes.length; i++) {
+            xAxes[i] = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+        }
+
+        for (var i = 0; i < xAxes.length; i++) {
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(" + i * (plotWidth + 29) + ", " + height + ")")
+                .call(xAxes[i]);
+        }
+
+        
     }
 
     function group(data) {
@@ -202,8 +232,8 @@ function draw(chartType) {
             .range([height, 0]);
 
         var xAxis = d3.svg.axis()
-                .scale(x0)
-                .orient("bottom");
+            .scale(x0)
+            .orient("bottom");
 
         var yAxis = d3.svg.axis()
             .scale(y)
