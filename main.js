@@ -219,7 +219,25 @@ function draw(chartType) {
                 .call(xAxes[i]);
         }
 
+        /*
+            We need object that holds elements for categories d1-dn such that
+            d[n] = { "dn", setData = [someA, someB, etc]}
+        */
         
+        // transofrm categories elements to objects as opposed to old stirngs
+        for (var i = 0; i < categories.length; i++) {
+            categories[i] = { name: categories[i] };
+        }
+
+        // append various someA, someB, etc values
+        for (var i = 0; i < categories.length; i++) {
+            categories[i].setData = []; 
+            for (var j = 0; j < data.length; j++) {
+                categories[i].setData.push(data[j][categories[i].name]);
+            }
+        }
+
+        console.log(categories);
     }
 
     function group(data) {
