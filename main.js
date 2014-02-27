@@ -34,6 +34,8 @@ function draw(chartType) {
             group(data);
         } else if (chartType == "pie") {
             pie(data);
+        } else if (chartType == "group") {
+        	layer(data);
         } else {
             alert("Invalid chart type");
         }
@@ -185,6 +187,11 @@ function draw(chartType) {
             .text(function(d) { return d; });
     }
 
+    function layer(data) {
+    	// require individual grid for data
+    	console.log(data);
+    }
+
     function group(data) {
         var x0 = d3.scale.ordinal()
             .rangeRoundBands([0, width], 0.1);
@@ -324,9 +331,5 @@ function draw(chartType) {
             .style("text-anchor", "end")
             .text(function(d, i) { return data[i].set; });    
     }
-
-    // generic legend function to be implemented later
-    function legend(data) {
-
-    }
 }
+

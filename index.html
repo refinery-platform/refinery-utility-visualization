@@ -15,6 +15,7 @@
     <nav id="nav">
         <a class="menu" id="plain">Plain</a>
         <a class="menu" id="stack">Stack</a>
+        <a class="menu" id="layer">Layer</a>
         <a class="menu" id="group">Group</a>
         <a class="menu" id="pie">Pie</a>
     </nav>
@@ -24,28 +25,35 @@
             $("#plain").click(function(event) {
                 draw("plain");
                 event.preventDefault();
-            })
-        })
+            });
+        });
     
         $(document).ready(function() {
             $("#stack").click(function(event) {
                 draw("stack");
                 event.preventDefault();
-            })
-        })
+            });
+        });
+
+        $(document.ready(function()) {
+            $("layer").click(function(event) {
+                draw("layer");
+                event.preventDefault();
+            });
+        });
 
         $(document).ready(function() {
             $("#group").click(function(event) {
                 draw("group");
                 event.preventDefault();
-            })
-        })
+            });
+        });
 
         $(document).ready(function() {
             $("#pie").click(function(event) {
                 draw("pie");
                 event.preventDefault();
-            })
-        })
+            });
+        });
     </script>
 </body>
