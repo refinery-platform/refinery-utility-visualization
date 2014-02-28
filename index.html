@@ -7,7 +7,13 @@
 
 <body>
     <script src="d3/d3.v3.min.js"></script>
-    <script src="main.js"></script>
+    <script src="js/charts/plain.js"></script>
+    <script src="js/charts/stack.js"></script>
+    <script src="js/charts/layer.js"></script>
+    <script src="js/charts/group.js"></script>
+    <script src="js/charts/pie.js"></script>
+
+    <script src="js/main.js"></script>
     <script src="jquery/jquery-2.1.0.min.js"></script>
     
     <h3>Click on the type of graph to draw</h3>
@@ -21,39 +27,40 @@
     </nav>
     
     <script>
+        var userConfig = {
+            dimension: {
+                height: 480,
+                width: 500
+            },
+            newFeature: "new feature!"
+        }
+
         $(document).ready(function() {
             $("#plain").click(function(event) {
-                draw("plain");
+                draw("plain", userConfig, null);
+                event.preventDefault();
+            });
+
+            $("#stack").click(function(event) {
+                draw("stack", userConfig, null);
+                event.preventDefault();
+            });
+
+            $("#layer").click(function(event) {
+                draw("layer", userConfig, null);
+                event.preventDefault();
+            });
+
+            $("#group").click(function(event) {
+                draw("group", userConfig, null);
+                event.preventDefault();
+            });
+
+            $("#pie").click(function(event) {
+                draw("pie", userConfig, null);
                 event.preventDefault();
             });
         });
     
-        $(document).ready(function() {
-            $("#stack").click(function(event) {
-                draw("stack");
-                event.preventDefault();
-            });
-        });
-
-        $(document).ready(function() {
-            $("#layer").click(function(event) {
-                draw("layer");
-                event.preventDefault();
-            });
-        });
-
-        $(document).ready(function() {
-            $("#group").click(function(event) {
-                draw("group");
-                event.preventDefault();
-            });
-        });
-
-        $(document).ready(function() {
-            $("#pie").click(function(event) {
-                draw("pie");
-                event.preventDefault();
-            });
-        });
     </script>
 </body>
