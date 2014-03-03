@@ -13,7 +13,7 @@ function pie(data, config) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+            .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
 
     var arc = d3.svg.arc()
         .outerRadius(radius - 10)
@@ -22,15 +22,6 @@ function pie(data, config) {
     var pie = d3.layout.pie()
         .sort(null)
         .value(function(d) { return d.total; });
-
-    // some hacky work around for the pie chart because it requires different svg locations
-    d3.select("svg").remove();
-
-    var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-            .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
 
     var dataElements = d3.keys(data[0]).filter(function(key) { return key !== "set"; });
     data.forEach(function(d) {

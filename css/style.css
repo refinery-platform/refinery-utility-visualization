@@ -17,3 +17,8 @@ body {
 .menu {
 	margin-right: 30px;
 }
+
+#drawAreaWrapper div {
+	display: inline;
+	width: 100%;
+}
