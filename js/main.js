@@ -6,8 +6,11 @@
 
 function draw(chartType, userConfig, data) {
 
+    console.log("target area: " + userConfig.targetArea);
+
     // delete old svg so graphs aren't cluttered
-    d3.select("svg").remove();
+    d3.select("#" + userConfig.targetArea).html("");
+
 
     var config = {
         margin: {
@@ -16,7 +19,8 @@ function draw(chartType, userConfig, data) {
             bottom: 30,
             left: 40
         },
-        colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34"]
+        colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34"],
+        targetArea: "draw1"
     }
 
     config.dimension = {
@@ -24,24 +28,15 @@ function draw(chartType, userConfig, data) {
             height: 500 - config.margin.top - config.margin.bottom
     }
     
-
-
     // override default configurations with user defined ones
     for (i in userConfig) {
         if (i != undefined) {
             config[i] = userConfig[i];
         }
     }
-
-    // overwrite any possible userdefined width and height because those depend on margins
-
+    
     // general functions depending on graph rendered
     d3.tsv("data.tsv", function(error, data) {
-
-        console.log(config);
-
-        console.log(data);
-
         if (chartType == "plain") {
             plain(data, config);
         } else if (chartType == "stack") {

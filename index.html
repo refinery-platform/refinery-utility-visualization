@@ -26,37 +26,58 @@
         <a class="menu" id="pie">Pie</a>
     </nav>
     
+    <select id="target">
+        <option value="draw1">Area 1</option>
+        <option value="draw2">Area 2</option>
+        <option value="draw3">Area 3</option>
+    </select>
+
+    <div id="draw1"></div>
+    <div id="draw2"></div>
+    <div id="draw3"></div>
+
     <script>
+        var target = document.getElementById("target");
+
         var userConfig = {
             dimension: {
-                height: 480,
-                width: 500
-            },
-            newFeature: "new feature!"
+                height: 240,
+                width: 360
+            }
         }
 
         $(document).ready(function() {
             $("#plain").click(function(event) {
+                targetValue = target.options[target.selectedIndex].value;
+                userConfig.targetArea = targetValue;
                 draw("plain", userConfig, null);
                 event.preventDefault();
             });
 
             $("#stack").click(function(event) {
+                targetValue = target.options[target.selectedIndex].value;
+                userConfig.targetArea = targetValue;
                 draw("stack", userConfig, null);
                 event.preventDefault();
             });
 
             $("#layer").click(function(event) {
+                targetValue = target.options[target.selectedIndex].value;
+                userConfig.targetArea = targetValue;
                 draw("layer", userConfig, null);
                 event.preventDefault();
             });
 
             $("#group").click(function(event) {
+                targetValue = target.options[target.selectedIndex].value;
+                userConfig.targetArea = targetValue;
                 draw("group", userConfig, null);
                 event.preventDefault();
             });
 
             $("#pie").click(function(event) {
+                targetValue = target.options[target.selectedIndex].value;
+                userConfig.targetArea = targetValue;
                 draw("pie", userConfig, null);
                 event.preventDefault();
             });

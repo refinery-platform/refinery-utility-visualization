@@ -1,6 +1,5 @@
 function pie(data, config) {
 
-    // import configurations
     var margin = config.margin;
     var width = config.dimension.width;
     var height = config.dimension.height;
@@ -9,9 +8,8 @@ function pie(data, config) {
 
     var radius = Math.min(width, height) / 2;
 
-
     // set up svg area
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#" + config.targetArea).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")

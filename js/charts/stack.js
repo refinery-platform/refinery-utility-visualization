@@ -7,12 +7,11 @@ function stack(data, config) {
         .range(config.colors);
 
     // set up svg area
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#" + config.targetArea).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
-
 
     var x = d3.scale.ordinal()
         .rangeRoundBands([0, width], 0.1);
