@@ -52,7 +52,7 @@ function layer(data, config) {
     var subChartWidth = (width + margin.left + margin.right) / categoryData.length;
     var subSvg = [];
     for (var i = 0; i < categoryData.length; i++) {
-        subSvg[i] = svg.append("svg")
+        subSvg[i] = svg.append("g")
                         .attr("y", 0)
                         .attr("width", (subChartWidth) + "px")
                         .attr("height", (height) + "px")
