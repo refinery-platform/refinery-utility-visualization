@@ -43,6 +43,8 @@ function layer(data, config) {
     console.log("Cateogyr data");
     console.log(categoryData);
 
+    color.domain(mainAxisLabels);
+
     var yScale = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d3.max(d.dataset, function(d) { return d.value; })})])
         .range([0, height]);
@@ -68,7 +70,7 @@ function layer(data, config) {
                 .attr("y", function(d) { return height - yScale(+d.value); })
                 .attr("width", (subChartWidth - padding) / categoryData.length - barPadding)
                 .attr("height", function(d) { console.log(d.value); return yScale(+d.value); })
-                .attr("fill", "orange"); // subject to change
+                .attr("fill", color(categoryData[ii].name)); // subject to change
     }
 
 /*
