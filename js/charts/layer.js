@@ -3,6 +3,8 @@ function layer(data, config) {
     var margin = config.margin;
     var width = config.dimension.width;
     var height = config.dimension.height;
+    var padding = 10;
+    var barPadding = 1;
     var color = d3.scale.ordinal()
         .range(config.colors);
 
@@ -22,45 +24,74 @@ function layer(data, config) {
         d.dataset = mainAxisLabels.map(function(name) { return {name: name, value: +d[name]}; });
     })
 
-    // create axis scales
-    var mainAxisScale = d3.scale.ordinal()
-        .domain(mainAxisLabels)
-        .rangeRoundBands([0, width], 0.1);
+    console.log("data after dataset mod: ");
+    console.log(data);
 
-    var subAxisScale = d3.scale.ordinal()
-        .domain(data.map(function(d) { return d.set; }))
-        .rangeRoundBands([0], mainAxisScale.rangeBand());
+    // set up the necessary data structures
+    var categoryData = new Array();
+    for (var i = 0; i < mainAxisLabels.length; i++) {
+        categoryData.push({ name: mainAxisLabels[i] });
+    }
+
+    for (var i = 0; i < mainAxisLabels.length; i++) {
+            categoryData[i].setData = []; 
+            for (var j = 0; j < data.length; j++) {
+                categoryData[i].setData.push({name: data[j].set, value: data[j][categoryData[i].name] });
+            }
+    }
+
+    console.log("Cateogyr data");
+    console.log(categoryData);
 
     var yScale = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d3.max(d.dataset, function(d) { return d.value; })})])
-        .range([height, 0]);
+        .range([0, height]);
 
-    // create axis
-    var xMainAxis = d3.svg.axis()
-        .scale(mainAxisScale)
-        .orient("bottom");
+    var subChartWidth = (width + margin.left + margin.right) / categoryData.length;
+    var subSvg = [];
+    for (var i = 0; i < categoryData.length; i++) {
+        subSvg[i] = svg.append("svg")
+                        .attr("y", 0)
+                        .attr("width", (subChartWidth) + "px")
+                        .attr("height", (height) + "px")
+                        .append("g");
+    }
 
-    var xSubAxis = d3.svg.axis()
-        .scale(subAxisScale)
-        .orient("bottom");
+    // start plotting the stuff in their unique svg containers
+    //for (var ii = 0; ii < categoryData.length; ii++) {
+    for (var ii = 0; ii < categoryData.length; ii++) {
+        console.log("appending rects");
+        subSvg[ii].selectAll("rect")
+            .data(categoryData[ii].setData)
+            .enter().append("rect")
+                .attr("x", function(d, i) { return i * ((subChartWidth - padding) / categoryData.length) + padding + (ii * subChartWidth); })  
+                .attr("y", function(d) { return height - yScale(+d.value); })
+                .attr("width", (subChartWidth - padding) / categoryData.length - barPadding)
+                .attr("height", function(d) { console.log(d.value); return yScale(+d.value); })
+                .attr("fill", "orange"); // subject to change
+    }
 
-    var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient("left")
-        .tickFormat(d3.format(".2s"));
+/*
+    var subChartWidth = width / categoryData.length - 10;
+    for (var ii = 0; ii < categoryData.length; ii++) {
+        console.log("doing some magic");
 
-    // plot the main axis
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0, " + height + ")")
-        .call(xMainAxis);
+        svg.selectAll("rect")
+            .data(categoryData[ii].setData)
+            .enter().append("rect")
+                .attr("x", function(d, i) { return i * ((subChartWidth - padding) / categoryData.length) + padding + (ii * subChartWidth); })  
+                .attr("y", function(d) { return height - yScale(+d.value); })
+                .attr("width", (subChartWidth - padding) / categoryData.length - barPadding)
+                .attr("height", function(d) { return yScale(+d.value); })
+                .attr("fill", "steelblue"); // subject to change
 
-    // plot the sub axes on top of the main axis
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(200, 200)")
-        .call(xSubAxis);
+*/
 
-    console.log(subAxisScale.domain());
-    console.log(mainAxisScale.domain());
+/*
+        for (var i = 0; i < categoryData[ii].setData.length; i++) {
+            console.log("x: " + (i * ((subChartWidth - padding) / categoryData.length) + padding + (ii * subChartWidth)));
+            console.log("y: " + (height - yScale(+categoryData[ii].setData[i].value)));
+        }
+*/
+    
 }
