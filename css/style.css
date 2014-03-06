@@ -23,8 +23,29 @@ body {
 	width: 100%;
 }
 
-.layerXAxis path,
-.layerXAxis line {
+.layerVXAxis path,
+.layerVXAxis line {
+	fill: none;
+	stroke: none;
+	shape-rendering: crispEdges;
+}
+
+.layerVYAxis path,
+.layerVYAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.layerHXAxis path,
+.layerHXAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.layerHYAxis path,
+.layerHYAxis line {
 	fill: none;
 	stroke: none;
 	shape-rendering: crispEdges;

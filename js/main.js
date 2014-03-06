@@ -20,7 +20,8 @@ function draw(chartType, userConfig, data) {
             left: 40
         },
         colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34"],
-        targetArea: "draw1"
+        targetArea: "draw1",
+        orientation: "vertical"
     }
 
     config.dimension = {
