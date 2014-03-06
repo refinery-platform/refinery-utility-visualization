@@ -22,3 +22,10 @@ body {
 	display: inline;
 	width: 100%;
 }
+
+.layerXAxis path,
+.layerXAxis line {
+	fill: none;
+	stroke: none;
+	shape-rendering: crispEdges;
+}
