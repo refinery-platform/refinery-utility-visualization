@@ -3,6 +3,28 @@
 <head>
     <title>Variety of Charts</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script>
+        // some useful helper functions
+
+        Array.prototype.max = function() {
+            var max = 0;
+            var i = this.length;
+            while (i--) {
+                if (max < this[i])
+                    max = this[i];
+            }
+            return max;
+        }
+        // adds super optimized sum method found on stack overflow
+        Array.prototype.sum = function() {
+            var total = 0;
+            var i = this.length;
+            while (i--) {
+                total += this[i];
+            }
+            return total;
+        }
+    </script>
 </head>
 
 <body>
@@ -48,11 +70,23 @@
             }
         }
 
+        inputData = {
+                    items: ["apple", "bear", "cat", "dinosaur", "elephant"],
+                    categories: ["agility", "buffness", "conspicuousness", "dangerousness", "elasticity"],
+                    matrix: [
+                           [6, 29, 18, 30, 7],
+                           [8, 27, 17, 12, 12],
+                           [12, 21, 16, 3, 19],
+                           [20, 18, 16, 9, 7],
+                           [22, 5, 15, 20, 1]
+                        ]
+                }
+
         $(document).ready(function() {
             $("#plain").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
                 userConfig.targetArea = targetValue;
-                draw("plain", userConfig, null);
+                draw("plain", userConfig, inputData);
                 event.preventDefault();
             });
 

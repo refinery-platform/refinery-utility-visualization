@@ -37,19 +37,19 @@ function draw(chartType, userConfig, data) {
     }
     
     // general functions depending on graph rendered
-    d3.tsv("data.tsv", function(error, data) {
-        if (chartType == "plain") {
-            plain(data, config);
-        } else if (chartType == "stack") {
-            stack(data, config);
-        } else if (chartType == "layer") {
-            layer(data, config);
-        } else if (chartType == "group") {
-            group(data, config);
-        } else if (chartType == "pie") {
-            pie(data, config);
-        } else {
-            alert("Invalid chart type");
-        }
-    });
+
+    if (chartType == "plain") {
+        plain(data, config);
+    } else if (chartType == "stack") {
+        stack(data, config);
+    } else if (chartType == "layer") {
+        layer(data, config);
+    } else if (chartType == "group") {
+        group(data, config);
+    } else if (chartType == "pie") {
+        pie(data, config);
+    } else {
+        alert("Invalid chart type");
+    }
+    
 }

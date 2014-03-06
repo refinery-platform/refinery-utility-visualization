@@ -1,10 +1,21 @@
 function plain(data, config) {
-    
-    var margin = config.margin;
-    var width = config.dimension.width;
-    var height = config.dimension.height;
-    var color = d3.scale.ordinal()
-        .range(config.colors);
+
+    // import features from config
+    var margin = config.margin,
+        width = config.dimension.width,
+        height = config.dimension.height,
+        padding = 30,
+        barPadding = 1,
+        barThickness = (width - padding) / data.items.length,
+        color = d3.scale.ordinal()
+            .range(config.colors)
+            .domain(data.items.map(function(d) { return d; }));
+
+    // get the sum of each item sets' categories
+    data.total = [];
+    for (var i = 0; i < data.items.length; i++) {
+        data.total[i] = data.matrix[i].sum();
+    }
 
     // set up svg area
     var svg = d3.select("#" + config.targetArea).append("svg")
@@ -13,30 +24,25 @@ function plain(data, config) {
         .append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
-    var padding = 30;
-    var barPadding = 1;
-
-    data.forEach(function(d) {
-        d.total = (+d.d1) + (+d.d2) + (+d.d3) + (+d.d4) + (+d.d5);
-    });
-
-    color.domain(data.map(function(d) { return d.set; }));
-
-
     // scales
-    var scale = d3.scale.linear()
+    var yScale = d3.scale.linear()
         .range([0, height - 20])
-        .domain([0, d3.max(data, function(d) { return d.total; })]);
+        .domain([0, d3.max(data.total, function(d) { return d; })]);
+
+    var yAxisScale = d3.scale.linear()
+    	.domain([0, data.total.max()])
+    	.range([height - 20, 0]);
+
 
     // draw the rectangles
     svg.selectAll("rect")
-        .data(data)
+        .data(data.total)
         .enter().append("rect")
-            .attr("x", function(d, i) { return i * ((width - padding) / data.length) + padding; })
-            .attr("y", function(d) { return height - scale(d.total); })
-            .attr("width", (width - padding) / data.length - barPadding)
-            .attr("height", function(d) { return scale(d.total); })
-            .attr("fill", function(d) { return color(d.set); });
+            .attr("x", function(d, i) { return i * (barThickness) + padding; })
+            .attr("y", function(d) { return height - yScale(d); })
+            .attr("width", barThickness)
+            .attr("height", function(d) { return yScale(d); })
+            .attr("fill", function(d, i) { return color(data.items[i]); });
 
     svg.selectAll("text")
         .data(data)
@@ -44,17 +50,12 @@ function plain(data, config) {
         .text(function(d) { return d.total; })
             .attr("text-anchor", "middle")
             .attr("x", function(d, i) { return i * ((width - padding) / data.length) + (width / data.length - barPadding) / 2 + padding; })
-            .attr("y", function(d) { return height - scale(d.total) + 14; })
-            .attr("font-family", "sans-serif")
+            .attr("y", function(d) { return height - yScale(d.total) + 14; })
             .attr("font-size", "11px")
             .attr("fill", "white");
 
-    var axisScale = d3.scale.linear()
-        .domain([0, d3.max(data, function(d) { return d.total; })])
-        .range([height - 20, 0]);
-
     var yAxis = d3.svg.axis()
-        .scale(axisScale)
+        .scale(yAxisScale)
         .orient("left");
 
     svg.append("g")
@@ -62,9 +63,10 @@ function plain(data, config) {
         .attr("transform", "translate(" + padding + ", 20)")
         .call(yAxis);
 
+
     // add the legends        
     var legend = svg.selectAll(".legend")
-        .data(data.map(function(d) { return d.set; }))
+        .data(data.items)
         .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
@@ -81,4 +83,5 @@ function plain(data, config) {
         .attr("dy", "0.35em")
         .style("text-anchor", "end")
         .text(function(d) { return d; });
+        
 }
