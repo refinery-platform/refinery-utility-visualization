@@ -1,12 +1,27 @@
 function pie(data, config) {
 
-    var margin = config.margin;
-    var width = config.dimension.width;
-    var height = config.dimension.height;
-    var color = d3.scale.ordinal()
-        .range(config.colors);
+    console.log(data);
 
-    var radius = Math.min(width, height) / 2;
+    var margin = config.margin,
+        width = config.dimension.width,
+        height = config.dimension.height,
+        color = d3.scale.ordinal()
+            .domain(data.items)
+            .range(config.colors);
+
+    var radius = Math.min(width, height) / 2,
+        arc = d3.svg.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(0),
+        pie = d3.layout.pie()
+            .sort(null)
+            .value(function(d) { return d.total; });
+
+    var nData = data.nData;
+
+    for (var i = 0; i < data.items.length; i++) {
+        nData[i].total = data.matrix[i].sum();
+    }
 
     // set up svg area
     var svg = d3.select("#" + config.targetArea).append("svg")
@@ -15,46 +30,32 @@ function pie(data, config) {
         .append("g")
             .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
 
-    var arc = d3.svg.arc()
-        .outerRadius(radius - 10)
-        .innerRadius(0)
-
-    var pie = d3.layout.pie()
-        .sort(null)
-        .value(function(d) { return d.total; });
-
-    var dataElements = d3.keys(data[0]).filter(function(key) { return key !== "set"; });
-    data.forEach(function(d) {
-        d.total = 0;
-        for (var i = 0; i < dataElements.length; i++) {
-            d.total += +d[dataElements[i]];
-        }
-    });
-
+    // do the pie
     var g = svg.selectAll(".arc")
-        .data(pie(data))
+        .data(pie(nData))
         .enter().append("g")
         .attr("class", "arc");
 
     g.append("path")
         .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.total); });
+        .style("fill", function(d, i) { return color(data.items[i]); });
 
     g.append("text")
         .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
         .attr("dy", "0.35em")
         .style("text-anchor", "middle")
-        .text(function(d) { return d.data.total; });
-
-    var legend = svg.selectAll(".legend")
-    .data(color.domain().slice().reverse())
-    .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
+        .text(function(d, i) { return data.items[i]; })
+        .attr("fill", "white");
 
     // add a legend
+    var legend = svg.selectAll(".legend")
+        .data(color.domain().slice())
+        .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
+
     legend.append("rect")
-        .attr("x", radius + 24)
+        .attr("x", radius + 64)
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", color);
@@ -66,6 +67,6 @@ function pie(data, config) {
         .attr("y", 9)
         .attr("dy", "0.35em")
         .style("text-anchor", "end")
-        .text(function(d, i) { return data[i].set; });    
+        .text(function(d, i) { return nData[i].item; });    
 }
 

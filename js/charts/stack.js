@@ -1,10 +1,42 @@
 function stack(data, config) {
 
-    var margin = config.margin;
-    var width = config.dimension.width;
-    var height = config.dimension.height;
-    var color = d3.scale.ordinal()
-        .range(config.colors);
+    console.log(data)
+
+    // import features from config
+    var margin = config.margin,
+        width = config.dimension.width,
+        height = config.dimension.height,
+        color = d3.scale.ordinal()
+            .domain(data.categories)
+            .range(config.colors);
+
+    var nData = data.nData;
+
+    nData.forEach(function(d) {
+        var y0 = 0;
+        d.nums = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}});
+        d.total = d.nums[d.nums.length - 1].y1;
+    });
+
+    nData.sort(function(a, b) { return b.total - a.total; }); 
+
+    // scales
+    var xScale = d3.scale.ordinal()
+        .rangeRoundBands([0, width], 0.1)
+        .domain(nData.map(function(d) { return d.item; }));;
+
+    var yScale = d3.scale.linear()
+        .rangeRound([height, 0])
+        .domain([0, d3.max(nData, function(d) { return d.total; })]);
+
+    // axes
+    var xAxis = d3.svg.axis()
+       .scale(xScale)
+       .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+       .scale(yScale)
+       .orient("left");
 
     // set up svg area
     var svg = d3.select("#" + config.targetArea).append("svg")
@@ -13,33 +45,22 @@ function stack(data, config) {
         .append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
-    var x = d3.scale.ordinal()
-        .rangeRoundBands([0, width], 0.1);
+    // the bars
+    var item = svg.selectAll(".item")
+        .data(nData)
+        .enter().append("g")
+            .attr("class", "g")
+            .attr("transform", function(d) { return "translate(" + xScale(d.item) + ", 0)"; });
 
-    var y = d3.scale.linear()
-        .rangeRound([height, 0]);
+    item.selectAll("rect")
+        .data(function(d) { return d.nums; })
+        .enter().append("rect")
+            .attr("width", xScale.rangeBand())
+            .attr("y", function(d) { return yScale(d.y1); })
+            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
+            .style("fill", function(d) { return color(d.name)});
 
-    var xAxis = d3.svg.axis()
-       .scale(x)
-       .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-       .scale(y)
-       .orient("left");
-
-    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "set"; }));
-
-    data.forEach(function(d) {
-        var y0 = 0;
-        d.nums = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}});
-        d.total = d.nums[d.nums.length - 1].y1;
-    });
-
-    data.sort(function(a, b) { return b.total - a.total; }); 
-
-    x.domain(data.map(function(d) { return d.set; }));
-    y.domain([0, d3.max(data, function(d) { return d.total; })]);
-
+    // the axes
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + height + ")")
@@ -49,20 +70,7 @@ function stack(data, config) {
         .attr("class", "y axis")
         .call(yAxis)
 
-    var set = svg.selectAll(".set")
-        .data(data)
-        .enter().append("g")
-            .attr("class", "g")
-            .attr("transform", function(d) { return "translate(" + x(d.set) + ", 0)"; });
-
-    set.selectAll("rect")
-        .data(function(d) { return d.nums; })
-        .enter().append("rect")
-            .attr("width", x.rangeBand())
-            .attr("y", function(d) { return y(d.y1); })
-            .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-            .style("fill", function(d) { return color(d.name)});
-
+    // legends
     var legend = svg.selectAll(".legend")
         .data(color.domain().slice().reverse())
         .enter().append("g")

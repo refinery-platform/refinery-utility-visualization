@@ -6,11 +6,19 @@
 
 function draw(chartType, userConfig, data) {
 
-    console.log("target area: " + userConfig.targetArea);
+    // perform deep copy to preserve original data objects
+    var modifiedData = jQuery.extend(true, {}, data);
+    modifiedData.nData = new Array();
+    for (var i = 0; i < data.items.length; i++) {
+        modifiedData.nData.push({});
+        modifiedData.nData[i]["item"] = data.items[i];
+        for (var j = 0; j < data.categories.length; j++) {
+            modifiedData.nData[i][data.categories[j]] = data.matrix[i][j];
+        }
+    }
 
     // delete old svg so graphs aren't cluttered
     d3.select("#" + userConfig.targetArea).html("");
-
 
     var config = {
         margin: {
@@ -39,15 +47,15 @@ function draw(chartType, userConfig, data) {
     // general functions depending on graph rendered
 
     if (chartType == "plain") {
-        plain(data, config);
+        plain(modifiedData, config);
     } else if (chartType == "stack") {
-        stack(data, config);
+        stack(modifiedData, config);
     } else if (chartType == "layer") {
-        layer(data, config);
+        layer(modifiedData, config);
     } else if (chartType == "group") {
-        group(data, config);
+        group(modifiedData, config);
     } else if (chartType == "pie") {
-        pie(data, config);
+        pie(modifiedData, config);
     } else {
         alert("Invalid chart type");
     }

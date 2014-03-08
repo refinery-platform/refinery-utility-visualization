@@ -28,6 +28,7 @@
 </head>
 
 <body>
+    <script src="jquery/jquery-2.1.0.min.js"></script>
     <script src="d3/d3.v3.min.js"></script>
     <script src="js/charts/plain.js"></script>
     <script src="js/charts/stack.js"></script>
@@ -36,7 +37,6 @@
     <script src="js/charts/pie.js"></script>
 
     <script src="js/main.js"></script>
-    <script src="jquery/jquery-2.1.0.min.js"></script>
     
     <h3>Click on the type of graph to draw</h3>
 
@@ -93,28 +93,28 @@
             $("#stack").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
                 userConfig.targetArea = targetValue;
-                draw("stack", userConfig, null);
+                draw("stack", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#layer").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
                 userConfig.targetArea = targetValue;
-                draw("layer", userConfig, null);
+                draw("layer", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#group").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
                 userConfig.targetArea = targetValue;
-                draw("group", userConfig, null);
+                draw("group", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#pie").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
                 userConfig.targetArea = targetValue;
-                draw("pie", userConfig, null);
+                draw("pie", userConfig, inputData);
                 event.preventDefault();
             });
         });
