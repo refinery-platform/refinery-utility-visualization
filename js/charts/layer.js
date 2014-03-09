@@ -60,7 +60,6 @@ function layer(data, config) {
     }
 
     // start plotting the stuff in their unique svg containers
-    config.orientation = "horizontal";
     for (var ii = 0; ii < itemData.length; ii++) {
         if (config.orientation == "vertical") {
             var g = subSvg[ii].selectAll("rect")
@@ -87,7 +86,7 @@ function layer(data, config) {
         if (config.orientation == "vertical") {
             var vXScale = d3.scale.ordinal()
                             .rangeRoundBands([0, gWidth], 0.1)
-                            .domain(ndata.map(function(d) { return d.item; }));
+                            .domain(nData.map(function(d) { return d.item; }));
 
             var vXAxis = d3.svg.axis()
                             .scale(vXScale)

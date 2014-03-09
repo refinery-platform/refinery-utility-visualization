@@ -23,6 +23,34 @@ body {
 	width: 100%;
 }
 
+.stackVXAxis path,
+.stackVXAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.stackVYAxis path,
+.stackVYAxis line {
+	fill: none;
+	stroke: none;
+	shape-rendering: crispEdges;
+}
+
+.stackHXAxis line,
+.stackHXAxis path {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.stackHYAxis line,
+.stackHYAxis path {
+	fill: none;
+	stroke: none;
+	shape-rendering: crispEdges;
+}
+
 .layerVXAxis path,
 .layerVXAxis line {
 	fill: none;
