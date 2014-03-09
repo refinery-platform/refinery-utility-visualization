@@ -80,5 +80,9 @@ function pie(data, config) {
         .attr("dy", "0.35em")
         .style("text-anchor", "end")
         .text(function(d, i) { return nData[i].item; });    
+
+    if (data.categories.length > 1) {
+        alert("Warning: Pie chart displays a sum of the categories of each item.")
+    }
 }
 
