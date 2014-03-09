@@ -40,12 +40,25 @@ function pie(data, config) {
         .attr("d", arc)
         .style("fill", function(d, i) { return color(data.items[i]); });
 
-    g.append("text")
-        .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-        .attr("dy", "0.35em")
-        .style("text-anchor", "middle")
-        .text(function(d, i) { return data.items[i]; })
-        .attr("fill", "white");
+    if (config.orientation == "vertical") {
+        g.append("text")
+            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("dy", "0.35em")
+            .style("text-anchor", "middle")
+            .text(function(d, i) { return data.items[i]; })
+            .attr("fill", "white");
+    } 
+
+    if (config.orientation == "horizontal") {
+        var text = g.append("text")
+            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("dy", "0.35em")
+            .style("text-anchor", "middle")
+            .text(function(d, i) { return data.items[i]; })
+            .attr("fill", "white");  
+
+        g.attr("transform", "rotate(90)")
+    }
 
     // add a legend
     var legend = svg.selectAll(".legend")
