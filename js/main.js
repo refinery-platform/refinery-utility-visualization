@@ -27,7 +27,7 @@ function draw(chartType, userConfig, data) {
             bottom: 30,
             left: 40
         },
-        colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34"],
+        colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34", "gray"],
         targetArea: "draw1",
         orientation: "vertical"
     }

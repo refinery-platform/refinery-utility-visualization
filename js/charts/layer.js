@@ -7,16 +7,12 @@ function layer(data, config) {
     var barPadding = 3;
     var gPadding = 20;
     var color = d3.scale.ordinal()
+        .domain(data.categories)
         .range(config.colors);
 
-    // set up svg area
-    var svg = d3.select("#" + config.targetArea).append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    var nData = data.nData;
 
-    var itemLabels = d3.keys(data[0]).filter(function(key) { return key !== "set"; });
+    var itemLabels = data.categories;
 
     // set up the necessary data structures
     var itemData = new Array();
@@ -26,11 +22,10 @@ function layer(data, config) {
 
     for (var i = 0; i < itemLabels.length; i++) {
             itemData[i].setData = []; 
-            for (var j = 0; j < data.length; j++) {
-                itemData[i].setData.push({name: data[j].set, value: data[j][itemData[i].name] });
+            for (var j = 0; j < nData.length; j++) {
+                itemData[i].setData.push({name: nData[j].item, value: nData[j][itemData[i].name] });
             }
     }
-    color.domain(itemLabels);
 
     // width of each g
     var gWidth = (width + margin.left + margin.right) / itemData.length - 10;
@@ -40,14 +35,21 @@ function layer(data, config) {
 
     // y scale of vertical orientation
     var vYScale = d3.scale.linear()
-        .domain([0, d3.max(data, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
+        .domain([0, d3.max(nData, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
         .range([0, height]);
 
     // x scale for horizontal orientation
     var hXScale = d3.scale.linear()
-        .domain([0, d3.max(data, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
+        .domain([0, d3.max(nData, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
         .range([0, gWidth - gPadding]);
 
+    // set up svg area
+    var svg = d3.select("#" + config.targetArea).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    
     var subSvg = [];
     for (var i = 0; i < itemData.length; i++) {
         subSvg[i] = svg.append("g")
@@ -85,7 +87,7 @@ function layer(data, config) {
         if (config.orientation == "vertical") {
             var vXScale = d3.scale.ordinal()
                             .rangeRoundBands([0, gWidth], 0.1)
-                            .domain(data.map(function(d) { return d.set; }));
+                            .domain(ndata.map(function(d) { return d.item; }));
 
             var vXAxis = d3.svg.axis()
                             .scale(vXScale)
@@ -120,9 +122,7 @@ function layer(data, config) {
     } else {
         var hYScale = d3.scale.ordinal()
             .rangeRoundBands([0, barThickness * itemLabels.length + 1], 0.1)
-            .domain(data.map(function(d) { return d.set; }))
-
-        console.log(hYScale.domain());
+            .domain(nData.map(function(d) { return d.item; }))
 
         var hYAxis = d3.svg.axis()
             .scale(hYScale)

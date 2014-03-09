@@ -5,7 +5,36 @@ function group(data, config) {
     var height = config.dimension.height;
     var color = d3.scale.ordinal()
         .range(config.colors);
+   
+    var nData = data.nData;
     
+    nData.forEach(function(d) {
+        d.datasets = data.categories.map(function(name) { return {name: name, value: +d[name]}; });
+    });
+
+    // scales
+    var xItemScale = d3.scale.ordinal()
+        .domain(nData.map(function(d) { return d.item; }))
+        .rangeRoundBands([0, width], 0.1);
+
+    var xCategoryScale = d3.scale.ordinal()
+    	.domain(data.categories)
+    	.rangeRoundBands([0, xItemScale.rangeBand()]);;
+
+    var yScale = d3.scale.linear()
+    	.domain([0, d3.max(nData, function(d) { return d3.max(d.datasets, function(d) { return d.value; })})])
+        .range([height, 0]);
+
+    // axes
+    var xAxis = d3.svg.axis()
+        .scale(xItemScale)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .tickFormat(d3.format(".2s"));
+
     // set up svg area
     var svg = d3.select("#" + config.targetArea).append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -13,33 +42,24 @@ function group(data, config) {
         .append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
-    var x0 = d3.scale.ordinal()
-        .rangeRoundBands([0, width], 0.1);
+    // go through each main item
+    var items = svg.selectAll(".item")
+        .data(nData)
+        .enter().append("g")
+        .attr("class", "g")
+        .attr("transform", function(d) { return "translate(" + xItemScale(d.item) + ", 0)"; });
 
-    var x1 = d3.scale.ordinal();
-
-    var y = d3.scale.linear()
-        .range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-        .scale(x0)
-        .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .tickFormat(d3.format(".2s"));
-
-    var dsets = d3.keys(data[0]).filter(function(key) { return key !== "set"; });
-
-    data.forEach(function(d) {
-        d.datasets = dsets.map(function(name) { return {name: name, value: +d[name]}; });
-    });
-
-    x0.domain(data.map(function(d) { return d.set; }));
-    x1.domain(dsets).rangeRoundBands([0, x0.rangeBand()]);
-    y.domain([0, d3.max(data, function(d) { return d3.max(d.datasets, function(d) { return d.value; })})]);
-
+    // draw the bars
+    items.selectAll("rect")
+        .data(function(d) { return d.datasets; })
+        .enter().append("rect")
+            .attr("width", xCategoryScale.rangeBand())
+            .attr("x", function(d, i) { return xCategoryScale(d.name); })
+            .attr("y", function(d, i) { return yScale(d.value); })
+            .attr("height", function(d, i) { return height - yScale(d.value); })
+            .style("fill", function(d, i) { return color(d.name); });
+    
+    // add on the axes
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0, " + height + ")")
@@ -55,23 +75,9 @@ function group(data, config) {
                 .style("text-anchor", "end")
                 .text("Amount");
 
-    var sets = svg.selectAll(".set")
-        .data(data)
-        .enter().append("g")
-        .attr("class", "g")
-        .attr("transform", function(d) { return "translate(" + x0(d.set) + ", 0)"; });
-
-    sets.selectAll("rect")
-        .data(function(d) { return d.datasets; })
-        .enter().append("rect")
-            .attr("width", x1.rangeBand())
-            .attr("x", function(d) { return x1(d.name); })
-            .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return height - y(d.value); })
-            .style("fill", function(d) { return color(d.name); });
-
+    // legend
     var legend = svg.selectAll("legend")
-        .data(dsets.slice().reverse())
+        .data(data.categories.slice().reverse())
         .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });

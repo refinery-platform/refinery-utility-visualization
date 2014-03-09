@@ -61,7 +61,6 @@ function pie(data, config) {
         .style("fill", color);
 
     // add text to the legend
-    
     legend.append("text")
         .attr("x", radius + 54)
         .attr("y", 9)
