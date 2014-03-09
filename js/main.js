@@ -8,6 +8,7 @@ function draw(chartType, userConfig, data) {
 
     // perform deep copy to preserve original data objects
     var modifiedData = jQuery.extend(true, {}, data);
+
     modifiedData.nData = new Array();
     for (var i = 0; i < data.items.length; i++) {
         modifiedData.nData.push({});
@@ -28,8 +29,6 @@ function draw(chartType, userConfig, data) {
             left: 100
         },
         colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34", "gray"],
-        targetArea: "draw1",
-        orientation: "horizontal"
     }
 
     config.dimension = {

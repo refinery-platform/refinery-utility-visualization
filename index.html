@@ -60,8 +60,16 @@
         <div class="drawArea" id="draw3"></div>
     </div>
 
+    <p>Note: not all charts support both orientations<p>
+
+    <select id="orientationSelector">
+        <option class="orientation" value="vertical">Vertical</option>
+        <option class="orientaiton" value="horizontal">Horizontal</option>
+    </select>
+
     <script>
         var target = document.getElementById("target");
+        var orientation = document.getElementById("orientationSelector");
 
         var userConfig = {
             dimension: {
@@ -86,35 +94,45 @@
         $(document).ready(function() {
             $("#plain").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
+                orientationValue = orientation.options[orientation.selectedIndex].value;
                 userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
                 draw("plain", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#stack").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
+                orientationValue = orientation.options[orientation.selectedIndex].value;
                 userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
                 draw("stack", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#layer").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
+                orientationValue = orientation.options[orientation.selectedIndex].value;
                 userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
                 draw("layer", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#group").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
+                orientationValue = orientation.options[orientation.selectedIndex].value;
                 userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
                 draw("group", userConfig, inputData);
                 event.preventDefault();
             });
 
             $("#pie").click(function(event) {
                 targetValue = target.options[target.selectedIndex].value;
+                orientationValue = orientation.options[orientation.selectedIndex].value;
                 userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
                 draw("pie", userConfig, inputData);
                 event.preventDefault();
             });
