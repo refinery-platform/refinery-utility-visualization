@@ -9,6 +9,7 @@ function plain(data, config) {
         padding = 30,
         barPadding = 1,
         barThickness = (width - padding) / data.items.length,
+        hoverOpacity = config.hoverOpacity,
         color = d3.scale.ordinal()
             .range(config.colors)
             .domain(data.items.map(function(d) { return d; }));
@@ -53,12 +54,12 @@ function plain(data, config) {
             .attr("fill", function(d, i) { return color(data.items[i]); })
             .on("mouseover", function() {
                 var gElem = this.parentNode;
-                d3.select(gElem).selectAll(".bar").attr("opacity", 0.5);
+                d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                 d3.select(this).attr("opacity", 1);
             })
             .on("mouseout", function() {
                 var gElem = this.parentNode;
-                d3.select(gElem).selectAll(".bar").attr("opacity", 0.7);
+                d3.select(gElem).selectAll(".bar").attr("opacity", 1);
             });
 
     svg.selectAll("text")

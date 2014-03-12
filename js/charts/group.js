@@ -3,9 +3,10 @@ function group(data, config) {
     var margin = config.margin;
     var width = config.dimension.width;
     var height = config.dimension.height;
+    var hoverOpacity = config.hoverOpacity;
     var color = d3.scale.ordinal()
         .range(config.colors);
-   
+
     var nData = data.nData;
     
     nData.forEach(function(d) {
@@ -50,6 +51,7 @@ function group(data, config) {
         .attr("transform", function(d) { return "translate(" + xItemScale(d.item) + ", 0)"; });
 
     // draw the bars
+    // TODO: Only make one group's opacity lowered or all groups' lowered
     items.selectAll("rect")
         .data(function(d) { return d.datasets; })
         .enter().append("rect")
@@ -58,7 +60,16 @@ function group(data, config) {
             .attr("x", function(d, i) { return xCategoryScale(d.name); })
             .attr("y", function(d, i) { return yScale(d.value); })
             .attr("height", function(d, i) { return height - yScale(d.value); })
-            .style("fill", function(d, i) { return color(d.name); });
+            .style("fill", function(d, i) { return color(d.name); })
+            .on("mouseover", function() {
+                var gElem = this.parentNode;
+                d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
+                d3.select(this).attr("opacity", 1);
+            })
+            .on("mouseout", function() {
+                var gElem = this.parentNode;
+                d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+            });
     
     // add on the axes
     svg.append("g")

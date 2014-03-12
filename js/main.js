@@ -29,6 +29,7 @@ function draw(chartType, userConfig, data) {
             left: 100
         },
         colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34", "gray"],
+        hoverOpacity: 0.6
     }
 
     config.dimension = {

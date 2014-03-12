@@ -6,6 +6,7 @@ function stack(data, config) {
     var margin = config.margin,
         width = config.dimension.width,
         height = config.dimension.height,
+        hoverOpacity = config.hoverOpacity,
         color = d3.scale.ordinal()
             .domain(data.categories)
             .range(config.colors);
@@ -86,7 +87,16 @@ function stack(data, config) {
                 .attr("y", function(d) { return vYScale(d.y1); })
                 .attr("width", vXScale.rangeBand())
                 .attr("height", function(d) { return vYScale(d.y0) - vYScale(d.y1); })
-                .style("fill", function(d) { return color(d.name)});
+                .style("fill", function(d) { return color(d.name)})
+                .on("mouseover", function() {
+                    var gElem = this.parentNode;
+                    d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
+                    d3.select(this).attr("opacity", 1);
+                })
+                .on("mouseout", function() {
+                    var gElem = this.parentNode;
+                    d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                });
     } else if (config.orientation == "horizontal") {
         var items = svg.selectAll(".item")
             .data(nData)
@@ -101,7 +111,16 @@ function stack(data, config) {
                 .attr("y", function(d) { return hYScale(d.name); })
                 .attr("width", function(d) { return hXScale(d.x1); })
                 .attr("height", hYScale.rangeBand())
-                .style("fill", function(d) { return color(d.name); });
+                .style("fill", function(d) { return color(d.name); })
+                .on("mouseover", function() {
+                    var gElem = this.parentNode;
+                    d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
+                    d3.select(this).attr("opacity", 1);
+                })
+                .on("mouseout", function() {
+                    var gElem = this.parentNode;
+                    d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                });
     } else {
         console.error("Incorrect orientation");
     }

@@ -5,6 +5,7 @@ function pie(data, config) {
     var margin = config.margin,
         width = config.dimension.width,
         height = config.dimension.height,
+        hoverOpacity = config.hoverOpacity,
         color = d3.scale.ordinal()
             .domain(data.items)
             .range(config.colors);
@@ -34,7 +35,17 @@ function pie(data, config) {
     var g = svg.selectAll(".arc")
         .data(pie(nData))
         .enter().append("g")
-        .attr("class", "arc");
+        .attr("class", "arc")
+        .on("mouseover", function() {
+            var gElem = this.parentNode;
+            console.log("mousing over");
+            d3.select(gElem).selectAll(".arc").attr("opacity", hoverOpacity);
+            d3.select(this).attr("opacity", 1);
+        })
+        .on("mouseout", function() {
+            var gElem = this.parentNode;
+            d3.select(gElem).selectAll(".arc").attr("opacity", 1);
+        })
 
     g.append("path")
         .attr("d", arc)
@@ -82,7 +93,7 @@ function pie(data, config) {
         .text(function(d, i) { return nData[i].item; });    
 
     if (data.categories.length > 1) {
-        alert("Warning: Pie chart displays a sum of the categories of each item.");
+        // alert("Warning: Pie chart displays a sum of the categories of each item.");
     }
 }
 

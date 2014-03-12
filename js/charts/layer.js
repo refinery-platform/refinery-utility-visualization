@@ -6,6 +6,7 @@ function layer(data, config) {
     var padding = 10;
     var barPadding = 3;
     var gPadding = 20;
+    var hoverOpacity = config.hoverOpacity;
     var color = d3.scale.ordinal()
         .domain(data.categories)
         .range(config.colors);
@@ -71,7 +72,16 @@ function layer(data, config) {
                     .attr("y", function(d) { return height - vYScale(+d.value) - vYScaleOffset; })
                     .attr("width", barThickness)
                     .attr("height", function(d) { return vYScale(+d.value); })
-                    .attr("fill", color(itemData[ii].name)); 
+                    .attr("fill", color(itemData[ii].name))
+                    .on("mouseover", function() {
+                        var gElem = this.parentNode;
+                        d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
+                        d3.select(this).attr("opacity", 1);
+                    })
+                    .on("mouseout", function() {
+                        var gElem = this.parentNode;
+                        d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                    });
         } else {
             console.log("doing the horizontal orientation");
             var g = subSvg[ii].selectAll("rect")
@@ -82,7 +92,16 @@ function layer(data, config) {
                     .attr("y", function(d, i) { return i * (barThickness + barPadding)})
                     .attr("width", function(d) { return hXScale(+d.value); }) 
                     .attr("height", barThickness)
-                    .attr("fill", color(itemData[ii].name));  
+                    .attr("fill", color(itemData[ii].name))
+                    .on("mouseover", function() {
+                        var gElem = this.parentNode;
+                        d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
+                        d3.select(this).attr("opacity", 1);
+                    })
+                    .on("mouseout", function() {
+                        var gElem = this.parentNode;
+                        d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                    });  
         }
         // TODO: set up some x-axis stuff
         
