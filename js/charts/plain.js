@@ -45,11 +45,21 @@ function plain(data, config) {
     svg.selectAll("rect")
         .data(nData)
         .enter().append("rect")
+            .attr("class", "bar")
             .attr("x", function(d, i) { return i * (barThickness) + padding; })
             .attr("y", function(d) { return height - yScale(d.total); })
             .attr("width", barThickness)
             .attr("height", function(d) { return yScale(d.total); })
-            .attr("fill", function(d, i) { return color(data.items[i]); });
+            .attr("fill", function(d, i) { return color(data.items[i]); })
+            .on("mouseover", function() {
+                var gElem = this.parentNode;
+                d3.select(gElem).selectAll(".bar").attr("opacity", 0.5);
+                d3.select(this).attr("opacity", 1);
+            })
+            .on("mouseout", function() {
+                var gElem = this.parentNode;
+                d3.select(gElem).selectAll(".bar").attr("opacity", 0.7);
+            });
 
     svg.selectAll("text")
         .data(nData)

@@ -53,6 +53,7 @@ function group(data, config) {
     items.selectAll("rect")
         .data(function(d) { return d.datasets; })
         .enter().append("rect")
+            .attr("class", "bar")
             .attr("width", xCategoryScale.rangeBand())
             .attr("x", function(d, i) { return xCategoryScale(d.name); })
             .attr("y", function(d, i) { return yScale(d.value); })
