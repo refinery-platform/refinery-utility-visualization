@@ -82,7 +82,7 @@ function pie(data, config) {
         .text(function(d, i) { return nData[i].item; });    
 
     if (data.categories.length > 1) {
-        alert("Warning: Pie chart displays a sum of the categories of each item.")
+        alert("Warning: Pie chart displays a sum of the categories of each item.");
     }
 }
 

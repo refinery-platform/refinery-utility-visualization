@@ -9,6 +9,7 @@ function layer(data, config) {
     var color = d3.scale.ordinal()
         .domain(data.categories)
         .range(config.colors);
+    var vYScaleOffset = 50; // to enable the x-axis to display more elegantly
 
     var nData = data.nData;
 
@@ -28,7 +29,7 @@ function layer(data, config) {
     }
 
     // width of each g
-    var gWidth = (width + margin.left + margin.right) / itemData.length - 10;
+    var gWidth = (width) / itemData.length - 10;
     var barThickness = (gWidth - padding) / itemLabels.length;
 
     // things now sensitive to orientation
@@ -36,7 +37,7 @@ function layer(data, config) {
     // y scale of vertical orientation
     var vYScale = d3.scale.linear()
         .domain([0, d3.max(nData, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
-        .range([0, height]);
+        .range([0, height - 50]);
 
     // x scale for horizontal orientation
     var hXScale = d3.scale.linear()
@@ -66,10 +67,10 @@ function layer(data, config) {
                 .data(itemData[ii].setData)
                 .enter().append("rect")
                     .attr("x", function(d, i) { return i * ((gWidth - padding) / itemData.length) + padding + (ii * gWidth); })  
-                    .attr("y", function(d) { return height - vYScale(+d.value); })
+                    .attr("y", function(d) { return height - vYScale(+d.value) - vYScaleOffset; })
                     .attr("width", barThickness)
                     .attr("height", function(d) { return vYScale(+d.value); })
-                    .attr("fill", color(itemData[ii].name)); // subject to change
+                    .attr("fill", color(itemData[ii].name)); 
         } else {
             console.log("doing the horizontal orientation");
             var g = subSvg[ii].selectAll("rect")
@@ -94,8 +95,11 @@ function layer(data, config) {
 
             subSvg[ii].append("g")
                 .attr("class", "layerVXAxis")
-                .attr("transform", "translate(" + (ii * gWidth) + ", " + (height) + ")")
-                .call(vXAxis);
+                .attr("transform", "translate(" + (ii * gWidth) + ", " + (height - vYScaleOffset) + ")")
+                .call(vXAxis)
+                .selectAll("text")
+                	.style("text-anchor", "end")
+                	.attr("transform", "rotate(-60)");
         } else {
             // make small x-axis for each one
             var hXAxis = d3.svg.axis()
@@ -131,4 +135,23 @@ function layer(data, config) {
             .attr("class", "layerHYAxis")
             .call(hYAxis);
     }    
+
+    var legend = svg.selectAll(".legend")
+        .data(color.domain().slice())
+        .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
+
+    legend.append("rect")
+        .attr("x", width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color);
+
+    legend.append("text")
+        .attr("x", width - 24)
+        .attr("y", 9)
+        .attr("dy", "0.35em")
+        .style("text-anchor", "end")
+        .text(function(d) { return d; });
 }
