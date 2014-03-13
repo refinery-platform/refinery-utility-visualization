@@ -29,8 +29,6 @@ function stack(data, config) {
         console.error("Incorrect orientation");
     }
 
-    nData.sort(function(a, b) { return b.total - a.total; }); 
-
     // scales
     var vXScale = d3.scale.ordinal()
         .rangeRoundBands([0, width], 0.1)
@@ -136,6 +134,11 @@ function stack(data, config) {
             .attr("class", "stackVXAxis")
             .attr("transform", "translate(0, " + height + ")")
             .call(vXAxis);
+
+        $(".stackVXAxis").click(function(event) {
+            var text = $(event.target).text();
+            config.callbacks.item(nData, text, data.items.indexOf(text));
+        });
 
         svg.append("g")
             .attr("class", "stackVYAxis")

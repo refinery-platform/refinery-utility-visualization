@@ -90,6 +90,11 @@ function group(data, config) {
                 .style("text-anchor", "end")
                 .text("Amount");
 
+    $(".groupVXAxis").click(function(event) {
+        var text = $(event.target).text();
+        config.callbacks.item(nData, text, data.items.indexOf(text));
+    });
+
     // legend
     var legend = svg.selectAll("legend")
         .data(data.categories.slice().reverse())

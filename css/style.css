@@ -27,7 +27,7 @@ body {
 .plainVXAxis path,
 .plainVXAxis line {
 	fill: none;
-	storke: none;
+	stroke: black;
 	shape-rendering: crispEdges;
 }
 
@@ -41,7 +41,7 @@ body {
 .stackVYAxis path,
 .stackVYAxis line {
 	fill: none;
-	stroke: none;
+	stroke: black;
 	shape-rendering: crispEdges;
 }
 

@@ -35,14 +35,6 @@ function categoryCallback(nData, d, i) {
     console.log(i);
 }
 
-
-function axisCallback(nData, d, i) {
-    console.log("called axisCallback with nData, d, i: ");
-    console.log(nData);
-    console.log(d);
-    console.log(i);
-}
-
 function draw(chartType, userConfig, data) {
 
     // perform deep copy to preserve original data objects
@@ -69,14 +61,9 @@ function draw(chartType, userConfig, data) {
         },
         colors: d3.scale.category10().range(),
         hoverOpacity: 0.6,
-        callbacks: { item: itemCallback, category: categoryCallback, axis: axisCallback }
+        callbacks: { item: itemCallback, category: categoryCallback }
     }
 
-    config.dimension = {
-            width: 640 - config.margin.left - config.margin.right,
-            height: 500 - config.margin.top - config.margin.bottom
-    }
-    
     // override default configurations with user defined ones
     for (i in userConfig) {
         if (i != undefined) {
@@ -85,7 +72,6 @@ function draw(chartType, userConfig, data) {
     }
     
     // general functions depending on graph rendered
-
     if (chartType == "plain") {
         plain(modifiedData, config);
     } else if (chartType == "stack") {
@@ -96,6 +82,8 @@ function draw(chartType, userConfig, data) {
         group(modifiedData, config);
     } else if (chartType == "pie") {
         pie(modifiedData, config);
+    } else if (chartType == "multiplain") {
+        multiplain(modifiedData, config);
     } else {
         alert("Invalid chart type");
     }
