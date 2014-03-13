@@ -4,6 +4,45 @@
     of objects as the input as opposed to file I/O on data.tsv
 */
 
+/*
+Nil's sketches
+
+var ca = function( ndata, d, i ) {
+    alert( "a: " + i );
+}
+
+var cb = function( ndata, d, i ) {
+    alert( "b: " + i );
+}
+
+config.callbacks = { item: ca, label: cb };
+
+rect.on( 'click', function(d,i) { ca( ndata, d, i ); } );
+*/
+
+function itemCallback(nData, d, i) {
+    console.log("called itemCallback with nData, d, i: ");
+    console.log(nData);
+    console.log(d);
+    console.log(i);
+}
+
+
+function categoryCallback(nData, d, i) {
+    console.log("called categoryCallback with nData, d, i: ");
+    console.log(nData);
+    console.log(d);
+    console.log(i);
+}
+
+
+function axisCallback(nData, d, i) {
+    console.log("called axisCallback with nData, d, i: ");
+    console.log(nData);
+    console.log(d);
+    console.log(i);
+}
+
 function draw(chartType, userConfig, data) {
 
     // perform deep copy to preserve original data objects
@@ -28,8 +67,9 @@ function draw(chartType, userConfig, data) {
             bottom: 30,
             left: 100
         },
-        colors: ["#0B609C", "#C64927", "#128F64", "#BE6293", "#DE8A34", "gray"],
-        hoverOpacity: 0.6
+        colors: d3.scale.category10().range(),
+        hoverOpacity: 0.6,
+        callbacks: { item: itemCallback, category: categoryCallback, axis: axisCallback }
     }
 
     config.dimension = {

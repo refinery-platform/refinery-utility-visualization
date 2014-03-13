@@ -8,7 +8,7 @@ function plain(data, config) {
         height = config.dimension.height,
         padding = 30,
         barPadding = 1,
-        barThickness = (width - padding) / data.items.length,
+        barThickness = (width) / data.items.length - padding,
         hoverOpacity = config.hoverOpacity,
         color = d3.scale.ordinal()
             .range(config.colors)
@@ -47,7 +47,7 @@ function plain(data, config) {
         .data(nData)
         .enter().append("rect")
             .attr("class", "bar")
-            .attr("x", function(d, i) { return i * (barThickness) + padding; })
+            .attr("x", function(d, i) { return i * (barThickness + padding); })
             .attr("y", function(d) { return height - yScale(d.total); })
             .attr("width", barThickness)
             .attr("height", function(d) { return yScale(d.total); })
@@ -60,22 +60,23 @@ function plain(data, config) {
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+            })
+            .on("click", function(d, i) {
+            	config.callbacks.item(nData, d, i);
             });
 
     svg.selectAll("text")
-        .data(nData)
-        .enter().append("text")
-        .text(function(d) { return d.total; })
-            .attr("text-anchor", "middle")
-            .attr("x", function(d, i) { return i * (barThickness) + (width / data.items.length - barPadding) / 2 + padding; })
-            .attr("y", function(d) { return height - yScale(d.total) + 14; })
-            .attr("font-size", "11px")
-            .attr("fill", "white");
+    	.data(nData)
+    	.enter().append("text")
+    		.attr("text-anchor", "middle")
+    		.attr("x", function(d, i) { return i * (barThickness + padding) + barThickness / 2; })
+    		.attr("y", function(d) { return height + margin.bottom / 2; })
+    		.text(function(d, i) { return data.items[i]; });
 
     // add the y axis
     svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + padding + ", 20)")
+        .attr("class", "plainVYAxis")
+        .attr("transform", "translate(0, " +  20 + ")")
         .call(yAxis);
 
     // add the legends        

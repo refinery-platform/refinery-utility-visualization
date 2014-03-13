@@ -7,12 +7,6 @@ body {
 	font-size: 12px;
 }
 
-.axis path,
-.axis line {
-	fill: none;
-	stroke: black;
-	shape-rendering: crispEdges;
-}
 
 .menu {
 	margin-right: 30px;
@@ -21,6 +15,20 @@ body {
 #drawAreaWrapper div {
 	display: inline;
 	width: 100%;
+}
+
+.plainVYAxis path,
+.plainVYAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.plainVXAxis path,
+.plainVXAxis line {
+	fill: none;
+	storke: none;
+	shape-rendering: crispEdges;
 }
 
 .stackVXAxis path,
@@ -76,5 +84,19 @@ body {
 .layerHYAxis line {
 	fill: none;
 	stroke: none;
+	shape-rendering: crispEdges;
+}
+
+.groupVXAxis path, 
+.groupVXAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.groupVYAxis path, 
+.groupVYAxis line {
+	fill: none;
+	stroke: black;
 	shape-rendering: crispEdges;
 }

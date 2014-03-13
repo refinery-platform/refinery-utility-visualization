@@ -69,16 +69,19 @@ function group(data, config) {
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+            })
+            .on("click", function(d, i) {
+                config.callbacks.category(nData, d, i);
             });
     
     // add on the axes
     svg.append("g")
-        .attr("class", "x axis")
+        .attr("class", "groupVXAxis")
         .attr("transform", "translate(0, " + height + ")")
         .call(xAxis);
 
     svg.append("g")
-        .attr("class", "y axis")
+        .attr("class", "groupVYAxis")
         .call(yAxis)
         .append("text")
             .attr("transform", "rotate(-90)")

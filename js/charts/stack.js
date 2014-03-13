@@ -96,6 +96,8 @@ function stack(data, config) {
                 .on("mouseout", function() {
                     var gElem = this.parentNode;
                     d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                }).on("click", function(d, i) {
+                    config.callbacks.category(nData, d, i);
                 });
     } else if (config.orientation == "horizontal") {
         var items = svg.selectAll(".item")
@@ -108,8 +110,9 @@ function stack(data, config) {
             .data(function(d) { return d.nums.reverse(); })
             .enter().append("rect")
                 .attr("class", "bar")
+                .attr("x", function(d) { return hXScale(d.x0); })
                 .attr("y", function(d) { return hYScale(d.name); })
-                .attr("width", function(d) { return hXScale(d.x1); })
+                .attr("width", function(d) { return hXScale(d.x1) - hXScale(d.x0); })
                 .attr("height", hYScale.rangeBand())
                 .style("fill", function(d) { return color(d.name); })
                 .on("mouseover", function() {
@@ -120,6 +123,8 @@ function stack(data, config) {
                 .on("mouseout", function() {
                     var gElem = this.parentNode;
                     d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                }).on("click", function(d, i) {
+                    config.callbacks.category(nData, d, i);
                 });
     } else {
         console.error("Incorrect orientation");

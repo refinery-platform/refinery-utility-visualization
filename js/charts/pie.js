@@ -38,7 +38,6 @@ function pie(data, config) {
         .attr("class", "arc")
         .on("mouseover", function() {
             var gElem = this.parentNode;
-            console.log("mousing over");
             d3.select(gElem).selectAll(".arc").attr("opacity", hoverOpacity);
             d3.select(this).attr("opacity", 1);
         })
@@ -46,6 +45,9 @@ function pie(data, config) {
             var gElem = this.parentNode;
             d3.select(gElem).selectAll(".arc").attr("opacity", 1);
         })
+        .on("click", function(d, i) {
+            config.callbacks.item(nData, d, i);
+        });
 
     g.append("path")
         .attr("d", arc)

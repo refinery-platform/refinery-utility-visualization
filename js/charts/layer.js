@@ -81,6 +81,9 @@ function layer(data, config) {
                     .on("mouseout", function() {
                         var gElem = this.parentNode;
                         d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                    })
+                    .on("click", function(d, i) {
+                        config.callbacks.item(nData, d, i);
                     });
         } else {
             console.log("doing the horizontal orientation");
@@ -101,6 +104,9 @@ function layer(data, config) {
                     .on("mouseout", function() {
                         var gElem = this.parentNode;
                         d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+                    })
+                    .on("click", function(d, i) {
+                        config.callbacks.item(nData, d, i);
                     });  
         }
         // TODO: set up some x-axis stuff
