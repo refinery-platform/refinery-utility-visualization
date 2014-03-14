@@ -1,15 +1,16 @@
 function layer(data, config) {
 
-    var margin = config.margin;
-    var width = config.dimension.width;
-    var height = config.dimension.height;
-    var padding = 10;
-    var barPadding = 3;
-    var gPadding = 20;
-    var hoverOpacity = config.hoverOpacity;
-    var color = d3.scale.ordinal()
+    var margin = config.margin,
+        width = config.dimension.width,
+        height = config.dimension.height,
+        padding = 10,
+        barPadding = 3,
+        gPadding = 20,
+        hoverOpacity = config.hoverOpacity,
+        color = d3.scale.ordinal()
         .domain(data.categories)
         .range(config.colors);
+
     var vYScaleOffset = 50; // to enable the x-axis to display more elegantly
 
     var nData = data.nData;
@@ -30,7 +31,17 @@ function layer(data, config) {
     }
 
     // width of each g
-    var gWidth = (width) / itemData.length - 10;
+    var gWidth;
+    var gHeight;
+    if (config.orientation == "horizontal") {
+        gHeight = height;
+        gWidth = (width) / itemData.length - 10;
+    }
+    if (config.orientation == "vertical") {
+        gWidth = width;
+        gHeight = height / itemData.length - 10;
+    }
+
     var barThickness = (gWidth - padding) / itemLabels.length;
 
     // things now sensitive to orientation
@@ -53,12 +64,25 @@ function layer(data, config) {
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
     
     var subSvg = [];
-    for (var i = 0; i < itemData.length; i++) {
-        subSvg[i] = svg.append("g")
-                        .attr("y", 0)
-                        .attr("width", (gWidth) + "px")
-                        .attr("height", (height) + "px")
-                        .append("g");
+    if (config.orientation == "horizontal") {
+        for (var i = 0; i < itemData.length; i++) {
+            subSvg[i] = svg.append("g")
+                .attr("y", 0)
+                .attr("width", (gWidth) + "px")
+                .attr("height", (height) + "px")
+                .append("g");
+        }
+    }
+
+    if (config.orientation == "vertical") {
+        for (var i = 0; i < itemData.length; i++) {
+            subSvg[i] = svg.append("g")
+                .attr("x", 0)
+                .attr("y", gHeight * i)
+                .attr("width", gWidth)
+                .attr("height", gHeight)
+                .append("g");
+        }
     }
 
     // start plotting the stuff in their unique svg containers
@@ -68,7 +92,7 @@ function layer(data, config) {
                 .data(itemData[ii].setData)
                 .enter().append("rect")
                     .attr("class", "bar")
-                    .attr("x", function(d, i) { return i * ((gWidth - padding) / itemData.length) + padding + (ii * gWidth); })  
+                    .attr("x", function(d, i ) { return i * (gWidth + padding); })  
                     .attr("y", function(d) { return height - vYScale(+d.value) - vYScaleOffset; })
                     .attr("width", barThickness)
                     .attr("height", function(d) { return vYScale(+d.value); })

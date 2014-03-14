@@ -31,6 +31,20 @@ body {
 	shape-rendering: crispEdges;
 }
 
+.multiplainVXAxis path,
+.multiplainVXAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.multiplainVYAxis path,
+.multiplainVYAxis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
 .stackVXAxis path,
 .stackVXAxis line {
 	fill: none;
