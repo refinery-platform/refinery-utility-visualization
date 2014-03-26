@@ -42,6 +42,11 @@ function plain(data, config) {
         .append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
+    // the tooltip
+    var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
     // draw the rectangles
     svg.selectAll("rect")
         .data(nData)
@@ -56,10 +61,26 @@ function plain(data, config) {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                 d3.select(this).attr("opacity", 1);
+
+                div.transition()
+                    .duration(200)
+                    .style("opacity", 0.9);
+
+                console.log(d3.select(this))
+                console.log(d3.select(this)[0][0].__data__.total)
+
+                div.html("hue")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY) + "px");
+
             })
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
             })
             .on("click", function(d, i) {
             	config.callbacks.item(nData, d, i);

@@ -1,25 +1,3 @@
-/*
-    This is a general function that plots a graph of a set of data given an 
-    input for the type of graph. In the future perhaps expand to take an array
-    of objects as the input as opposed to file I/O on data.tsv
-*/
-
-/*
-Nil's sketches
-
-var ca = function( ndata, d, i ) {
-    alert( "a: " + i );
-}
-
-var cb = function( ndata, d, i ) {
-    alert( "b: " + i );
-}
-
-config.callbacks = { item: ca, label: cb };
-
-rect.on( 'click', function(d,i) { ca( ndata, d, i ); } );
-*/
-
 function itemCallback(nData, d, i) {
     console.log("called itemCallback with nData, d, i: ");
     console.log(nData);

@@ -42,14 +42,22 @@ function layer(data, config) {
         gHeight = height / itemData.length - 10;
     }
 
+    console.log(gWidth + " " + gHeight);
+
     var barThickness = (gWidth - padding) / itemLabels.length;
 
     // things now sensitive to orientation
 
-    // y scale of vertical orientation
+    // scales of vertical orientation
+    var vXScale = d3.scale.ordinal()
+        .domain(data.items)
+        .range([0, gWidth - gPadding])
+
     var vYScale = d3.scale.linear()
         .domain([0, d3.max(nData, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
-        .range([0, height - 50]);
+        .range([0, gHeight]);
+
+    console.log(vXScale.range()); console.log(vYScale.domain());
 
     // x scale for horizontal orientation
     var hXScale = d3.scale.linear()
@@ -85,6 +93,8 @@ function layer(data, config) {
         }
     }
 
+    console.log(subSvg);
+
     // start plotting the stuff in their unique svg containers
     for (var ii = 0; ii < itemData.length; ii++) {
         if (config.orientation == "vertical") {
@@ -92,8 +102,8 @@ function layer(data, config) {
                 .data(itemData[ii].setData)
                 .enter().append("rect")
                     .attr("class", "bar")
-                    .attr("x", function(d, i ) { return i * (gWidth + padding); })  
-                    .attr("y", function(d) { return height - vYScale(+d.value) - vYScaleOffset; })
+                    .attr("x", function(d, i) { console.log(d); return vXScale(d.name) })  
+                    .attr("y", function(d, i) { return gHeight * ii + vYScale(+d.value); })
                     .attr("width", barThickness)
                     .attr("height", function(d) { return vYScale(+d.value); })
                     .attr("fill", color(itemData[ii].name))
