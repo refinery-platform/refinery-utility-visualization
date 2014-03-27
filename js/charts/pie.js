@@ -19,9 +19,9 @@ function pie(data, config) {
             .value(function(d) { return d.total; });
 
     // the tooltip
-    d3.select("body").selectAll(".tooltip").remove();
+    d3.select("body").selectAll(".refinery-utility-tooltip").remove();
     var tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
+        .attr("class", "refinery-utility-tooltip")
         .style("opacity", 0);
 
     var tooltipFlag = 0;
