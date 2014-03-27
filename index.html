@@ -49,12 +49,19 @@
         <a class="menu" id="group">Group</a>
         <a class="menu" id="pie">Pie</a>
     </nav>
-    
-    <select id="target">
-        <option value="draw1">Area 1</option>
-        <option value="draw2">Area 2</option>
-        <option value="draw3">Area 3</option>
-    </select>
+
+    <form id="drawTarget">
+    	<input type="radio" name="drawSelector" value="draw1" checked>Area 1</input>
+    	<input type="radio" name="drawSelector" value="draw2">Area 2</input>
+    	<input type="radio" name="drawSelector" value="draw3">Area 3</input>
+    </form>
+
+    <br>
+
+    <form id="orientationSelector">
+    	<input type="radio" name="orientationSelector" value="horizontal" checked>Horizontal</input>
+    	<input type="radio" name="orientationSelector" value="vertical">Vertical</input>
+    </form>
 
     <div id="drawAreaWrapper">
         <div class="drawArea" id="draw1"></div>
@@ -62,15 +69,8 @@
         <div class="drawArea" id="draw3"></div>
     </div>
 
-    <select id="orientationSelector">
-        <option class="orientation" value="vertical">Vertical</option>
-        <option class="orientaiton" value="horizontal">Horizontal</option>
-    </select>
 
     <script>
-        var target = document.getElementById("target");
-        var orientation = document.getElementById("orientationSelector");
-
         var userConfig = {
             dimension: {
                 height: 1000,
@@ -93,8 +93,8 @@
 
         $(document).ready(function() {
             $("#plain").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("plain", userConfig, inputData);
@@ -102,8 +102,8 @@
             });
 
             $("#stack").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("stack", userConfig, inputData);
@@ -111,8 +111,8 @@
             });
 
             $("#layer").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("layer", userConfig, inputData);
@@ -120,8 +120,8 @@
             });
 
             $("#group").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("group", userConfig, inputData);
@@ -129,8 +129,8 @@
             });
 
             $("#pie").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("pie", userConfig, inputData);
@@ -138,8 +138,8 @@
             });
 
             $("#multiplain").click(function(event) {
-                targetValue = target.options[target.selectedIndex].value;
-                orientationValue = orientation.options[orientation.selectedIndex].value;
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("multiplain", userConfig, inputData);
