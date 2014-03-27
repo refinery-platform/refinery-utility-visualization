@@ -15,6 +15,12 @@ function layer(data, config) {
 
     var nData = data.nData;
 
+    // the tooltip
+    d3.select("body").selectAll(".tooltip").remove();
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
     var itemLabels = data.categories;
 
     // set up the necessary data structures
@@ -130,14 +136,26 @@ function layer(data, config) {
                     .attr("width", function(d) { return hXScale(+d.value); }) 
                     .attr("height", barThickness)
                     .attr("fill", color(itemData[ii].name))
-                    .on("mouseover", function() {
+                    .on("mouseover", function(d, i) {
                         var gElem = this.parentNode;
                         d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                         d3.select(this).attr("opacity", 1);
-                    })
+
+                        div.transition()
+                            .duration(200)
+                            .style("opacity", 0.9);
+
+                        div.html(d.value)
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY) + "px");
+                        })
                     .on("mouseout", function() {
                         var gElem = this.parentNode;
                         d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+
+                        div.transition()
+                            .duration(500)
+                            .style("opacity", 0);
                     })
                     .on("click", function(d, i) {
                         config.callbacks.item(nData, d, i);

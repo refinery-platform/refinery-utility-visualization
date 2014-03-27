@@ -8,6 +8,11 @@ function group(data, config) {
         .range(config.colors);
 
     var nData = data.nData;
+
+    d3.select("body").selectAll(".tooltip").remove();
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
     
     nData.forEach(function(d) {
         d.datasets = data.categories.map(function(name) { return {name: name, value: +d[name]}; });
@@ -61,14 +66,26 @@ function group(data, config) {
             .attr("y", function(d, i) { return yScale(d.value); })
             .attr("height", function(d, i) { return height - yScale(d.value); })
             .style("fill", function(d, i) { return color(d.name); })
-            .on("mouseover", function() {
+            .on("mouseover", function(d, i) {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                 d3.select(this).attr("opacity", 1);
+
+                div.transition()
+                    .duration(200)
+                    .style("opacity", 0.9);
+
+                div.html(d.value)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY) + "px");
             })
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
+
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
             })
             .on("click", function(d, i) {
                 config.callbacks.category(nData, d, i);
