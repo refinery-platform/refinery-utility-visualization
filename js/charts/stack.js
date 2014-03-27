@@ -19,6 +19,9 @@ function stack(data, config) {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
+    // true if tooltip is over bar
+    var tooltipFlag = false;
+
     if (config.orientation == "vertical") {
         nData.forEach(function(d) {
             var y0 = 0;
@@ -97,24 +100,28 @@ function stack(data, config) {
                     d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                     d3.select(this).attr("opacity", 1);
 
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", 0.9);
-
-                    div.html(d.y1 - d.y0)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY) + "px");
+                    tooltipFlag = true;
                 })
                 .on("mouseout", function() {
                     var gElem = this.parentNode;
                     d3.select(gElem).selectAll(".bar").attr("opacity", 1);
 
-                    div.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                }).on("click", function(d, i) {
-                    config.callbacks.category(nData, d, i);
+                    tooltipFlag = false;
+                    div.style("opacity", 0);
+                })
+                .on("mousemove", function(d, i) {
+                    if (tooltipFlag) {
+                        div.style("opacity", 0.9);
+
+                        div.html(d.y1 - d.y0)
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY) + "px");
+                    }
+                })
+                .on("click", function(d, i) {
+                    config.callbacks.item(nData, d, i);
                 });
+
     } else if (config.orientation == "horizontal") {
         var items = svg.selectAll(".item")
             .data(nData)
@@ -136,24 +143,28 @@ function stack(data, config) {
                     d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                     d3.select(this).attr("opacity", 1);
 
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", 0.9);
-
-                    div.html(d.x1 - d.x0)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY) + "px");
+                    tooltipFlag = true;
                 })
                 .on("mouseout", function() {
                     var gElem = this.parentNode;
                     d3.select(gElem).selectAll(".bar").attr("opacity", 1);
 
-                    div.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                }).on("click", function(d, i) {
-                    config.callbacks.category(nData, d, i);
+                    tooltipFlag = false;
+                    div.style("opacity", 0);
+                })
+                .on("mousemove", function(d, i) {
+                    if (tooltipFlag) {
+                        div.style("opacity", 0.9);
+
+                        div.html(d.x1 - d.x0)
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY) + "px");
+                    }
+                })
+                .on("click", function(d, i) {
+                    config.callbacks.item(nData, d, i);
                 });
+
     } else {
         console.error("Incorrect orientation");
     }

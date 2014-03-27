@@ -18,6 +18,14 @@ function pie(data, config) {
             .sort(null)
             .value(function(d) { return d.total; });
 
+    // the tooltip
+    d3.select("body").selectAll(".tooltip").remove();
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var tooltipFlag = 0;
+
     var nData = data.nData;
 
     for (var i = 0; i < data.items.length; i++) {
@@ -40,10 +48,24 @@ function pie(data, config) {
             var gElem = this.parentNode;
             d3.select(gElem).selectAll(".arc").attr("opacity", hoverOpacity);
             d3.select(this).attr("opacity", 1);
+
+            tooltipFlag = true;
         })
         .on("mouseout", function() {
             var gElem = this.parentNode;
             d3.select(gElem).selectAll(".arc").attr("opacity", 1);
+
+            tooltipFlag = false;
+            tooltip.style("opacity", 0);
+        })
+        .on("mousemove", function(d, i) {
+            if (tooltipFlag) {
+                tooltip.style("opacity", 0.9)
+
+                tooltip.html(d.value)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY) + "px");
+            }
         })
         .on("click", function(d, i) {
             config.callbacks.item(nData, d, i);

@@ -21,6 +21,9 @@ function layer(data, config) {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
+    // true if tooltip is over bar
+    var tooltipFlag = false;
+
     var itemLabels = data.categories;
 
     // set up the necessary data structures
@@ -48,8 +51,6 @@ function layer(data, config) {
         gHeight = height / itemData.length - 10;
     }
 
-    console.log(gWidth + " " + gHeight);
-
     var barThickness = (gWidth - padding) / itemLabels.length;
 
     // things now sensitive to orientation
@@ -62,8 +63,6 @@ function layer(data, config) {
     var vYScale = d3.scale.linear()
         .domain([0, d3.max(nData, function(d) { return d3.max(itemLabels.map(function(name) { return {name: name, value: +d[name]}; }), function(d) { return d.value; })})])
         .range([0, gHeight]);
-
-    console.log(vXScale.range()); console.log(vYScale.domain());
 
     // x scale for horizontal orientation
     var hXScale = d3.scale.linear()
@@ -99,8 +98,6 @@ function layer(data, config) {
         }
     }
 
-    console.log(subSvg);
-
     // start plotting the stuff in their unique svg containers
     for (var ii = 0; ii < itemData.length; ii++) {
         if (config.orientation == "vertical") {
@@ -108,7 +105,7 @@ function layer(data, config) {
                 .data(itemData[ii].setData)
                 .enter().append("rect")
                     .attr("class", "bar")
-                    .attr("x", function(d, i) { console.log(d); return vXScale(d.name) })  
+                    .attr("x", function(d, i) { return vXScale(d.name) })  
                     .attr("y", function(d, i) { return gHeight * ii + vYScale(+d.value); })
                     .attr("width", barThickness)
                     .attr("height", function(d) { return vYScale(+d.value); })
@@ -126,7 +123,6 @@ function layer(data, config) {
                         config.callbacks.item(nData, d, i);
                     });
         } else {
-            console.log("doing the horizontal orientation");
             var g = subSvg[ii].selectAll("rect")
                 .data(itemData[ii].setData)
                 .enter().append("rect")
@@ -141,25 +137,27 @@ function layer(data, config) {
                         d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                         d3.select(this).attr("opacity", 1);
 
-                        div.transition()
-                            .duration(200)
-                            .style("opacity", 0.9);
-
-                        div.html(d.value)
-                            .style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY) + "px");
-                        })
+                        tooltipFlag = true;
+                    })
                     .on("mouseout", function() {
                         var gElem = this.parentNode;
                         d3.select(gElem).selectAll(".bar").attr("opacity", 1);
 
-                        div.transition()
-                            .duration(500)
-                            .style("opacity", 0);
+                        tooltipFlag = false;
+                        div.style("opacity", 0);
+                    })
+                    .on("mousemove", function(d, i) {
+                        if (tooltipFlag) {
+                            div.style("opacity", 0.9);
+
+                            div.html(d.value)
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY) + "px");
+                        }
                     })
                     .on("click", function(d, i) {
                         config.callbacks.item(nData, d, i);
-                    });  
+                    });
         }
         // TODO: set up some x-axis stuff
         

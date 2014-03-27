@@ -14,6 +14,9 @@ function group(data, config) {
         .attr("class", "tooltip")
         .style("opacity", 0);
     
+    // true if tooltip is over bar
+    var tooltipFlag = false;
+    
     nData.forEach(function(d) {
         d.datasets = data.categories.map(function(name) { return {name: name, value: +d[name]}; });
     });
@@ -71,24 +74,26 @@ function group(data, config) {
                 d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                 d3.select(this).attr("opacity", 1);
 
-                div.transition()
-                    .duration(200)
-                    .style("opacity", 0.9);
-
-                div.html(d.value)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY) + "px");
+                tooltipFlag = true;
             })
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
 
-                div.transition()
-                    .duration(500)
-                    .style("opacity", 0);
+                tooltipFlag = false;
+                div.style("opacity", 0);
+            })
+            .on("mousemove", function(d, i) {
+                if (tooltipFlag) {
+                    div.style("opacity", 0.9);
+
+                    div.html(d.value)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY) + "px");
+                }
             })
             .on("click", function(d, i) {
-                config.callbacks.category(nData, d, i);
+                config.callbacks.item(nData, d, i);
             });
     
     // add on the axes
