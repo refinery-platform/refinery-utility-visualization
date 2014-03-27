@@ -172,7 +172,7 @@ function stack(data, config) {
     // the axes
     if (config.orientation == "vertical") {
         svg.append("g")
-            .attr("class", "stackVXAxis")
+            .attr("class", "refinery-utility-axis")
             .attr("transform", "translate(0, " + height + ")")
             .call(vXAxis);
 
@@ -182,16 +182,16 @@ function stack(data, config) {
         });
 
         svg.append("g")
-            .attr("class", "stackVYAxis")
+            .attr("class", "refinery-utility-axis")
             .call(vYAxis)
     } else if (config.orientation == "horizontal") {
         svg.append("g")
-            .attr("class", "stackHXAxis")
+            .attr("class", "refinery-utility-axis")
             .attr("transform", "translate(0, " + height + ")")
             .call(hXAxis);
 
         svg.append("g")
-            .attr("class", "stackHYAxis")
+            .attr("class", "refinery-utility-axis")
             .call(hYAxis);
     }
 

@@ -98,12 +98,12 @@ function group(data, config) {
     
     // add on the axes
     svg.append("g")
-        .attr("class", "groupVXAxis")
+        .attr("class", "refinery-utility-axis")
         .attr("transform", "translate(0, " + height + ")")
         .call(xAxis);
 
     svg.append("g")
-        .attr("class", "groupVYAxis")
+        .attr("class", "refinery-utility-axis")
         .call(yAxis)
         .append("text")
             .attr("transform", "rotate(-90)")
@@ -112,7 +112,7 @@ function group(data, config) {
                 .style("text-anchor", "end")
                 .text("Amount");
 
-    $(".groupVXAxis").click(function(event) {
+    $(".refinery-utility-axis").click(function(event) {
         var text = $(event.target).text();
         config.callbacks.item(nData, text, data.items.indexOf(text));
     });

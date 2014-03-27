@@ -98,7 +98,7 @@ function plain(data, config) {
 
     // add the y axis
     svg.append("g")
-        .attr("class", "plainVYAxis")
+        .attr("class", "refinery-utility-axis")
         .attr("transform", "translate(0, " +  20 + ")")
         .call(yAxis);
 

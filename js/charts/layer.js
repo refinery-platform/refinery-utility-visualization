@@ -171,7 +171,7 @@ function layer(data, config) {
                             .orient("bottom");
 
             subSvg[ii].append("g")
-                .attr("class", "layerVXAxis")
+                .attr("class", "refinery-utility-axis")
                 .attr("transform", "translate(" + (ii * gWidth) + ", " + (height - vYScaleOffset) + ")")
                 .call(vXAxis)
                 .selectAll("text")
@@ -184,7 +184,7 @@ function layer(data, config) {
                 .orient("bottom")
 
             subSvg[ii].append("g")
-                .attr("class", "layerHXAxis")
+                .attr("class", "refinery-utility-axis")
                 .attr("transform", "translate(" + (ii * gWidth + gPadding) + ", " + ((barThickness + barPadding) * itemLabels.length + 10)  + ")")
                 .call(hXAxis);
         }
@@ -197,7 +197,7 @@ function layer(data, config) {
             .orient("left");
 
         svg.append("g")
-            .attr("class", "layerVYAxis")
+            .attr("class", "refinery-utility-axis")
             .call(vYAxis);
     } else {
         var hYScale = d3.scale.ordinal()
@@ -209,7 +209,7 @@ function layer(data, config) {
             .orient("left");
 
         svg.append("g")
-            .attr("class", "layerHYAxis")
+            .attr("class", "refinery-utility-axis")
             .call(hYAxis);
     }    
 

@@ -114,7 +114,7 @@ function multiplain(data, config) {
                         .orient("bottom");
 
         subSvg[ii].append("g")
-            .attr("class", "multiplainVXAxis")
+            .attr("class", "refinery-utility-axis")
             .attr("transform", "translate(" + (ii * gWidth) + ", " + (height - vYScaleOffset) + ")")
             .call(vXAxis)
             .selectAll("text")
@@ -129,7 +129,7 @@ function multiplain(data, config) {
         .orient("left");
 
     svg.append("g")
-        .attr("class", "multiplainVYAxis")
+        .attr("class", "refinery-utility-axis")
         .call(vYAxis);    
 
     var legend = svg.selectAll(".legend")
