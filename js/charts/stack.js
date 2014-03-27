@@ -14,9 +14,9 @@ function stack(data, config) {
     var nData = data.nData;
 
     // the tooltip
-    d3.select("body").selectAll(".tooltip").remove();
+    d3.select("body").selectAll(".refinery-utility-tooltip").remove();
     var div = d3.select("body").append("div")
-        .attr("class", "tooltip")
+        .attr("class", "refinery-utility-tooltip")
         .style("opacity", 0);
 
     // true if tooltip is over bar

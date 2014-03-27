@@ -20,7 +20,7 @@ body {
 	width: 100%;
 }
 
-.tooltip {
+.refinery-utility-tooltip {
 	position: absolute;
 	text-align: center;
 	width: 60px;
