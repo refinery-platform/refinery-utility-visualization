@@ -48,6 +48,9 @@ function plain(data, config) {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
+    // true if tooltip is over bar
+    var tooltipFlag = false;
+
     // draw the rectangles
     svg.selectAll("rect")
         .data(nData)
@@ -63,21 +66,23 @@ function plain(data, config) {
                 d3.select(gElem).selectAll(".bar").attr("opacity", hoverOpacity);
                 d3.select(this).attr("opacity", 1);
 
-                div.transition()
-                    .duration(200)
-                    .style("opacity", 0.9);
-
-                div.html(d.total)
-                    .style("left", (i * (barThickness + padding) + (barThickness / 2)) + "px")
-                    .style("top", (d3.event.pageY) + "px");
+                tooltipFlag = true;
             })
             .on("mouseout", function() {
                 var gElem = this.parentNode;
                 d3.select(gElem).selectAll(".bar").attr("opacity", 1);
 
-                div.transition()
-                    .duration(500)
-                    .style("opacity", 0);
+                tooltipFlag = false;
+                div.style("opacity", 0);
+            })
+            .on("mousemove", function(d, i) {
+                if (tooltipFlag) {
+                    div.style("opacity", 0.9);
+
+                    div.html(d.total)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY) + "px");
+                }
             })
             .on("click", function(d, i) {
             	config.callbacks.item(nData, d, i);
