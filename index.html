@@ -30,6 +30,8 @@
 <body>
     <script src="jquery/jquery-2.1.0.min.js"></script>
     <script src="d3/d3.v3.min.js"></script>
+    <script src="js/generic-test/genericplain.js"></script>
+    <script src="js/generic-test/generictest.js"></script>
     <script src="js/charts/plain.js"></script>
     <script src="js/charts/stack.js"></script>
     <script src="js/charts/layer.js"></script>
@@ -48,6 +50,7 @@
         <a class="menu" id="layer">Layer</a>
         <a class="menu" id="group">Group</a>
         <a class="menu" id="pie">Pie</a>
+        <a class="menu" id="generic">Generic</a>
     </nav>
 
     <form id="drawTarget">
@@ -143,6 +146,15 @@
                 userConfig.targetArea = targetValue;
                 userConfig.orientation = orientationValue;
                 draw("multiplain", userConfig, inputData);
+                event.preventDefault(); 
+            })
+
+            $("#generic").click(function(event) {
+                targetValue = $("input[name='drawSelector']:checked").val();
+                orientationValue = $("input[name='orientationSelector']:checked").val();
+                userConfig.targetArea = targetValue;
+                userConfig.orientation = orientationValue;
+                draw("generic", userConfig, inputData);
                 event.preventDefault(); 
             })
         });

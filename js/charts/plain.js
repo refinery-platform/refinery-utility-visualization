@@ -1,6 +1,4 @@
 function plain(data, config) {
-
-    console.log(data)
     
     // import features from config
     var margin = config.margin,

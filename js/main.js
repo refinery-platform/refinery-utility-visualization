@@ -62,6 +62,8 @@ function draw(chartType, userConfig, data) {
         pie(modifiedData, config);
     } else if (chartType == "multiplain") {
         multiplain(modifiedData, config);
+    } else if (chartType == "generic") {
+        genericTest(modifiedData, config);
     } else {
         alert("Invalid chart type");
     }
