@@ -57,7 +57,7 @@ function draw(chartType, userConfig, data) {
     } else if (chartType == "layer") {
         layer(modifiedData, config);
     } else if (chartType == "group") {
-        group(modifiedData, config);
+        group(jQuery.extend(true, {}, data), config);
     } else if (chartType == "pie") {
         pie(modifiedData, config);
     } else if (chartType == "multiplain") {

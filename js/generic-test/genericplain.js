@@ -60,5 +60,9 @@ function genericPlain(data, config) {
                     return barThickness;
                 }
             })
-            .style("fill", function(d) { return config.colors(d.id); });
+            .style("fill", function(d) { 
+                var color = d3.scale.category10()
+                    .domain(data.map(function(d) { return d.id; }));
+                return color(d.id); 
+            });
 }

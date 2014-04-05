@@ -51,7 +51,6 @@ function genericTest(data, config) {
             height: drawAreaConfig.height,
             orientation: "vertical",
             drawTarget: gs[0][i],
-            colors: d3.scale.category10(),
             globalMax: globalMax
         })
     }
