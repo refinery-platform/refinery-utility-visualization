@@ -49,7 +49,7 @@ function genericTest(data, config) {
         configSet.push({
             width: drawAreaConfig.width / data.length,
             height: drawAreaConfig.height,
-            orientation: "horizontal",
+            orientation: "vertical",
             drawTarget: gs[0][i],
             colors: d3.scale.category10(),
             globalMax: globalMax
