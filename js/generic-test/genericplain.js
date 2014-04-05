@@ -1,34 +1,49 @@
 function genericPlain(data, config) {
-	// set up appropriate x and y scales depending on the orientation and dimensions
-	// assume default orientation is horizontal
+    // set up a few things beforehand
+    var vert = "vertical"; // avoid typos because it's used so much
+    var barPadding = 2;
+    var barThickness = config.width / data.length - barPadding;
 
-	config.colors.domain(data.map(function(d) { return d.id; }))
+    // load scales - default is horizontal
+    var xScale = d3.scale.linear()
+        .domain([0, config.globalMax])
+        .range([0, config.width]);
+    
+    var yScale = d3.scale.ordinal()
+        .domain(data.map(function(d) { return d.id; }))
+        .rangeRoundBands([0, config.height], 0);
 
-	var xScale = d3.scale.linear()
-		.domain([0, data.map(function(d) { return d.value; }).max()])
-		.range([0, config.width]);
+    d3.select(config.drawTarget).selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+            .attr("x", function(d) {
+                if (config.orientaion === vert) {
 
-	var yScale = d3.scale.ordinal()
-		.domain(data.map(function(d) { return d.id; }))
-		.rangeRoundBands([0, config.height], 0.1)
+                } else {
+                    return 0;
+                }
+            })
+            .attr("y", function(d) {
+                if (config.orientation === vert) {
 
-	if (config.orientation === "vertical") {
-		// switch it up for vertical display
-	}
+                } else {
+                    return yScale(d.id);
+                }
+            })
+            .attr("width", function(d) {
+                if (config.orientation === vert) {
 
-	console.log(d3.select(config.drawTarget))
+                } else {
+                    return xScale(d.value);
+                }
+            })
+            .attr("height", function(d) {
+                if (config.orientation === vert) {
 
-	// display the data
-	d3.select(config.drawTarget).selectAll("rect")
-		.data(data)
-		.enter()
-		.append("rect")
-			.attr("x", 0)
-			.attr("y", function(d) { return yScale(d.id); })
-			.attr("width", function(d) { return xScale(d.value); })
-			.attr("height", config.height / data.length)
-			.style("fill", function(d) { return config.colors(d.id); });
-
-	// tag on some action listeners and necessary callback functions
-
+                } else {
+                    return barThickness;
+                }
+            })
+            .style("fill", function(d) { return config.colors(d.id); });
 }

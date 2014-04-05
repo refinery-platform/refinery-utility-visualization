@@ -23,7 +23,7 @@ function genericTest(data, config) {
             {id: "2banana", value: 2},
             {id: "2cat", value: 3},
             {id: "2dora", value: 4},
-            {id: "2elephant", value: 6}
+            {id: "2elephant", value: 15}
         ]
     ]
 
@@ -41,6 +41,9 @@ function genericTest(data, config) {
         .append("g")
             .attr("transform", function(d, i) { return "translate(" + (i * drawAreaConfig.width / data.length) + ", 0)"; })
 
+    // tricky 2-layer maxing with objects
+    var globalMax = data.map(function(d) { return d.map(function(d) { return d.value; }).max(); }).max();
+
     // create specialized configs
     for (var i = 0; i < gs[0].length; i++) {
         configSet.push({
@@ -48,7 +51,8 @@ function genericTest(data, config) {
             height: drawAreaConfig.height,
             orientation: "horizontal",
             drawTarget: gs[0][i],
-            colors: d3.scale.category10()
+            colors: d3.scale.category10(),
+            globalMax: globalMax
         })
     }
 
