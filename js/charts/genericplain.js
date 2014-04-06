@@ -7,7 +7,7 @@ function genericPlain(data, config) {
 
     // load scales - default is horizontal
     var xScale = d3.scale.linear()
-        .domain([0, config.globalMax])
+        .domain([0, config.globalMax]) // with respect to global max
         .range([0, config.width]);
     
     var yScale = d3.scale.ordinal()
@@ -23,7 +23,7 @@ function genericPlain(data, config) {
             .rangeRoundBands([0, config.width], 0);
         
         yScale = d3.scale.linear()
-            .domain([0, config.globalMax])
+            .domain([0, config.globalMax]) // with respect to global max
             .range([config.height, 0]);
     }
 
@@ -32,6 +32,7 @@ function genericPlain(data, config) {
         .data(data)
         .enter()
         .append("rect")
+            .attr("class", "bar")
             .attr("x", function(d) {
                 if (config.orientation === vert) {
                     return xScale(d.id);
@@ -64,5 +65,17 @@ function genericPlain(data, config) {
                 var color = d3.scale.category10()
                     .domain(data.map(function(d) { return d.id; }));
                 return color(d.id); 
-            });
+            })
+            .on("mousemove", function(d) {
+                config.onMouseMove(d, this, config);
+            })
+            .on("mouseover", function(d) {
+                config.onMouseOver(d, this, config);
+            })
+            .on("mouseout", function(d) {
+                config.onMouseOut(d, this, config);
+            })
+            .on("click", function(d) {
+                config.onClick(d, this, config);
+            })
 }

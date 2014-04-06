@@ -1,8 +1,8 @@
 function group(data, config) {
 
-    console.log(data);
+    // convert to necessary data format
+    var formatData = [];
 
-    var datasets = [];
     // loop over each category
     for (var i = 0; i < data.categories.length; i++) {
         // loop over each item of the category
@@ -13,38 +13,41 @@ function group(data, config) {
                 value: data.matrix[i][j]
             });
         }
-        datasets.push(itemArr);
+        formatData.push(itemArr);
     }
 
-    var svg = d3.select("#" + config.targetArea)
+    var svg = d3.select("#" + config.drawTarget)
         .append("svg")
-            .attr("width", config.dimension.width)
-            .attr("height", config.dimension.height);
+            .attr("width", config.width)
+            .attr("height", config.height);
 
     var gs = svg.selectAll("g")
-        .data(datasets)
+        .data(formatData)
         .enter()
         .append("g")
-            .attr("transform", function(d, i) { return "translate(" + (i * config.dimension.width / datasets.length) + ", 0)"; });
+            .attr("transform", function(d, i) { return "translate(" + (i * config.width / formatData.length) + ", 0)"; });
 
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
 
+    // unique configurations due to unique g's
     var configset = [];
-
     for (var i = 0; i < gs[0].length; i++) {
         configset.push({
-            width: config.dimension.width / datasets.length,
-            height: config.dimension.height,
+            width: config.width / formatData.length,
+            height: config.height,
             orientation: config.orientation,
             drawTarget: gs[0][i],
-            globalMax: globalMax
+            globalMax: globalMax,
+            onMouseMove: config.onMouseMove,
+            onMouseOver: config.onMouseOver,
+            onMouseOut: config.onMouseOut,
+            onClick: config.onClick,
+            tooltip: d3.select("body").select(".refinery-utility-tooltip"),
+            tooltipFlag: false
         });
     }
 
-    console.log(configset);
-
-
-    for (var i = 0; i < datasets.length; i++) {
-        genericPlain(datasets[i], configset[i]);
+    for (var i = 0; i < formatData.length; i++) {
+        genericPlain(formatData[i], configset[i]);
     }
 }

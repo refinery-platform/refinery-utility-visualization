@@ -1,71 +1,52 @@
-function itemCallback(nData, d, i) {
-    console.log("called itemCallback with nData, d, i: ");
-    console.log(nData);
-    console.log(d);
-    console.log(i);
-}
-
-
-function categoryCallback(nData, d, i) {
-    console.log("called categoryCallback with nData, d, i: ");
-    console.log(nData);
-    console.log(d);
-    console.log(i);
-}
-
-function draw(chartType, userConfig, data) {
-
-    // perform deep copy to preserve original data objects
-    var modifiedData = jQuery.extend(true, {}, data);
-
-    modifiedData.nData = new Array();
-    for (var i = 0; i < data.items.length; i++) {
-        modifiedData.nData.push({});
-        modifiedData.nData[i]["item"] = data.items[i];
-        for (var j = 0; j < data.categories.length; j++) {
-            modifiedData.nData[i][data.categories[j]] = data.matrix[i][j];
-        }
-    }
+function draw(chartType, config, data) {
 
     // delete old svg so graphs aren't cluttered
-    d3.select("#" + userConfig.targetArea).html("");
+    d3.select("#" + config.drawTarget).html("");
 
-    var config = {
-        margin: {
-            top: 20,
-            right: 20,
-            bottom: 30,
-            left: 100
-        },
-        colors: d3.scale.category10().range(),
-        hoverOpacity: 0.6,
-        callbacks: { item: itemCallback, category: categoryCallback }
-    }
-
-    // override default configurations with user defined ones
-    for (i in userConfig) {
-        if (i != undefined) {
-            config[i] = userConfig[i];
+    // set up the tooltip again
+    d3.select("body").selectAll(".refinery-utility-tooltip").remove();
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "refinery-utility-tooltip")
+        .style("opacity", 0);
+    
+    // give config some fancy functions
+    config.onMouseMove = function(d, g, c) {
+        if (c.tooltipFlag) {
+            c.tooltip
+                .html(d.value)
+                .style("opacity", 0.9)
+                .style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
         }
     }
-    
+
+    config.onMouseOver = function(d, g, c) {
+        c.tooltipFlag = true;
+        d3.select(g.parentNode).selectAll(".bar")
+            .attr("opacity", 0.6);
+        d3.select(g).attr("opacity", 1);
+    }
+
+    config.onMouseOut = function(d, g, c) {
+        c.tooltipFlag = false;
+        d3.select(g.parentNode).selectAll(".bar")
+            .attr("opacity", 1);
+        c.tooltip.style("opacity", 0);
+    }
+
+    config.onClick = function(d, g, c) {
+        console.log("clicky action going on");
+    }
+
+    // make deep copies for idiot-proofness against mutation
+    var nData = jQuery.extend(true, {}, data);
+    var nConfig = jQuery.extend(true, {}, config);
+
     // general functions depending on graph rendered
-    if (chartType == "plain") {
-        plain(modifiedData, config);
-    } else if (chartType == "stack") {
-        stack(modifiedData, config);
-    } else if (chartType == "layer") {
-        layer(modifiedData, config);
-    } else if (chartType == "group") {
-        group(jQuery.extend(true, {}, data), config);
-    } else if (chartType == "pie") {
-        pie(modifiedData, config);
-    } else if (chartType == "multiplain") {
-        multiplain(modifiedData, config);
-    } else if (chartType == "generic") {
-        genericTest(modifiedData, config);
+    if (chartType == "group") {
+        group(nData, nConfig);
     } else {
         alert("Invalid chart type");
     }
-    
 }

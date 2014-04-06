@@ -1,56 +1,22 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Variety of Charts</title>
+    <title>Refinery Data Visualization</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script>
-        // some useful helper functions
-        Array.prototype.max = function() {
-            var max = 0;
-            var i = this.length;
-            while (i--) {
-                if (max < this[i])
-                    max = this[i];
-            }
-            return max;
-        }
-        
-        // adds super optimized sum method found on stack overflow
-        Array.prototype.sum = function() {
-            var total = 0;
-            var i = this.length;
-            while (i--) {
-                total += this[i];
-            }
-            return total;
-        }
-    </script>
 </head>
 
 <body>
-    <script src="jquery/jquery-2.1.0.min.js"></script>
-    <script src="d3/d3.v3.min.js"></script>
-    <script src="js/generic-test/genericplain.js"></script>
-    <script src="js/generic-test/generictest.js"></script>
-    <script src="js/charts/plain.js"></script>
-    <script src="js/charts/stack.js"></script>
-    <script src="js/charts/layer.js"></script>
+    <script src="js/jquery/jquery-2.1.0.min.js"></script>
+    <script src="js/d3/d3.v3.min.js"></script>
+    <script src="js/include.js"></script>
+    <script src="js/charts/genericplain.js"></script>
     <script src="js/charts/group.js"></script>
-    <script src="js/charts/pie.js"></script>
-    <script src="js/charts/multiplain.js"></script>
-
     <script src="js/main.js"></script>
     
     <h3>Click on the type of graph to draw</h3>
 
     <nav id="nav">
-        <a class="menu" id="plain">Plain</a>
-        <a class="menu" id="multiplain">MultiPlain</a>
-        <a class="menu" id="stack">Stack</a>
-        <a class="menu" id="layer">Layer</a>
         <a class="menu" id="group">Group</a>
-        <a class="menu" id="pie">Pie</a>
-        <a class="menu" id="generic">Generic</a>
     </nav>
 
     <form id="drawTarget">
@@ -72,92 +38,30 @@
         <div class="drawArea" id="draw3"></div>
     </div>
 
-
     <script>
-        var userConfig = {
-            dimension: {
-                height: 800,
-                width: 1600
-            }
+        var config = {
+            height: 800,
+            width: 1600
         }
 
-        inputData = {
-                    items: ["apple", "bear", "cat", "dinosaur", "elephant", "fish"],
-                    categories: ["agility", "buffness", "conspicuousness", "dangerousness", "elasticity", "frugality"],
-                    matrix: [
-                            [6, 29, 18, 30, 7, 2],
-                            [8, 27, 17, 12, 12, 4],
-                            [12, 21, 16, 3, 19, 6],
-                            [20, 18, 16, 9, 7, 8],
-                            [22, 5, 15, 20, 1, 10],
-                            [3, 6, 9, 12, 15, 18]
-                        ]
-                }
+        data = {
+            items: ["apple", "bear", "cat", "dinosaur", "elephant", "fish"],
+            categories: ["agility", "buffness", "conspicuousness", "dangerousness", "elasticity", "frugality"],
+            matrix: [
+                [6, 29, 18, 30, 7, 2],
+                [8, 27, 17, 12, 12, 4],
+                [12, 21, 16, 3, 19, 6],
+                [20, 18, 16, 9, 7, 8],
+                [22, 5, 15, 20, 1, 10],
+                [3, 6, 9, 12, 15, 18]
+            ]
+        }
 
-        $(document).ready(function() {
-            $("#plain").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("plain", userConfig, inputData);
-                event.preventDefault();
-            });
-
-            $("#stack").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("stack", userConfig, inputData);
-                event.preventDefault();
-            });
-
-            $("#layer").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("layer", userConfig, inputData);
-                event.preventDefault();
-            });
-
-            $("#group").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("group", userConfig, inputData);
-                event.preventDefault();
-            });
-
-            $("#pie").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("pie", userConfig, inputData);
-                event.preventDefault();
-            });
-
-            $("#multiplain").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("multiplain", userConfig, inputData);
-                event.preventDefault(); 
-            })
-
-            $("#generic").click(function(event) {
-                targetValue = $("input[name='drawSelector']:checked").val();
-                orientationValue = $("input[name='orientationSelector']:checked").val();
-                userConfig.targetArea = targetValue;
-                userConfig.orientation = orientationValue;
-                draw("generic", userConfig, inputData);
-                event.preventDefault(); 
-            })
+        $("#group").click(function(event) {
+            config.drawTarget = $("input[name='drawSelector']:checked").val();
+            config.orientation = $("input[name='orientationSelector']:checked").val();
+            draw("group", config, data);
+            event.preventDefault();
         });
-    
     </script>
 </body>
