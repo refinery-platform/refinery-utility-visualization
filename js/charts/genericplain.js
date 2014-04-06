@@ -1,81 +1,51 @@
-function genericPlain(data, config) {
+function genericPlain(data, config, events) {
 
-    // set up a few things beforehand
-    var vert = "vertical"; // avoid typos because it's used so much
+    var vert = "vertical"; 
     var barPadding = 2;
     var barThickness = config.height / data.length - barPadding;
 
-    // load scales - default is horizontal
+    // default orientation is horizontal
     var xScale = d3.scale.linear()
-        .domain([0, config.globalMax]) // with respect to global max
+        .domain([0, config.globalMax])
         .range([0, config.width]);
-    
     var yScale = d3.scale.ordinal()
         .domain(data.map(function(d) { return d.id; }))
         .rangeRoundBands([0, config.height], 0);
 
-    // different scale configurations if vertical
     if (config.orientation === vert) {
         barThickness = config.width / data.length - barPadding;
-        
         xScale = d3.scale.ordinal()
             .domain(data.map(function(d) { return d.id; }))
             .rangeRoundBands([0, config.width], 0);
-        
         yScale = d3.scale.linear()
-            .domain([0, config.globalMax]) // with respect to global max
+            .domain([0, config.globalMax]) 
             .range([config.height, 0]);
     }
 
-    // draw the data
     d3.select(config.drawTarget).selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
+        .data(data).enter().append("rect")
             .attr("class", "bar")
             .attr("x", function(d) {
-                if (config.orientation === vert) {
-                    return xScale(d.id);
-                } else {
-                    return 0;
-                }
+                if (config.orientation === vert) { return xScale(d.id); } 
+                else { return 0; }
             })
             .attr("y", function(d) {
-                if (config.orientation === vert) {
-                    return yScale(d.value);
-                } else {
-                    return yScale(d.id);
-                }
+                if (config.orientation === vert) { return yScale(d.value); } 
+                else { return yScale(d.id); }
             })
             .attr("width", function(d) {
-                if (config.orientation === vert) {
-                    return barThickness;
-                } else {
-                    return xScale(d.value);
-                }
+                if (config.orientation === vert) { return barThickness; } 
+                else { return xScale(d.value); }
             })
             .attr("height", function(d) {
-                if (config.orientation === vert) {
-                    return config.height - yScale(d.value);
-                } else {
-                    return barThickness;
-                }
+                if (config.orientation === vert) { return config.height - yScale(d.value); } 
+                else { return barThickness; }
             })
             .style("fill", function(d) { 
-                var color = d3.scale.category10()
-                    .domain(data.map(function(d) { return d.id; }));
-                return color(d.id); 
+                return d3.scale.category10().domain(data.map(function(d) { return d.id; }))(d.id);
             })
-            .on("mousemove", function(d) {
-                config.onMouseMove(d, this, config);
-            })
-            .on("mouseover", function(d) {
-                config.onMouseOver(d, this, config);
-            })
-            .on("mouseout", function(d) {
-                config.onMouseOut(d, this, config);
-            })
-            .on("click", function(d) {
-                config.onClick(d, this, config);
-            })
+            .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
+            .on("mouseover", function(d) { events.onMouseOver(d, this, events); })
+            .on("mouseout", function(d) { events.onMouseOut(d, this, events); })
+            .on("click", function(d) { events.onClick(d, this, events); })
 }

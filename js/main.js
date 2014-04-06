@@ -10,42 +10,44 @@ function draw(chartType, config, data) {
         .attr("class", "refinery-utility-tooltip")
         .style("opacity", 0);
     
-    // give config some fancy functions
-    config.onMouseMove = function(d, g, c) {
-        if (c.tooltipFlag) {
-            c.tooltip
-                .html(d.value)
-                .style("opacity", 0.9)
-                .style("top", (event.pageY - 10) + "px")
-                .style("left", (event.pageX + 10) + "px");
-        }
-    }
-
-    config.onMouseOver = function(d, g, c) {
-        c.tooltipFlag = true;
-        d3.select(g.parentNode).selectAll(".bar")
-            .attr("opacity", 0.6);
-        d3.select(g).attr("opacity", 1);
-    }
-
-    config.onMouseOut = function(d, g, c) {
-        c.tooltipFlag = false;
-        d3.select(g.parentNode).selectAll(".bar")
-            .attr("opacity", 1);
-        c.tooltip.style("opacity", 0);
-    }
-
-    config.onClick = function(d, g, c) {
-        console.log("clicky action going on");
+    // give events some fancy functions
+    var events = {
+        onMouseMove: function(d, g, c) {
+            if (c.tooltipFlag) {
+                c.tooltip
+                    .html(d.value)
+                    .style("opacity", 0.9)
+                    .style("top", (event.pageY - 10) + "px")
+                    .style("left", (event.pageX + 10) + "px");
+            }
+        },
+        onMouseOver: function(d, g, c) {
+            c.tooltipFlag = true;
+            d3.select(g.parentNode).selectAll(".bar")
+                .attr("opacity", 0.6);
+            d3.select(g).attr("opacity", 1);
+        },
+        onMouseOut: function(d, g, c) {
+            c.tooltipFlag = false;
+            d3.select(g.parentNode).selectAll(".bar")
+                .attr("opacity", 1);
+            c.tooltip.style("opacity", 0);
+        },
+        onClick: function(d, g, c) {
+            console.log("clicky action going on");
+        },
+        tooltip: tooltip,
+        tooltipFlag: false
     }
 
     // make deep copies for idiot-proofness against mutation
     var nData = jQuery.extend(true, {}, data);
     var nConfig = jQuery.extend(true, {}, config);
+    var nEvents = jQuery.extend(true, {}, events);
 
     // general functions depending on graph rendered
     if (chartType == "group") {
-        group(nData, nConfig);
+        group(nData, nConfig, nEvents);
     } else {
         alert("Invalid chart type");
     }

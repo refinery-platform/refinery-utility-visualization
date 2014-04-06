@@ -1,4 +1,4 @@
-function group(data, config) {
+function group(data, config, events) {
 
     // convert to necessary data format
     var formatData = [];
@@ -37,17 +37,11 @@ function group(data, config) {
             height: config.height,
             orientation: config.orientation,
             drawTarget: gs[0][i],
-            globalMax: globalMax,
-            onMouseMove: config.onMouseMove,
-            onMouseOver: config.onMouseOver,
-            onMouseOut: config.onMouseOut,
-            onClick: config.onClick,
-            tooltip: d3.select("body").select(".refinery-utility-tooltip"),
-            tooltipFlag: false
+            globalMax: globalMax
         });
     }
 
     for (var i = 0; i < formatData.length; i++) {
-        genericPlain(formatData[i], configset[i]);
+        genericPlain(formatData[i], configset[i], events);
     }
 }
