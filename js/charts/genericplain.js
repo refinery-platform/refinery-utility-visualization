@@ -4,7 +4,6 @@ function genericPlain(data, config, events) {
     var barPadding = 2;
     var barThickness = config.height / data.length - barPadding;
 
-    // default orientation is horizontal
     var xScale = d3.scale.linear()
         .domain([0, config.globalMax])
         .range([0, config.width]);
@@ -23,8 +22,7 @@ function genericPlain(data, config, events) {
     }
 
     d3.select(config.drawTarget).selectAll("rect")
-        .data(data).enter().append("rect")
-            .attr("class", "bar")
+        .data(data).enter().append("rect").attr("class", "bar")
             .attr("x", function(d) {
                 if (config.orientation === vert) { return xScale(d.id); } 
                 else { return 0; }
