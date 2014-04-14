@@ -4,7 +4,6 @@ body {
 
 .refinery-utility-axis path,
 .refinery-utility-axis line {
-
 	fill: none;
 	stroke: black;
 	shape-rendering: crispEdges;
