@@ -11,11 +11,13 @@
     <script src="js/include.js"></script>
     <script src="js/charts/genericplain.js"></script>
     <script src="js/charts/group.js"></script>
+    <script src="js/charts/layer.js"></script>
     <script src="js/main.js"></script>
     
     <h3>Click on the type of graph to draw</h3>
 
     <nav id="nav">
+        <a class="menu" id="layer">Layer</a>
         <a class="menu" id="group">Group</a>
     </nav>
 
@@ -60,11 +62,20 @@
             ]
         }
 
-        $("#group").click(function(event) {
-            config.drawTarget = $("input[name='drawSelector']:checked").val();
-            config.orientation = $("input[name='orientationSelector']:checked").val();
-            draw("group", config, data);
-            event.preventDefault();
+        $(document).ready(function() {
+            $("#group").click(function(event) {
+                config.drawTarget = $("input[name='drawSelector']:checked").val();
+                config.orientation = $("input[name='orientationSelector']:checked").val();
+                draw("group", config, data);
+                event.preventDefault();
+            });
+            
+            $("#layer").click(function(event) {
+                config.drawTarget = $("input[name='drawSelector']:checked").val();
+                config.orientation = $("input[name='orientationSelector']:checked").val();
+                draw("layer", config, data);
+                event.preventDefault();
+            });
         });
     </script>
 </body>

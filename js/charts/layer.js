@@ -1,4 +1,4 @@
-function group(data, config, events) {
+function layer(data, config, events) {
 
     var hAxisDrawSpaceWidth = config.width * 0.90,
         hAxisDrawSpaceHeight = config.height * 0.05,
@@ -35,41 +35,36 @@ function group(data, config, events) {
             .attr("height", chartDrawSpaceHeight)
             .attr("transform", "translate(" + rightPartitionShift + ", " + topPartitionShift + ")");
 
-    // convert to necessary data format
     var formatData = [];
-
-    // loop over each category
-    for (var i = 0; i < data.items.length; i++) {
-        // loop over each item of the category
-        var catArr = [];
-        for (var j = 0; j < data.matrix[i].length; j++) {
-            catArr.push({
-                id: data.items[i] + "-" + data.categories[j],
-                value: data.matrix[i][j]
-            });
+    for (var i = 0; i < data.categories.length; i++) {
+    	var itemArr = [];
+        for (var j = 0; j < data.matrix.length; j++) {
+            itemArr.push({
+                id: data.categories[i] + "-" + data.items[j],
+                value: data.matrix[j][i]
+            })
         }
-        formatData.push(catArr);
+        formatData.push(itemArr);
     }
 
     var gPadding = 10;
-    var gWidth = (config.orientation === "vertical")? chartDrawSpaceWidth / formatData.length - gPadding : chartDrawSpaceWidth;
-    var gHeight = (config.orientation === "vertical")? chartDrawSpaceHeight : chartDrawSpaceHeight / formatData.length - gPadding;
+    var gWidth = (config.orientation === "vertical")? chartDrawSpaceWidth : chartDrawSpaceWidth / formatData.length - gPadding;
+    var gHeight = (config.orientation === "vertical")? chartDrawSpaceHeight / formatData.length - gPadding : chartDrawSpaceHeight;
 
     var gSet = chartDrawSpace.selectAll("g")
         .data(formatData).enter().append("g")
             .attr("width", gWidth)
             .attr("height", gHeight)
-            .attr("transform", function(d, i) { 
+            .attr("transform", function(d, i) {
                 if (config.orientation === "vertical") {
-                   return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
-                } else {
                     return "translate(0, " + (i * (gHeight + gPadding)) + ")";
+                } else {
+                    return "translate(" + (i * (gWidth + gPadding)) + ", 0)";
                 }
             });
 
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
 
-    // unique configurations due to unique g's
     var configSet = [];
     for (var i = 0; i < gSet[0].length; i++) {
         configSet.push({
@@ -83,47 +78,5 @@ function group(data, config, events) {
 
     for (var i = 0; i < formatData.length; i++) {
         genericPlain(formatData[i], configSet[i], events);
-    }
-
-    // now plot the axes
-    var xScale = d3.scale.linear()
-        .domain([0, globalMax])
-        .range([0, hAxisDrawSpaceWidth]);
-    var yScale = d3.scale.ordinal()
-        .domain(data.items)
-        .rangeRoundBands([vAxisDrawSpaceHeight, 0], 0.1);
-    var xAxis = d3.svg.axis();
-    var yAxis = d3.svg.axis();
-
-    if (config.orientation === "vertical") {
-        xScale = d3.scale.ordinal()
-            .domain(data.items)
-            .rangeRoundBands([0, hAxisDrawSpaceWidth], 0.1)
-        xAxis.scale(xScale)
-            .orient("bottom")
-        horizontalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(xAxis);
-
-        yScale = d3.scale.linear()
-            .domain([0, globalMax])
-            .range([vAxisDrawSpaceHeight, 0]);
-        yAxis.scale(yScale)
-            .orient("left");
-        verticalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(yAxis);
-    } else {
-        xAxis.scale(xScale)
-            .orient("bottom");
-        horizontalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(xAxis);
-
-        yAxis.scale(yScale)
-            .orient("left");
-        verticalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(yAxis);
     }
 }

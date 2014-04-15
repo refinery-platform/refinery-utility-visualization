@@ -46,9 +46,11 @@ function draw(chartType, config, data) {
     var nEvents = jQuery.extend(true, {}, events);
 
     // general functions depending on graph rendered
-    if (chartType == "group") {
+    if (chartType === "group") {
         group(nData, nConfig, nEvents);
-    } else {
+    } else if (chartType === "layer") {
+    	layer(nData, nConfig, nEvents);
+	} else {
         alert("Invalid chart type");
     }
 }
