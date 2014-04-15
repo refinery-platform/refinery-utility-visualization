@@ -47,7 +47,7 @@ function layer(data, config, events) {
         formatData.push(itemArr);
     }
 
-    var gPadding = 10;
+    var gPadding = 20;
     var gWidth = (config.orientation === "vertical")? chartDrawSpaceWidth : chartDrawSpaceWidth / formatData.length - gPadding;
     var gHeight = (config.orientation === "vertical")? chartDrawSpaceHeight / formatData.length - gPadding : chartDrawSpaceHeight;
 
@@ -78,5 +78,63 @@ function layer(data, config, events) {
 
     for (var i = 0; i < formatData.length; i++) {
         genericPlain(formatData[i], configSet[i], events);
+    }
+
+    // some axes magic
+    var xScale = d3.scale.linear()
+        .domain([0, globalMax])
+        .range([0, gWidth])
+
+    var yScale = d3.scale.ordinal()
+        .domain(data.items)
+        .rangeRoundBands([vAxisDrawSpaceHeight, 0], 0);
+
+    var xAxis = d3.svg.axis();
+    var yAxis = d3.svg.axis();
+
+    if (config.orientation === "vertical") {
+        xScale = d3.scale.ordinal()
+            .domain(data.items)
+            .rangeRoundBands([hAxisDrawSpaceWidth, 0], 0);
+        xAxis.scale(xScale)
+            .orient("bottom");
+        horizontalAxisDrawSpace.append("g")
+            .attr("class", "refinery-utility-axis")
+            .call(xAxis);
+
+        yScale = d3.scale.linear()
+            .domain([0, globalMax])
+            .range([gHeight, 0]);
+        var hgSet = verticalAxisDrawSpace.selectAll("g")
+            .data(formatData).enter().append("g")
+                .attr("width", vAxisDrawSpaceWidth)
+                .attr("height", gHeight)
+                .attr("transform", function(d, i) {
+                    return "translate(0, " + (i * (gHeight + gPadding)) + ")";
+                });
+        for (var i = 0; i < hgSet[0].length; i++) {
+            d3.select(hgSet[0][i]).append("g")
+                .attr("class", "refinery-utility-axis")
+                .call(d3.svg.axis().scale(yScale).orient("left"))
+        }
+    } else {
+        var hgSet = horizontalAxisDrawSpace.selectAll("g")
+            .data(formatData).enter().append("g")
+                .attr("width", gWidth)
+                .attr("height", hAxisDrawSpaceHeight)
+                .attr("transform", function(d, i) {
+                    return "translate(" + (i * (gWidth + gPadding)) + ", 0)";
+                });
+        for (var i = 0; i < hgSet[0].length; i++) {
+            d3.select(hgSet[0][i]).append("g")
+                .attr("class", "refinery-utility-axis")
+                .call(d3.svg.axis().scale(xScale).orient("bottom"))
+        }
+
+        yAxis.scale(yScale)
+            .orient("left");
+        verticalAxisDrawSpace.append("g")
+            .attr("class", "refinery-utility-axis")
+            .call(yAxis);
     }
 }
