@@ -50,7 +50,9 @@ function draw(chartType, config, data) {
         group(nData, nConfig, nEvents);
     } else if (chartType === "layer") {
     	layer(nData, nConfig, nEvents);
-	} else {
+	} else if (chartType === "simple") {
+        simplePlain(nData, nConfig, nEvents);
+    } else {
         alert("Invalid chart type");
     }
 }
