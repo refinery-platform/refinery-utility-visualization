@@ -91,14 +91,14 @@ function group(data, config, events) {
         .domain([0, globalMax])
         .range([0, gWidth])
     var yScale = d3.scale.ordinal()
-        .domain(data.items)
+        .domain(data.items.reverse())
         .rangeRoundBands([vAxisDrawSpaceHeight, 0], 0);
     var xAxis = d3.svg.axis();
     var yAxis = d3.svg.axis();
 
     if (config.orientation === "vertical") {
         xScale = d3.scale.ordinal()
-            .domain(data.items)
+            .domain(data.items.reverse())
             .rangeRoundBands([0, hAxisDrawSpaceWidth], 0)
         xAxis.scale(xScale)
             .orient("bottom")

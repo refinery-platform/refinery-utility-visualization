@@ -15,7 +15,7 @@ function draw(chartType, config, data) {
         onMouseMove: function(data, g, events) {
             if (events.tooltipFlag) {
                 events.tooltip
-                    .html(data.value)
+                    .html(data.id + "<br>" + data.value)
                     .style("opacity", 0.9)
                     .style("top", (event.pageY - 10) + "px")
                     .style("left", (event.pageX + 10) + "px");
