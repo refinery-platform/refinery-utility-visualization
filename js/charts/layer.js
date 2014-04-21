@@ -72,12 +72,18 @@ function layer(data, config, events) {
             height: gHeight,
             orientation: config.orientation,
             drawTarget: gSet[0][i],
-            globalMax: globalMax
+            globalMax: globalMax,
+            color: function(n) { return d3.scale.category10().range()[i]; }
         });
     }
 
     for (var i = 0; i < formatData.length; i++) {
-        genericPlain(formatData[i], configSet[i], events);
+        if (config.orientation === "vertical") {
+            configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; } 
+            genericPlain(formatData[formatData.length - 1 -i], configSet[i], events)
+        } else {
+            genericPlain(formatData[i], configSet[i], events);
+        }
     }
 
     // some axes magic

@@ -77,7 +77,8 @@ function group(data, config, events) {
             height: gHeight,
             orientation: config.orientation,
             drawTarget: gSet[0][i],
-            globalMax: globalMax
+            globalMax: globalMax,
+            color: d3.scale.category10().domain(formatData[i].map(function(d) { return d.id; }))
         });
     }
 

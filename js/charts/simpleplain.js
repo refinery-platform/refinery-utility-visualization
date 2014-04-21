@@ -62,7 +62,8 @@ function simplePlain(data, config, events) {
     	height: gHeight,
     	orientation: config.orientation,
     	drawTarget: gSet[0][0],
-        globalMax: globalMax
+        globalMax: globalMax,
+        color: d3.scale.category10().domain(formatData.map(function(d) { return d.id; }))
     }
 
     genericPlain(formatData, configSet, events);

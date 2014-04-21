@@ -40,7 +40,7 @@ function genericPlain(data, config, events) {
                 else { return barThickness; }
             })
             .style("fill", function(d) { 
-                return d3.scale.category10().domain(data.map(function(d) { return d.id; }))(d.id);
+                return config.color(d.id);
             })
             .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
             .on("mouseover", function(d) { events.onMouseOver(d, this, events); })
