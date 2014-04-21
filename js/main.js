@@ -52,6 +52,8 @@ function draw(chartType, config, data) {
     	layer(nData, nConfig, nEvents);
 	} else if (chartType === "simple") {
         simplePlain(nData, nConfig, nEvents);
+    } else if (chartType === "stack") {
+        stack(nData, nConfig, nEvents);
     } else {
         alert("Invalid chart type");
     }
