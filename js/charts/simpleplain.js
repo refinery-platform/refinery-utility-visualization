@@ -6,8 +6,6 @@ function simplePlain(data, config, events) {
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
-    var gWidth = config.width * hMid;
-    var gHeight = config.height * vMid;
     var fData = [];
     for (var i = 0; i < data.items.length; i++) {
         fData.push({
@@ -16,7 +14,8 @@ function simplePlain(data, config, events) {
         })
     }
     var globalMax = fData.map(function(d) { return d.value; }).max();
-
+    var gWidth = config.width * hMid;
+    var gHeight = config.height * vMid;
     genericPlain(fData, {
         globalMax: globalMax,
         orientation: config.orientation,

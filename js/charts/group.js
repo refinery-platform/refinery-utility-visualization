@@ -6,10 +6,7 @@ function group(data, config, events) {
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
-
     var vert = "vertical";
-    var gPadding = 20;
-
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var fData = [];
     for (var i = 0; i < data.items.length; i++) {
@@ -23,9 +20,9 @@ function group(data, config, events) {
         fData.push(catArr);
     }
 
+    var gPadding = 20;
     var gWidth = (config.orientation === vert)? config.width * hMid / fData.length - gPadding : config.width * hMid;
     var gHeight = (config.orientation === vert)? config.height * vMid : config.height * vMid / fData.length - gPadding;
-
     var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
         .data(fData).enter().append("g")
             .attr("width", gWidth)
@@ -48,7 +45,6 @@ function group(data, config, events) {
             globalMax: globalMax,
             color: d3.scale.category10().domain(fData[i].map(function(d) { return d.id; }))
         });
-        console.log(configSet[i].drawTarget)
     }   
 
     for (var i = 0; i < fData.length; i++) {
