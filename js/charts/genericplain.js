@@ -1,7 +1,7 @@
 function genericPlain(data, config, events) {
 
     var vert = "vertical"; 
-    var barPadding = 2;
+    var barPadding = (config.orientation === vert)? 0.01 * config.width : 0.01 * config.height;
     var barThickness = config.height / data.length - barPadding;
     var xScale = d3.scale.linear()
         .domain([0, config.globalMax])

@@ -1,46 +1,18 @@
 function group(data, config, events) {
 
-    var hAxisDrawSpaceWidth = config.width * 0.90,
-        hAxisDrawSpaceHeight = config.height * 0.05,
-        vAxisDrawSpaceWidth = config.width * 0.05,
-        vAxisDrawSpaceHeight = config.height * 0.90,
-        chartDrawSpaceWidth = config.width * 0.90,
-        chartDrawSpaceHeight = config.height * 0.90,
-        rightPartitionShift = config.width * 0.05,
-        bottomPartitionShift = config.height * 0.95,
-        topPartitionShift = config.height * 0.05;
+    var hLeft = 0.1, hMid = 0.8, hRight = 0.1,
+        vTop = 0.1, vMid = 0.8, vBot = 0.1;
+    var partitions = genericSVGFormat({
+            width: config.width, height: config.height, drawTarget: config.drawTarget,
+            hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
+        });
 
-    // set up SVG and partition into draw spaces
-    var svg = d3.select("#" + config.drawTarget)
-        .append("svg")
-            .attr("width", config.width)
-            .attr("height", config.height);
+    var vert = "vertical";
+    var gPadding = 20;
 
-    // by default each axis takes up 5% of horizontal and vertical respectively
-    var horizontalAxisDrawSpace = svg.selectAll(".hAxis")
-        .data([1]).enter().append("g").attr("class", "axis")
-            .attr("width", hAxisDrawSpaceWidth)
-            .attr("height", hAxisDrawSpaceHeight)
-            .attr("transform", "translate(" + rightPartitionShift + ", " + bottomPartitionShift + ")")
-
-    var verticalAxisDrawSpace = svg.selectAll(".vAxis")
-        .data([1]).enter().append("g").attr("class", "axis")
-            .attr("width", vAxisDrawSpaceWidth)
-            .attr("height", vAxisDrawSpaceHeight)
-            .attr("transform", "translate(" + rightPartitionShift + ", " + topPartitionShift + ")")
-
-    var chartDrawSpace = svg.selectAll(".chart")
-        .data([1]).enter().append("g").attr("class", "chart")
-            .attr("width", chartDrawSpaceWidth)
-            .attr("height", chartDrawSpaceHeight)
-            .attr("transform", "translate(" + rightPartitionShift + ", " + topPartitionShift + ")");
-
-    // convert to necessary data format
-    var formatData = [];
-
-    // loop over each category
+    var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
+    var fData = [];
     for (var i = 0; i < data.items.length; i++) {
-        // loop over each item of the category
         var catArr = [];
         for (var j = 0; j < data.matrix[i].length; j++) {
             catArr.push({
@@ -48,28 +20,24 @@ function group(data, config, events) {
                 value: data.matrix[i][j]
             });
         }
-        formatData.push(catArr);
+        fData.push(catArr);
     }
 
-    var gPadding = 20;
-    var gWidth = (config.orientation === "vertical")? chartDrawSpaceWidth / formatData.length - gPadding : chartDrawSpaceWidth;
-    var gHeight = (config.orientation === "vertical")? chartDrawSpaceHeight : chartDrawSpaceHeight / formatData.length - gPadding;
+    var gWidth = (config.orientation === vert)? config.width * hMid / fData.length - gPadding : config.width * hMid;
+    var gHeight = (config.orientation === vert)? config.height * vMid : config.height * vMid / fData.length - gPadding;
 
-    var gSet = chartDrawSpace.selectAll("g")
-        .data(formatData).enter().append("g")
+    var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
+        .data(fData).enter().append("g")
             .attr("width", gWidth)
             .attr("height", gHeight)
             .attr("transform", function(d, i) { 
-                if (config.orientation === "vertical") {
+                if (config.orientation === vert) {
                    return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
                 } else {
                     return "translate(0, " + (i * (gHeight + gPadding)) + ")";
                 }
             });
 
-    var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
-
-    // unique configurations due to unique g's
     var configSet = [];
     for (var i = 0; i < gSet[0].length; i++) {
         configSet.push({
@@ -78,53 +46,34 @@ function group(data, config, events) {
             orientation: config.orientation,
             drawTarget: gSet[0][i],
             globalMax: globalMax,
-            color: d3.scale.category10().domain(formatData[i].map(function(d) { return d.id; }))
+            color: d3.scale.category10().domain(fData[i].map(function(d) { return d.id; }))
         });
+        console.log(configSet[i].drawTarget)
+    }   
+
+    for (var i = 0; i < fData.length; i++) {
+        genericPlain(fData[i], configSet[i], events);
     }
 
-    for (var i = 0; i < formatData.length; i++) {
-        genericPlain(formatData[i], configSet[i], events);
-    }
+    // x-axis
+    genericAxis({
+        orientation: "bottom",
+        drawTarget: partitions[1][2][0][0],
+        scale: (config.orientation === vert)?
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, config.width * vMid], 0) :
+            d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+        xShift: 0,
+        yShift: 0
+    })
 
-    // now plot the axes
-    var xScale = d3.scale.linear()
-        .domain([0, globalMax])
-        .range([0, gWidth])
-    var yScale = d3.scale.ordinal()
-        .domain(data.items.reverse())
-        .rangeRoundBands([vAxisDrawSpaceHeight, 0], 0);
-    var xAxis = d3.svg.axis();
-    var yAxis = d3.svg.axis();
-
-    if (config.orientation === "vertical") {
-        xScale = d3.scale.ordinal()
-            .domain(data.items.reverse())
-            .rangeRoundBands([0, hAxisDrawSpaceWidth], 0)
-        xAxis.scale(xScale)
-            .orient("bottom")
-        horizontalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(xAxis);
-
-        yScale = d3.scale.linear()
-            .domain([0, globalMax])
-            .range([vAxisDrawSpaceHeight, 0]);
-        yAxis.scale(yScale)
-            .orient("left");
-        verticalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(yAxis);
-    } else {
-        xAxis.scale(xScale)
-            .orient("bottom");
-        horizontalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(xAxis);
-
-        yAxis.scale(yScale)
-            .orient("left");
-        verticalAxisDrawSpace.append("g")
-            .attr("class", "refinery-utility-axis")
-            .call(yAxis);
-    }
+    // y-axis
+    genericAxis({
+        orientation: "left",
+        drawTarget: partitions[0][1][0][0],
+        scale: (config.orientation === vert)?
+            d3.scale.linear().domain([0, globalMax]).range([config.height * vMid, 0]) :
+            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([config.height * vMid, 0], 0),
+        xShift: hLeft * config.width,
+        yShift: 0
+    })
 }

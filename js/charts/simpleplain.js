@@ -19,6 +19,7 @@ function simplePlain(data, config, events) {
 
     genericPlain(fData, {
         globalMax: globalMax,
+        orientation: config.orientation,
         width: config.width * hMid,
         height: config.height * vMid,
         drawTarget: partitions[1][1][0][0],
@@ -41,7 +42,7 @@ function simplePlain(data, config, events) {
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         scale: (config.orientation === "vertical")?
-            d3.scale.linear().domain([0, globalMax]).range([0, gHeight]) :
+            d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
         xShift: hLeft * config.width,
         yShift: 0
