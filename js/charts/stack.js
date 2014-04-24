@@ -55,6 +55,7 @@ function stack(data, config, events) {
 
         items.selectAll("rect")
             .data(function(d) { return d.nums; }).enter().append("rect")
+                .attr("class", "bar")
                 .attr("y", function(d) { return yScale(d.y1); })
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
@@ -70,6 +71,7 @@ function stack(data, config, events) {
 
         items.selectAll("rect")
             .data(function(d) { return d.nums.reverse(); }).enter().append("rect")
+                .attr("class", "bar")
                 .attr("x", function(d) { return xScale(d.x0); })
                 .attr("y", function(d) { return yScale(d.name); })
                 .attr("width", function(d) { return xScale(d.x1) - xScale(d.x0); })

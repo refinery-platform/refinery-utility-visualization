@@ -1,15 +1,13 @@
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "refinery-utility-tooltip")
+    .style("opacity", 0);
+    
 function draw(chartType, config, data) {
 
     // delete old svg so graphs aren't cluttered
     d3.select("#" + config.drawTarget).html("");
 
-    // set up the tooltip again
-    d3.select("body").selectAll(".refinery-utility-tooltip").remove();
-    var tooltip = d3.select("body")
-        .append("div")
-        .attr("class", "refinery-utility-tooltip")
-        .style("opacity", 0);
-    
     // give events some fancy functions
     var events = {
         onMouseMove: function(data, g, events) {
