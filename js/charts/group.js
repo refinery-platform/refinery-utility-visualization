@@ -1,12 +1,11 @@
 function group(data, config, events) {
 
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1,
-        vTop = 0.1, vMid = 0.8, vBot = 0.1;
+    var isVert = (config.orientation === "vertical")? true : false;
+    var hMid = 0.8, vMid = 0.8
     var partitions = genericSVGFormat({
-            width: config.width, height: config.height, drawTarget: config.drawTarget,
-            hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
-        });
-    var vert = "vertical";
+            width: config.width, height: config.height, drawTarget: config.drawTarget});
+    var width = config.width * hMid;
+    var height = config.height * vMid;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var fData = [];
     for (var i = 0; i < data.items.length; i++) {
@@ -20,15 +19,15 @@ function group(data, config, events) {
         fData.push(catArr);
     }
 
-    var gPadding = 20;
-    var gWidth = (config.orientation === vert)? config.width * hMid / fData.length - gPadding : config.width * hMid;
-    var gHeight = (config.orientation === vert)? config.height * vMid : config.height * vMid / fData.length - gPadding;
+    var gPadding = (isVert)? width * 0.05 : height * 0.05;
+    var gWidth = (isVert)? width / fData.length - gPadding : width;
+    var gHeight = (isVert)? height : height / fData.length - gPadding;
     var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
         .data(fData).enter().append("g")
             .attr("width", gWidth)
             .attr("height", gHeight)
             .attr("transform", function(d, i) { 
-                if (config.orientation === vert) {
+                if (isVert) {
                    return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
                 } else {
                     return "translate(0, " + (i * (gHeight + gPadding)) + ")";
@@ -55,7 +54,7 @@ function group(data, config, events) {
     genericAxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
-        scale: (config.orientation === vert)?
+        scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, config.width * vMid], 0) :
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
@@ -66,10 +65,10 @@ function group(data, config, events) {
     genericAxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
-        scale: (config.orientation === vert)?
-            d3.scale.linear().domain([0, globalMax]).range([config.height * vMid, 0]) :
-            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([config.height * vMid, 0], 0),
-        xShift: hLeft * config.width,
+        scale: (isVert)?
+            d3.scale.linear().domain([0, globalMax]).range([height, 0]) :
+            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
+        xShift: config.width * 0.1,
         yShift: 0
     })
 }

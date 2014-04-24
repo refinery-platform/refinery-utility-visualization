@@ -1,11 +1,11 @@
 function simplePlain(data, config, events) {
 
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1,
-        vTop = 0.1, vMid = 0.8, vBot = 0.1;
+    var isVert = (config.orientation === "vertical")? true : false;
+    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1;
     var partitions = genericSVGFormat({
-            width: config.width, height: config.height, drawTarget: config.drawTarget,
-            hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
-        });
+            width: config.width, height: config.height, drawTarget: config.drawTarget});
+    var width = config.width * hMid;
+    var height = config.height * vMid;
     var fData = [];
     for (var i = 0; i < data.items.length; i++) {
         fData.push({
@@ -14,13 +14,13 @@ function simplePlain(data, config, events) {
         })
     }
     var globalMax = fData.map(function(d) { return d.value; }).max();
-    var gWidth = config.width * hMid;
-    var gHeight = config.height * vMid;
+    var gWidth = width;
+    var gHeight = height;
     genericPlain(fData, {
         globalMax: globalMax,
         orientation: config.orientation,
-        width: config.width * hMid,
-        height: config.height * vMid,
+        width: width,
+        height: height,
         drawTarget: partitions[1][1][0][0],
         color: d3.scale.category10().domain(fData.map(function(d) { return d.id; }))
     }, events);
@@ -29,21 +29,18 @@ function simplePlain(data, config, events) {
     genericAxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
-        scale: (config.orientation === "vertical")?
+        scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
-            d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
-        xShift: 0,
-        yShift: 0
+            d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
     })
 
     // y-axis
     genericAxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
-        scale: (config.orientation === "vertical")?
+        scale: (isVert)?
             d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
-        xShift: hLeft * config.width,
-        yShift: 0
+        xShift: hLeft * config.width
     })
 }

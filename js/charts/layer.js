@@ -1,11 +1,14 @@
 function layer(data, config, events) {
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1,
-        vTop = 0.1, vMid = 0.8, vBot = 0.1;
+
+    var isVert = (config.orientation === "vertical")? true : false;
+    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.8, vMid = 0.1, vBot = 0.1
+    if (isVert) { vTop = 0.1, vMid = 0.8 }
     var partitions = genericSVGFormat({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
-    var vert = "vertical";
+    var width = (isVert)? config.width * hMid : config.width * hMid;
+    var height = (isVert)? config.height * vMid : config.height * vTop;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var formatData = [];
     for (var i = 0; i < data.categories.length; i++) {
@@ -19,15 +22,15 @@ function layer(data, config, events) {
         formatData.push(itemArr);
     }
 
-    var gPadding = 20;
-    var gWidth = (config.orientation === vert)? config.width * hMid : config.width * hMid / formatData.length - gPadding;
-    var gHeight = (config.orientation === vert)? config.height * vMid / formatData.length - gPadding : config.height * vMid;
-    var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
+    var gPadding = (isVert)? width * 0.05 : height * 0.05;
+    var gWidth = (isVert)? width : width / formatData.length - gPadding;
+    var gHeight = (isVert)? height / formatData.length - gPadding : height;
+    var gSet = d3.select((isVert)? partitions[1][1][0][0] : partitions[1][0][0][0]).selectAll("g")
         .data(formatData).enter().append("g")
             .attr("width", gWidth)
             .attr("height", gHeight)
             .attr("transform", function(d, i) {
-                if (config.orientation === vert) {
+                if (isVert) {
                     return "translate(0, " + (i * (gHeight + gPadding)) + ")";
                 } else {
                     return "translate(" + (i * (gWidth + gPadding)) + ", 0)";
@@ -47,7 +50,7 @@ function layer(data, config, events) {
     }
 
     for (var i = 0; i < formatData.length; i++) {
-        if (config.orientation === vert) {
+        if (isVert) {
             configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; } 
             genericPlain(formatData[formatData.length - 1 -i], configSet[i], events)
         } else {
@@ -57,16 +60,14 @@ function layer(data, config, events) {
 
     // axes cannot be done like in simple and group due to more partitioning
     // x-axis
-    if (config.orientation === vert) {
+    if (isVert) {
         genericAxis({
             orientation: "bottom",
             drawTarget: partitions[1][2][0][0],
-            scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
-            xShift: 0,
-            yShift: 0
+            scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0)
         });
     } else {
-        var aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
+        var aGSet = d3.select(partitions[1][1][0][0]).selectAll("g")
             .data(formatData).enter().append("g")
                 .attr("width", gWidth)
                 .attr("height", config.height * vBot)
@@ -78,15 +79,13 @@ function layer(data, config, events) {
             genericAxis({
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
-                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
-                xShift: 0,
-                yShift: 0
+                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
             });
         }
     }
 
     // y-axis
-    if (config.orientation === vert) {
+    if (isVert) {
         var aGSet = d3.select(partitions[0][1][0][0]).selectAll("g")
             .data(formatData).enter().append("g")
                 .attr("width", config.width * hLeft)
@@ -100,17 +99,33 @@ function layer(data, config, events) {
                 orientation: "left",
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
-                xShift: config.width * hLeft,
-                yShift: 0
+                xShift: config.width * hLeft
             });
         }
     } else {
         genericAxis({
             orientation: "left",
-            drawTarget: partitions[0][1][0][0],
+            drawTarget: partitions[0][0][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gHeight], 0),
-            xShift: config.width * hLeft,
-            yShift: 0
+            xShift: config.width * hLeft
         });
+    }
+
+    // add the labels or something
+    if (isVert) {
+        genericAxis({
+            orientation: "right",
+            drawTarget: partitions[2][1][0][0],
+            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([height, 0], 0),
+            blank: true
+        })
+    } else {
+        genericAxis({
+            orientation: "bottom",
+            drawTarget: partitions[1][2][0][0],
+            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
+            blank: true,
+            yShift: -config.height * vBot * 0.8
+        })
     }
 }

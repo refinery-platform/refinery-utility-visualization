@@ -9,6 +9,12 @@ body {
 	shape-rendering: crispEdges;
 }
 
+.refinery-utility-blankaxis path,
+.refinery-utility-blankaxis line {
+	fill: none;
+	stroke: none;
+	shape-rendering: crispEdges;
+}
 
 .menu {
 	margin-right: 30px;

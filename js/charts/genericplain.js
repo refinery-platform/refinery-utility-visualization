@@ -1,41 +1,42 @@
 function genericPlain(data, config, events) {
 
-    var vert = "vertical"; 
-    var barPadding = (config.orientation === vert)? 0.01 * config.width : 0.01 * config.height;
-    var barThickness = config.height / data.length - barPadding;
+    var width = config.width, height = config.height, globalMax = config.globalMax,
+        isVert = (config.orientation === "vertical")? true : false;
+    var barPadding = (isVert)? 0.01 * width : 0.01 * height;
+    var barThickness = height / data.length - barPadding;
     var xScale = d3.scale.linear()
-        .domain([0, config.globalMax])
-        .range([0, config.width]);
+        .domain([0, globalMax])
+        .range([0, width]);
     var yScale = d3.scale.ordinal()
         .domain(data.map(function(d) { return d.id; }))
-        .rangeRoundBands([0, config.height], 0);
+        .rangeRoundBands([0, height], 0);
 
-    if (config.orientation === vert) {
-        barThickness = config.width / data.length - barPadding;
+    if (isVert) {
+        barThickness = width / data.length - barPadding;
         xScale = d3.scale.ordinal()
             .domain(data.map(function(d) { return d.id; }))
-            .rangeRoundBands([0, config.width], 0);
+            .rangeRoundBands([0, width], 0);
         yScale = d3.scale.linear()
-            .domain([0, config.globalMax]) 
-            .range([config.height, 0]);
+            .domain([0, globalMax]) 
+            .range([height, 0]);
     }
 
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
             .attr("x", function(d) {
-                if (config.orientation === vert) { return xScale(d.id); } 
+                if (isVert) { return xScale(d.id); } 
                 else { return 0; }
             })
             .attr("y", function(d) {
-                if (config.orientation === vert) { return yScale(d.value); } 
+                if (isVert) { return yScale(d.value); } 
                 else { return yScale(d.id); }
             })
             .attr("width", function(d) {
-                if (config.orientation === vert) { return barThickness; } 
+                if (isVert) { return barThickness; } 
                 else { return xScale(d.value); }
             })
             .attr("height", function(d) {
-                if (config.orientation === vert) { return config.height - yScale(d.value); } 
+                if (isVert) { return height - yScale(d.value); } 
                 else { return barThickness; }
             })
             .style("fill", function(d) { 
