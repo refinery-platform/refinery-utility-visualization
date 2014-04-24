@@ -71,6 +71,6 @@ function group(data, config, events) {
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
         xShift: config.width * 0.1,
         yShift: 0,
-        tickSize: (isVert)? 6: 0
+        tickSize: (isVert)? 6 : 0
     })
 }
