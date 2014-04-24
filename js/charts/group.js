@@ -55,7 +55,7 @@ function group(data, config, events) {
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, config.width * vMid], 0) :
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, config.width * hMid], 0) :
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
         yShift: 0
