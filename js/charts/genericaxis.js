@@ -1,14 +1,20 @@
 function genericAxis(config) {
     
-    var orientation = config.orientation, drawTarget = config.drawTarget, 
-        scale = config.scale, xShift = config.xShift || 0, yShift = config.yShift || 0,
-        axisClass = config.axisClass || "refinery-utility-axis", blank = config.blank || false;
+    var orientation = config.orientation, 
+        drawTarget = config.drawTarget, 
+        scale = config.scale, 
+        xShift = config.xShift || 0, 
+        yShift = config.yShift || 0, 
+        tickAmt = config.tickAmt || 5,
+        tickSize = (config.tickSize === undefined)? 6 : config.tickSize, 
+        axisClass = config.axisClass || "refinery-utility-axis", 
+        blank = config.blank || false;
 
     if (blank) {
     	axisClass = "refinery-utility-blankaxis";
     }
 
-    var axis = d3.svg.axis().scale(scale).orient(orientation);
+    var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
 
     d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")   
         .attr("class", axisClass)

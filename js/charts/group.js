@@ -19,7 +19,7 @@ function group(data, config, events) {
         fData.push(catArr);
     }
 
-    var gPadding = (isVert)? width * 0.05 : height * 0.05;
+    var gPadding = (isVert)? width * 0.01 : height * 0.01;
     var gWidth = (isVert)? width / fData.length - gPadding : width;
     var gHeight = (isVert)? height : height / fData.length - gPadding;
     var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
@@ -55,10 +55,11 @@ function group(data, config, events) {
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, config.width * hMid], 0) :
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
-        yShift: 0
+        yShift: 0,
+        tickSize: (isVert)? 0 : 6
     })
 
     // y-axis
@@ -69,6 +70,7 @@ function group(data, config, events) {
             d3.scale.linear().domain([0, globalMax]).range([height, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
         xShift: config.width * 0.1,
-        yShift: 0
+        yShift: 0,
+        tickSize: (isVert)? 6: 0
     })
 }

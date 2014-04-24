@@ -88,6 +88,7 @@ function stack(data, config, events) {
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
             d3.scale.linear().domain([0, itemMax]).range([0, width]),
+        tickSize: (isVert)? 0: 6
     })
 
     // y-axis
@@ -97,6 +98,7 @@ function stack(data, config, events) {
         scale: (isVert)?
             d3.scale.linear().domain([0, itemMax]).range([height, 0]):
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0),
-        xShift: config.width * 0.1
+        xShift: config.width * 0.1,
+        tickSize: (isVert)? 6 : 0
     })
 }

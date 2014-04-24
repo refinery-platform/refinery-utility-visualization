@@ -29,6 +29,7 @@ function simplePlain(data, config, events) {
     genericAxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
+        tickSize: (isVert)? 0 : 6,
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
@@ -38,6 +39,7 @@ function simplePlain(data, config, events) {
     genericAxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
+        tickSize: (isVert)? 6 : 0,
         scale: (isVert)?
             d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
