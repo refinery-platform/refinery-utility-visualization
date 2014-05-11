@@ -43,6 +43,10 @@ function draw(chartType, config, data) {
     var nConfig = jQuery.extend(true, {}, config);
     var nEvents = jQuery.extend(true, {}, events);
 
+    console.log(nData)
+    console.log(nConfig)
+    console.log(nEvents)
+
     // general functions depending on graph rendered
     if (chartType === "group") {
         group(nData, nConfig, nEvents);
