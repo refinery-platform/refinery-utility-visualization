@@ -1,6 +1,41 @@
 var rfnry = {
 	vis: {
 		util: (function() {
+			var tooltip = d3.select("body")
+			.append("div")
+			.attr("class", "refinery-utility-tooltip")
+			.style("opacity", 0);
+
+			// give events some fancy functions
+			var events = {
+					onMouseMove: function(data, g, events) {
+							if (events.tooltipFlag) {
+									events.tooltip
+											.html(data.id + "<br>" + data.value)
+											.style("opacity", 0.9)
+											.style("top", (d3.event.pageY - 10) + "px")
+											.style("left", (d3.event.pageX + 10) + "px");
+							}
+					},
+					onMouseOver: function(data, g, events) {
+							events.tooltipFlag = true;
+							d3.select(g.parentNode).selectAll(".bar")
+									.attr("opacity", 0.6);
+							d3.select(g).attr("opacity", 1);
+					},
+					onMouseOut: function(data, g, events) {
+							events.tooltipFlag = false;
+							d3.select(g.parentNode).selectAll(".bar")
+									.attr("opacity", 1);
+							events.tooltip.style("opacity", 0);
+					},
+					onClick: function(data, g, events) {
+							console.log("clicky action going on");
+					},
+					tooltip: tooltip,
+					tooltipFlag: false
+			}
+
 			function genericSVGFormat(config) {
 
 			    // assume default 0.1-0.8-0.1 partitioning
@@ -33,7 +68,7 @@ var rfnry = {
 			    var leftBot = svg.selectAll(".leftBot").data([1]).enter().append("g")
 			        .attr("width", width * hLeft).attr("height", height * vBot)
 			        .attr("transform", "translate(0, " + b2Shift + ")");
-			    
+
 			    var midTop = svg.selectAll(".midTop").data([1]).enter().append("g")
 			        .attr("width", width * hMid).attr("height", height * vTop)
 			        .attr("transform", "translate(" + r1Shift + ", 0)");
@@ -81,29 +116,29 @@ var rfnry = {
 			            .domain(data.map(function(d) { return d.id; }))
 			            .rangeRoundBands([0, width], 0);
 			        yScale = d3.scale.linear()
-			            .domain([0, globalMax]) 
+			            .domain([0, globalMax])
 			            .range([height, 0]);
 			    }
 
 			    d3.select(config.drawTarget).selectAll("rect")
 			        .data(data).enter().append("rect").attr("class", "bar")
 			            .attr("x", function(d) {
-			                if (isVert) { return xScale(d.id); } 
+			                if (isVert) { return xScale(d.id); }
 			                else { return 0; }
 			            })
 			            .attr("y", function(d) {
-			                if (isVert) { return yScale(d.value); } 
+			                if (isVert) { return yScale(d.value); }
 			                else { return yScale(d.id); }
 			            })
 			            .attr("width", function(d) {
-			                if (isVert) { return barThickness; } 
+			                if (isVert) { return barThickness; }
 			                else { return xScale(d.value); }
 			            })
 			            .attr("height", function(d) {
-			                if (isVert) { return height - yScale(d.value); } 
+			                if (isVert) { return height - yScale(d.value); }
 			                else { return barThickness; }
 			            })
-			            .style("fill", function(d) { 
+			            .style("fill", function(d) {
 			                return config.color(d.id);
 			            })
 			            .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
@@ -115,26 +150,29 @@ var rfnry = {
 			////////////////////////////////////////////////////////////////
 
 			function genericAxis(config) {
-			    
-			    var orientation = config.orientation, 
-			        drawTarget = config.drawTarget, 
-			        scale = config.scale, 
-			        xShift = config.xShift || 0, 
-			        yShift = config.yShift || 0, 
+
+			    var orientation = config.orientation,
+			        drawTarget = config.drawTarget,
+			        scale = config.scale,
+			        xShift = config.xShift || 0,
+			        yShift = config.yShift || 0,
 			        tickAmt = config.tickAmt || 5,
-			        tickSize = (config.tickSize === undefined)? 6 : config.tickSize, 
-			        axisClass = config.axisClass || "refinery-utility-axis", 
+			        tickSize = (config.tickSize === undefined)? 6 : config.tickSize,
+			        axisClass = config.axisClass || "refinery-utility-axis",
 			        blank = config.blank || false;
 
 			    if (blank) {
 			    	axisClass = "refinery-utility-blankaxis";
 			    }
 
-			    var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
+			    var axis = d3.svg.axis().scale(scale).orient(orientation)
+							.ticks(tickAmt).tickSize(tickSize);
 
-			    d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")   
+			    d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")
 			        .attr("class", axisClass)
 			        .attr("transform", "translate(" + xShift + ", " + yShift + ")")
+							.style("fill", "none")
+							.style("stroke", (blank)? "none" : "black")
 			        .call(axis)
 			}
 
@@ -173,7 +211,7 @@ var rfnry = {
 			        drawTarget: partitions[1][2][0][0],
 			        tickSize: (isVert)? 0 : 6,
 			        scale: (isVert)?
-			            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
+			            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) :
 			            d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
 			    })
 
@@ -219,9 +257,9 @@ var rfnry = {
 			        .data(fData).enter().append("g")
 			            .attr("width", gWidth)
 			            .attr("height", gHeight)
-			            .attr("transform", function(d, i) { 
+			            .attr("transform", function(d, i) {
 			                if (isVert) {
-			                   return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
+			                   return "translate(" + (i * (gWidth + gPadding)) + ", 0)";
 			                } else {
 			                    return "translate(0, " + (i * (gHeight + gPadding)) + ")";
 			                }
@@ -237,7 +275,7 @@ var rfnry = {
 			            globalMax: globalMax,
 			            color: d3.scale.category10().domain(fData[i].map(function(d) { return d.id; }))
 			        });
-			    }   
+			    }
 
 			    for (var i = 0; i < fData.length; i++) {
 			        genericPlain(fData[i], configSet[i], events);
@@ -322,7 +360,7 @@ var rfnry = {
 
 			    for (var i = 0; i < formatData.length; i++) {
 			        if (isVert) {
-			            configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; } 
+			            configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; }
 			            genericPlain(formatData[formatData.length - 1 -i], configSet[i], events)
 			        } else {
 			            genericPlain(formatData[i], configSet[i], events);
@@ -442,7 +480,7 @@ var rfnry = {
 			        })
 			    }
 
-			    var xScale = (isVert)? 
+			    var xScale = (isVert)?
 			        d3.scale.ordinal()
 			            .domain(nData.map(function(d) { return d.item; }))
 			            .rangeRoundBands([0, width], 0.1) :
@@ -515,12 +553,32 @@ var rfnry = {
 			    })
 			}
 
+			function draw(chartType, data, config) {
+
+				// delete old svg
+				d3.select("#" + config.drawTarget).html("");
+
+				// make deep copies for new ones
+				var nData = jQuery.extend(true, {}, data);
+				var nConfig = jQuery.extend(true, {}, config);
+				var nEvents = jQuery.extend(true, {}, events);
+
+				if (chartType === "group") {
+	        group(nData, nConfig, nEvents);
+		    } else if (chartType === "layer") {
+		    	layer(nData, nConfig, nEvents);
+				} else if (chartType === "simple") {
+		        simplePlain(nData, nConfig, nEvents);
+		    } else if (chartType === "stack") {
+		        stack(nData, nConfig, nEvents);
+		    } else {
+		        alert("Invalid chart type");
+		    }
+			}
+
 			var util = {
-				simple: simplePlain,
-				group: group,
-				layer: layer,
-				stack: stack
-			}			
+		      draw: draw
+			}
 
 			return util;
 		}())
