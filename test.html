@@ -14,6 +14,8 @@
 
     <div id="hue" style="width:1000px; height:800px"></div>
 
+    <div id="beta" style="width:1000px; height:800px"></div>
+
     <script>
     	var data = {
     		categories: ["cat-a", "cat-b", "cat-c"],
@@ -32,6 +34,15 @@
     	}
 
 	    rfnry.vis.util.draw("group", data, config)
+
+        var config2 = {
+            drawTarget: "beta",
+            height: 800,
+            width: 1000,
+            orientation: "vertical"
+        }
+
+        rfnry.vis.util.draw("stack", data, config2);
     </script>
 
 </body>
