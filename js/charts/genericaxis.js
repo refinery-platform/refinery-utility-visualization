@@ -16,8 +16,10 @@ function genericAxis(config) {
 
     var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
 
-    d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")   
+    d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")
         .attr("class", axisClass)
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
-        .call(axis)
+            .style("fill", "none")
+            .style("stroke", (blank)? "none" : "black")
+            .call(axis)
 }

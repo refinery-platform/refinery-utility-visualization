@@ -25,18 +25,18 @@ var rfnry = {
 
             var tooltip = d3.select("body")
                 .append("div")
-                .attr("class", "refinery-utility-tooltip")
-                .style("opacity", 0)
-                .style("position", "absolute")
-                .style("text-align", "center")
-                .attr("width", "100px")
-                .style("background-color", "#000")
-                .style("opacity", "0.8")
-                .style("color", "#fff")
-                .style("font-weight", "normal")
-                .style("font-size", "11.9px")
-                .style("border-radius", "3px")
-                .style("padding", "1px 4px 1px 4px");
+		                .attr("class", "refinery-utility-tooltip")
+		                .style("opacity", 0)
+		                .style("position", "absolute")
+		                .style("text-align", "center")
+		                .attr("width", "100px")
+		                .style("background-color", "#000")
+		                .style("opacity", "0.8")
+		                .style("color", "#fff")
+		                .style("font-weight", "normal")
+		                .style("font-size", "11.9px")
+		                .style("border-radius", "3px")
+		                .style("padding", "1px 4px 1px 4px");
 
             // give events some fancy functions
             var events = {
