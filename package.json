@@ -1,0 +1,14 @@
+{
+  "name": "refinery-utility-visualization",
+  "version": "0.3.0",
+  "description": "Making data look pretty.",
+  "devDependencies": {
+    "d3": "latest",
+    "grunt": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-nodeunit": "latest",
+    "grunt-contrib-uglify": "latest",
+    "jQuery": "latest"
+  }
+}
