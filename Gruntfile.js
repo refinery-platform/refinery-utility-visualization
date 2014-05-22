@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                     "src/js/charts/stack.js",
                     "src/js/draw.js"
                 ],
-                dest: "res.js"
+                dest: "rfnry.vis.util.js"
             }
         },
 
@@ -28,10 +28,10 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     "src/js/wrap/header.foo",
-                    "res.js",
+                    "rfnry.vis.util.js",
                     "src/js/wrap/footer.foo"
                 ],
-                dest: "res.js"
+                dest: "rfnry.vis.util.js"
             }
         }
     });
