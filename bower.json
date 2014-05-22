@@ -3,7 +3,6 @@
     "version": "0.2.1",
     "main": "rfnry-vis-util.js",
     "dependencies": {
-        "d3": "latest",
-        "jQuery": "latest"
+        "d3": "latest"
     }
 }

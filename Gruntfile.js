@@ -1,39 +1,43 @@
 module.exports = function(grunt) {
-	grunt.initConfig({
-		
-		uglify: {
-			options: {
-				banner: "var rfnry = { vis: { util: (function() {"
-			},
-			dist: {
-				src: [
-					"<banner>",
-					"js/include.js",
-					"js/charts/genericplain.js",
-					"js/charts/genericsvg.js",
-					"js/charts/genericaxis.js",
-					"js/charts/simpleplain.js",
-					"js/charts/group.js",
-					"js/charts/layer.js",
-					"js/charts/stack.js",
-					"js/main.js"
-				],
-				dest: "res.js"
-			}
-		},
+    grunt.initConfig({
+        
+        uglify: {
+            options: {
 
-		concat: {
-			options: {
-				separator: "",
-			}, dist: {
-				src: ["res.js", "js/footer.foo"],
-				dest: "final.js"
-			}
-		}
-	});
+            },
+            dist: {
+                src: [
+                    "src/js/pre.js",
+                    "src/js/charts/genericplain.js",
+                    "src/js/charts/genericsvg.js",
+                    "src/js/charts/genericaxis.js",
+                    "src/js/charts/simpleplain.js",
+                    "src/js/charts/group.js",
+                    "src/js/charts/layer.js",
+                    "src/js/charts/stack.js",
+                    "src/js/draw.js"
+                ],
+                dest: "res.js"
+            }
+        },
 
-	grunt.loadNpmTasks("grunt-contrib-uglify")
-	grunt.loadNpmTasks('grunt-contrib-concat');
+        concat: {
+            options: {
 
-	grunt.registerTask("default", ["uglify", "concat"])
+            }, 
+            dist: {
+                src: [
+                    "src/js/wrap/header.foo",
+                    "res.js",
+                    "src/js/wrap/footer.foo"
+                ],
+                dest: "res.js"
+            }
+        }
+    });
+
+    grunt.loadNpmTasks("grunt-contrib-uglify")
+    grunt.loadNpmTasks('grunt-contrib-concat');
+
+    grunt.registerTask("default", ["uglify", "concat"])
 };
