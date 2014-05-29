@@ -48,8 +48,10 @@ function stack(data, config, events) {
             .domain(nData.map(function(d) { return d.item; }))
             .rangeRoundBands([0, height], 0.1);
 
+    var items;
+
     if (isVert) {
-        var items = d3.select(partitions[1][1][0][0]).selectAll(".item")
+        items = d3.select(partitions[1][1][0][0]).selectAll(".item")
             .data(nData).enter().append("g")
                 .attr("transform", function(d) { return "translate(" + xScale(d.item) + ", 0)"; });
 
@@ -65,7 +67,7 @@ function stack(data, config, events) {
                 .on("mouseout", function(d) { events.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, events); })
                 .on("click", function(d) { events.onClick({id: d.name, value: d.y1 - d.y0}, this, events); });
     } else {
-        var items = d3.select(partitions[1][1][0][0]).selectAll(".item")
+        items = d3.select(partitions[1][1][0][0]).selectAll(".item")
             .data(nData).enter().append("g")
                 .attr("transform", function(d) { return "translate(0, " + yScale(d.item) + ")"; });
 

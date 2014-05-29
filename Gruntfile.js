@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         jshint: {
             files: [
                 "Gruntfile.js",
-                "<%= source_dir %>/<%= source_files.js %>"
+                "src/**/*.js"
             ]
         },
 

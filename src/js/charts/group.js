@@ -1,5 +1,6 @@
 function group(data, config, events) {
 
+    var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hMid = 0.8, vMid = 0.8;
     var partitions = genericSVGFormat({
@@ -8,7 +9,7 @@ function group(data, config, events) {
     var height = config.height * vMid;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var fData = [];
-    for (var i = 0; i < data.items.length; i++) {
+    for (i = 0; i < data.items.length; i++) {
         var catArr = [];
         for (var j = 0; j < data.matrix[i].length; j++) {
             catArr.push({
@@ -34,19 +35,20 @@ function group(data, config, events) {
                 }
             });
 
+    function tmpGetID(d) { return d.id; }
     var configSet = [];
-    for (var i = 0; i < gSet[0].length; i++) {
+    for (i = 0; i < gSet[0].length; i++) {
         configSet.push({
             width: gWidth,
             height: gHeight,
             orientation: config.orientation,
             drawTarget: gSet[0][i],
             globalMax: globalMax,
-            color: d3.scale.category10().domain(fData[i].map(function(d) { return d.id; }))
+            color: d3.scale.category10().domain(fData[i].map(tmpGetID))
         });
     }   
 
-    for (var i = 0; i < fData.length; i++) {
+    for (i = 0; i < fData.length; i++) {
         genericPlain(fData[i], configSet[i], events);
     }
 
