@@ -1,7 +1,7 @@
 function group(data, config, events) {
 
     var isVert = (config.orientation === "vertical")? true : false;
-    var hMid = 0.8, vMid = 0.8
+    var hMid = 0.8, vMid = 0.8;
     var partitions = genericSVGFormat({
             width: config.width, height: config.height, drawTarget: config.drawTarget});
     var width = config.width * hMid;
@@ -60,7 +60,7 @@ function group(data, config, events) {
         xShift: 0,
         yShift: 0,
         tickSize: (isVert)? 0 : 6
-    })
+    });
 
     // y-axis
     genericAxis({
@@ -72,5 +72,5 @@ function group(data, config, events) {
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0
-    })
+    });
 }

@@ -24,9 +24,9 @@ function draw(chartType, config, data) {
         .attr("font-family", "times new roman")
         .attr("font-size", "14px")
         .attr("fill", "black")
-        .attr("stroke", "none")
+        .attr("stroke", "none");
 }
 
 var util = {
   draw: draw
-}
+};

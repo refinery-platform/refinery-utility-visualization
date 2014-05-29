@@ -11,7 +11,7 @@ function simplePlain(data, config, events) {
         fData.push({
             id: data.items[i],
             value: data.matrix[i].sum()
-        })
+        });
     }
     var globalMax = fData.map(function(d) { return d.value; }).max();
     var gWidth = width;
@@ -33,7 +33,7 @@ function simplePlain(data, config, events) {
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
-    })
+    });
 
     // y-axis
     genericAxis({
@@ -44,5 +44,5 @@ function simplePlain(data, config, events) {
             d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
         xShift: hLeft * config.width
-    })
+    });
 }

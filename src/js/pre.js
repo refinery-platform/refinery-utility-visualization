@@ -7,7 +7,7 @@ Array.prototype.max = function() {
             max = this[i];
     }
     return max;
-}
+};
 
 // super optimized sum function found on StackOverflow!
 Array.prototype.sum = function() {
@@ -17,7 +17,7 @@ Array.prototype.sum = function() {
         total += this[i];
     }
     return total;
-}
+};
 
 var tooltip = d3.select("body")
     .append("div")
@@ -62,4 +62,4 @@ var events = {
     },
     tooltip: tooltip,
     tooltipFlag: false
-}
+};

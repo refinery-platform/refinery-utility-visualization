@@ -12,7 +12,7 @@ function stack(data, config, events) {
     var nData = [];
     for (var i = 0; i < data.items.length; i++) {
         nData.push({});
-        nData[i]["item"] = data.items[i];
+        nData[i].item = data.items[i];
         for (var j = 0; j < data.categories.length; j++) {
             nData[i][data.categories[j]] = data.matrix[i][j];
         }
@@ -21,15 +21,15 @@ function stack(data, config, events) {
     if (isVert) {
         nData.forEach(function(d) {
             var y0 = 0;
-            d.nums = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name] }});
+            d.nums = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name] }; });
             d.total = d.nums[d.nums.length - 1].y1;
         });
     } else {
         nData.forEach(function(d) {
             var x0 = 0;
-            d.nums = color.domain().map(function(name) { return {name: name, x0: x0, x1: x0 += d[name] }});
+            d.nums = color.domain().map(function(name) { return {name: name, x0: x0, x1: x0 += d[name] }; });
             d.total = d.nums[d.nums.length - 1].x1;
-        })
+        });
     }
 
     var xScale = (isVert)? 
@@ -38,7 +38,7 @@ function stack(data, config, events) {
             .rangeRoundBands([0, width], 0.1) :
         d3.scale.linear()
             .domain([0, d3.max(nData, function(d) { return d.total; })])
-            .range([0, width])
+            .range([0, width]);
 
     var yScale = (isVert)?
         d3.scale.linear()
@@ -46,7 +46,7 @@ function stack(data, config, events) {
             .range([height, 0]) :
         d3.scale.ordinal()
             .domain(nData.map(function(d) { return d.item; }))
-            .rangeRoundBands([0, height], 0.1)
+            .rangeRoundBands([0, height], 0.1);
 
     if (isVert) {
         var items = d3.select(partitions[1][1][0][0]).selectAll(".item")
@@ -63,7 +63,7 @@ function stack(data, config, events) {
                 .on("mousemove", function(d) { events.onMouseMove({id: d.name, value: d.y1 - d.y0}, this, events); })
                 .on("mouseover", function(d) { events.onMouseOver({id: d.name, value: d.y1 - d.y0}, this, events); })
                 .on("mouseout", function(d) { events.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, events); })
-                .on("click", function(d) { events.onClick({id: d.name, value: d.y1 - d.y0}, this, events); })
+                .on("click", function(d) { events.onClick({id: d.name, value: d.y1 - d.y0}, this, events); });
     } else {
         var items = d3.select(partitions[1][1][0][0]).selectAll(".item")
             .data(nData).enter().append("g")
@@ -80,7 +80,7 @@ function stack(data, config, events) {
                 .on("mousemove", function(d) { events.onMouseMove({id: d.name, value: d.x1 - d.x0}, this, events); })
                 .on("mouseover", function(d) { events.onMouseOver({id: d.name, value: d.x1 - d.x0}, this, events); })
                 .on("mouseout", function(d) { events.onMouseOut({id: d.name, value: d.x1 - d.x0}, this, events); })
-                .on("click", function(d) { events.onClick({id: d.name, value: d.x1 - d.x0}, this, events); })
+                .on("click", function(d) { events.onClick({id: d.name, value: d.x1 - d.x0}, this, events); });
     }
 
     // x-axis
@@ -91,7 +91,7 @@ function stack(data, config, events) {
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
             d3.scale.linear().domain([0, itemMax]).range([0, width]),
         tickSize: (isVert)? 0: 6
-    })
+    });
 
     // y-axis
     genericAxis({
@@ -102,5 +102,5 @@ function stack(data, config, events) {
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0),
         xShift: config.width * 0.1,
         tickSize: (isVert)? 6 : 0
-    })
+    });
 }

@@ -45,5 +45,5 @@ function genericPlain(data, config, events) {
             .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
             .on("mouseover", function(d) { events.onMouseOver(d, this, events); })
             .on("mouseout", function(d) { events.onMouseOut(d, this, events); })
-            .on("click", function(d) { events.onClick(d, this, events); })
+            .on("click", function(d) { events.onClick(d, this, events); });
 }

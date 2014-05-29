@@ -11,7 +11,7 @@ function genericAxis(config) {
         blank = config.blank || false;
 
     if (blank) {
-    	axisClass = "refinery-utility-blankaxis";
+        axisClass = "refinery-utility-blankaxis";
     }
 
     var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
@@ -21,5 +21,5 @@ function genericAxis(config) {
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
-            .call(axis)
+            .call(axis);
 }

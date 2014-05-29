@@ -1,7 +1,7 @@
 function layer(data, config, events) {
 
     var isVert = (config.orientation === "vertical")? true : false;
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1
+    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1;
     var partitions = genericSVGFormat({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
@@ -16,7 +16,7 @@ function layer(data, config, events) {
             itemArr.push({
                 id: data.items[j] + "-" + data.categories[i],
                 value: data.matrix[j][i]
-            })
+            });
         }
         formatData.push(itemArr);
     }
@@ -50,8 +50,8 @@ function layer(data, config, events) {
 
     for (var i = 0; i < formatData.length; i++) {
         if (isVert) {
-            configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; } 
-            genericPlain(formatData[formatData.length - 1 -i], configSet[i], events)
+            configSet[i].color = function(n) { return d3.scale.category10().range().slice(0, formatData.length).reverse()[i]; };
+            genericPlain(formatData[formatData.length - 1 -i], configSet[i], events);
         } else {
             genericPlain(formatData[i], configSet[i], events);
         }
@@ -93,7 +93,7 @@ function layer(data, config, events) {
                 .attr("height", gHeight)
                 .attr("transform", function(d, i) {
                     return "translate(0, " + (i * (gHeight + gPadding)) + ")";
-                })
+                });
 
         for (var i = 0; i < aGSet[0].length; i++) {
             genericAxis({
@@ -121,7 +121,7 @@ function layer(data, config, events) {
             drawTarget: partitions[2][1][0][0],
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([height, 0], 0),
             blank: true
-        })
+        });
     } else {
         genericAxis({
             orientation: "bottom",
@@ -130,6 +130,6 @@ function layer(data, config, events) {
             blank: true,
             xShift: -config.width * hLeft * 0.2,
             yShift: config.height * vTop * 0.7
-        })
+        });
     }
 }

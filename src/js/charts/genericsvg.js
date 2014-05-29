@@ -5,9 +5,9 @@ function genericSVGFormat(config) {
         hLeft = config.hLeft || 0.1, hMid = config.hMid || 0.8, hRight = config.hRight || 0.1,
         vTop = config.vTop || 0.1, vMid = config.vMid || 0.8, vBot = config.vBot || 0.1;
 
-    var errorPercentage = 0.0001
+    var errorPercentage = 0.0001;
     if (Math.abs(hLeft + hMid + hRight - 1) > errorPercentage || Math.abs(vTop + vMid + vBot - 1) > errorPercentage) {
-        console.err("FormatError: partition percentages exceed or do not add up to 1")
+        console.err("FormatError: partition percentages exceed or do not add up to 1");
     }
 
     d3.select("#" + drawTarget).html("");
@@ -55,5 +55,5 @@ function genericSVGFormat(config) {
         .attr("width", width * hRight).attr("height", height * vBot)
         .attr("transform", "translate(" + r2Shift + ", " + b2Shift + ")");
 
-    return [[leftTop, leftMid, leftBot], [midTop, midMid, midBot], [rightTop, rightMid, rightBot]]
+    return [[leftTop, leftMid, leftBot], [midTop, midMid, midBot], [rightTop, rightMid, rightBot]];
 }
