@@ -1,9 +1,33 @@
+/*
+    1. JShint the fils
+    2. Uglify
+    3. Concat / Inject header and footer
+    4. Copy finished library to the example folder
+*/
+
 module.exports = function(grunt) {
     grunt.initConfig({
         
+        pkg: grunt.file.readJSON("package.json"),
+        
+        source_dir: "src",
+        vendor_dir: "bower_components", 
+
+        source_files: {
+            js: ["src/js/**/*.js"],
+            css: ["src/style/**/*.css"]
+        },
+
+        jshint: {
+            files: [
+                "Gruntfile.js",
+                "<%= source_dir %>/<%= source_files.js %>"
+            ]
+        },
+
         uglify: {
             options: {
-
+                banner: "/*! <%= pkg.name %> <%= grunt.template.today('yyyy-mm-dd') %> */\n"
             },
             dist: {
                 src: [
@@ -22,9 +46,6 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            options: {
-
-            }, 
             dist: {
                 src: [
                     "src/js/wrap/header.foo",
@@ -33,11 +54,20 @@ module.exports = function(grunt) {
                 ],
                 dest: "rfnry.vis.util.js"
             }
+        },
+
+        copy: {
+            main: {
+                src: "rfnry.vis.util.js",
+                dest: "example/rfnry.vis.util.js"
+            }
         }
     });
 
-    grunt.loadNpmTasks("grunt-contrib-uglify")
-    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks("grunt-contrib-copy");
 
-    grunt.registerTask("default", ["uglify", "concat"])
+    grunt.registerTask("default", ["jshint", "uglify", "concat", "copy"]);
 };

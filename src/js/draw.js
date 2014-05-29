@@ -1,4 +1,4 @@
-function draw(chartType, data, config) {
+function draw(chartType, config, data) {
 
     // delete old svg
     d3.select("#" + config.drawTarget).html("");
@@ -20,11 +20,11 @@ function draw(chartType, data, config) {
         alert("Invalid chart type");
     }
 
-    // try to clean up
-    d3.select("body").selectAll("text")
-        .attr("font-family", "sans-serif")
-        .attr("fill", "black")
+    d3.selectAll("text")
+        .attr("font-family", "times new roman")
         .attr("font-size", "14px")
+        .attr("fill", "black")
+        .attr("stroke", "none")
 }
 
 var util = {

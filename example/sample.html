@@ -63,28 +63,28 @@
             $("#simple").click(function(event) {
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
-                rfnry.vis.util.draw("simple", data, config);
+                rfnry.vis.util.draw("simple", config, data);
                 event.preventDefault();
             });
 
             $("#group").click(function(event) {
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
-                rfnry.vis.util.draw("group", data, config);
+                rfnry.vis.util.draw("group", config, data);
                 event.preventDefault();
             });
             
             $("#layer").click(function(event) {
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
-                rfnry.vis.util.draw("layer", data, config);
+                rfnry.vis.util.draw("layer", config, data);
                 event.preventDefault();
             });
 
             $("#stack").click(function(event) {
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
-                rfnry.vis.util.draw("stack", data, config);
+                rfnry.vis.util.draw("stack", config, data);
                 event.preventDefault();
             });
         });
