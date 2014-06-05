@@ -18,7 +18,8 @@ The example above would draw a stack bar chart of the data provided in an area i
       ```
       data = {
             items: ["apple", "bear", "cat", "dinosaur", "elephant", "fish"],
-            categories: ["agility", "buffness", "conspicuousness", "dangerousness", "elasticity", "frugality"],
+            categories: ["agility", "buffness", "conspicuousness", 
+                         "dangerousness", "elasticity", "frugality"],
             matrix: [
                 [6, 29, 18, 30, 7, 2],
                 [8, 27, 17, 12, 12, 4],
@@ -51,19 +52,25 @@ File Structure
 =================
 There is generally no need to know much about the file structure unless you plan on hacking this up a bit.
 
-The src/js/charts directory contains three different "generic" functions.
+1. ```src/js/```
 
-```genericPlain()```: Creates a simple (regular) bar charts given an SVG group draw space, a data set, a global maximum of the data set, and other configurations. 
+      The ```pre.js``` includes a useful tooltip thing as well as loads events for the tooltip.
 
-```genericSVG()```: Partitions a target draw area (invoked manually by the user or by one of the chart functions) into nine different pieces (3 by 3). Whether or not this is conventional was not considered, but helpful it was in enabling code reusability for the library at the time given the author's questionable imagination.
+      The ```draw.js``` file contains an "adapter" function that invokes one of the four charting function depending on its arguments. It is preferable that you use this instead of manually calling one of the chart functions to make your life easier. It also performs deep copies so objects don't get messed up.
 
-```genericAxis()```: Draw an SVG axis given some configurations. You don't have to worry about this unless you really want to configure it. Default is ~5 ticks, and the default tick size is apparently 6. Some other things like the shifts involve which direction the axis would shift to, which is used in cases when the axis would need to be shifted to appear fully on screen. A blank axis is an axis that lacks the stroke.
 
-The ```group.js```, ```simpleplain.js```, ```layer.js```, and ```stack.js``` contain the four different functions that invoke the generic functions to draw the charts and stuff. All except stack use a similar code placement structure - that is, the draw space is partitioned first, and axes are done last, etc.
 
-The ```pre.js``` file one directory above includes a useful tooltip thing as well as loads events for the tooltip.
 
-The ```draw.js``` file contains an "adapter" function that invokes one of the four charting function depending on its arguments. It is preferable that you use this instead of manually calling one of the chart functions to make your life easier. It also performs deep copies so objects don't get messed up.
+2. ```src/js/charts/```
 
+      ```genericPlain()``` Creates a simple (regular) bar charts given an SVG group draw space, a data set, a global maximum of the data set, and other configurations. 
+      
+      ```genericSVG()``` Partitions a target draw area (invoked manually by the user or by one of the chart functions) into nine different pieces (3 by 3). Whether or not this is conventional was not considered, but helpful it was in enabling code reusability for the library at the time given the author's questionable imagination.
+      
+      ```genericAxis()``` Draw an SVG axis given some configurations. You don't have to worry about this unless you really want to configure it. Default is ~5 ticks, and the default tick size is apparently 6. Some other things like the shifts involve which direction the axis would shift to, which is used in cases when the axis would need to be shifted to appear fully on screen. A blank axis is an axis that lacks the stroke.
+      
+      In addition, the ```src/js/charts``` directory also contains four different types of bar chart functions.
+      
+      The ```group.js```, ```simpleplain.js```, ```layer.js```, and ```stack.js``` contain the four different functions that invoke the generic functions to draw the charts and stuff. All but ```stack.js``` uses the ```genericPlain()``` function, due to the nature of stacked bar charts.
 
 Good luck
