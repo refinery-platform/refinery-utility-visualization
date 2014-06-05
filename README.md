@@ -59,6 +59,8 @@ The ```pre.js``` includes a useful tooltip thing as well as loads events for the
 The ```draw.js``` file contains an "adapter" function that invokes one of the four charting function depending on its arguments. It is preferable that you use this instead of manually calling one of the chart functions to make your life easier. It also performs deep copies so objects don't get messed up.
 
 
+
+
 src/js/charts/
 
 ```genericPlain()``` Creates a simple (regular) bar charts given an SVG group draw space, a data set, a global maximum of the data set, and other configurations. 
