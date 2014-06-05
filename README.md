@@ -4,17 +4,14 @@ The Refinery Utility Visualization software library is a JavaScript library that
 
 Building
 ========
-Install the frontend bower components such as d3 and jQuery
-```bower install```
 
-Install the backend components like grunt and its plugins
-```npm install```
+```bower install``` Install the frontend bower components such as d3 and jQuery
 
-Run grunt on Gruntfile.js
-```grunt```
+```npm install``` Install the backend components like grunt and its plugins
 
-If you want to generate docs in the doc/ folder, run
-```grunt doc```
+```grunt``` Run grunt on Gruntfile.js 
+
+```grunt doc``` If you want to generate docs in the doc/ folder, run
 
 Of course there is already a minified version in the root directory of this library so why bother unless you're tweaking it.
 
