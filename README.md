@@ -88,6 +88,11 @@ src/js/charts/
 
 ```stack.js``` Create a stacked bar chart.
 
+---
+
+src/js/wrap/
+
+Running these with concat allows it to be wrapped and enables a code "injection" that is otherwise not there / I can't find it.
 
 
 Good luck
