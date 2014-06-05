@@ -16,6 +16,7 @@ Run grunt on Gruntfile.js
 If you want to generate docs in the doc/ folder, run
 ```grunt doc```
 
+Of course there is already a minified version in the root directory of this library so why bother unless you're tweaking it.
 
 Use
 ===
