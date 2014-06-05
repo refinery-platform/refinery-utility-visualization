@@ -2,6 +2,20 @@ Refinery Utility Visualization
 ==============================
 The Refinery Utility Visualization software library is a JavaScript library that utilizes D3 and jQuery to display a variety of graphs given a set of data and configurations. The library is able to display four different types of charts: regular, stacked, layered, and grouped bar charts.
 
+Building
+========
+Install the frontend bower components such as d3 and jQuery
+```bower install```
+
+Install the backend components like grunt and its plugins
+```npm install```
+
+Run grunt on Gruntfile.js
+```grunt```
+
+If you want to generate docs in the doc/ folder, run
+```grunt doc```
+
 
 Use
 ===
