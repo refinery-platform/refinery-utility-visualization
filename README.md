@@ -64,7 +64,7 @@ File Structure
 =================
 There is generally no need to know much about the file structure unless you plan on hacking this up a bit.
 
-```src/js/```:
+src/js/
 
 The ```pre.js``` includes a useful tooltip thing as well as loads events for the tooltip.
 
@@ -72,7 +72,7 @@ The ```draw.js``` file contains an "adapter" function that invokes one of the fo
 
 ---
 
-```src/js/charts/```:
+src/js/charts/
 
 ```genericplain.js``` Creates a simple (regular) bar charts given an SVG group draw space, a data set, a global maximum of the data set, and other configurations. 
 
