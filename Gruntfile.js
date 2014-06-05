@@ -27,12 +27,10 @@ module.exports = function(grunt) {
             ]
         },
 
-        uglify: {
-            options: {
-                banner: "/*! <%= pkg.name %> <%= grunt.template.today('yyyy-mm-dd') %> */\n"
-            },
+        concat: {
             dist: {
                 src: [
+                    "src/js/wrap/header.foo",
                     "src/js/pre.js",
                     "src/js/charts/genericplain.js",
                     "src/js/charts/genericsvg.js",
@@ -41,20 +39,22 @@ module.exports = function(grunt) {
                     "src/js/charts/group.js",
                     "src/js/charts/layer.js",
                     "src/js/charts/stack.js",
-                    "src/js/draw.js"
+                    "src/js/draw.js",
+                    "src/js/wrap/footer.foo"
                 ],
                 dest: "rfnry.vis.util.js"
             }
         },
 
-        concat: {
+        uglify: {
+            options: {
+                banner: "/*! <%= pkg.name %> <%= grunt.template.today('yyyy-mm-dd') %> */\n"
+            },
             dist: {
                 src: [
-                    "src/js/wrap/header.foo",
-                    "rfnry.vis.util.js",
-                    "src/js/wrap/footer.foo"
+                    "rfnry.vis.util.js"
                 ],
-                dest: "rfnry.vis.util.js"
+                dest: "rfnry.vis.util.min.js"
             }
         },
 
@@ -91,6 +91,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-copy");
 
-    grunt.registerTask("default", ["jshint", "uglify", "concat", "copy"]);
+    grunt.registerTask("default", ["jshint", "concat", "uglify", "copy"]);
     grunt.registerTask("doc", ["jsdoc"]);
 };
