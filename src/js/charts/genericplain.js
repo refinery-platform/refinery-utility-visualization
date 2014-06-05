@@ -1,3 +1,12 @@
+/**
+ *  Draws a plain bar chart in a target area with bar lengths relative to a
+ *  global maximum. Also pass in events so they can be attached as well as 
+ *  configurations such as orientation, dimensions, etc. Generic plain does 
+ *  not plot axes or labels - that is the purpose of generic axis.
+ *  @param {object} data - an array of numbers to work with
+ *  @param {object} config - contains orientation, dimension, draw target, etc
+ *  @param {object} events - attach mouse events to the bars. May have noticed some redundancy, but that's not a big issue
+ */
 function genericPlain(data, config, events) {
 
     var width = config.width, height = config.height, globalMax = config.globalMax,

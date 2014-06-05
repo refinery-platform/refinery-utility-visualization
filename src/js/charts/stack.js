@@ -1,3 +1,9 @@
+/**
+ *  Plots a stacked bar chart
+ *  @param {object} data - the data set to work with
+ *  @param {object} config - various configurations for the chart
+ *  @param {object} events - set of events to be attached to the chart
+ */
 function stack(data, config, events) {
 	
     var isVert = (config.orientation === "vertical")? true : false;

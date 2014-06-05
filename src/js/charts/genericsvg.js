@@ -1,3 +1,9 @@
+/**
+ *  Partitions the draw target into a 3 by 3 grid that is easier to work with.
+ *  Others may not prefer this method and that's okay, but it happens to be 
+ *  that this method was convenient for this library.
+ *  @param {object} config - includes, target, height, width, and partition dimensions
+ */
 function genericSVGFormat(config) {
 
     // assume default 0.1-0.8-0.1 partitioning

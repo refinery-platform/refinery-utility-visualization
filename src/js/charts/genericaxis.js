@@ -1,3 +1,7 @@
+/**
+ *  Draws an axes according to the appropriate configurations - there are many
+ *  @param {object} config - contains the configurations, but some defaults exist
+ */
 function genericAxis(config) {
     
     var orientation = config.orientation, 

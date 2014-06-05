@@ -1,3 +1,10 @@
+/**
+ *  Invokes the appropriate chart type and and draws it in a given drawspace.
+ *  Clears the draw target as well as removes border "stroke" of text in that drawspace
+ *  @param {string} chartType - "simple", "group", "layer", or "stack"
+ *  @param {object} config - { height: number, width: number, drawTarget: string, orientation: string }
+ *  @param {object} data - { items: Array[string], categories: Array[string], matrix: Array[Array[number]]}
+ */
 function draw(chartType, config, data) {
 
     // delete old svg
@@ -20,7 +27,7 @@ function draw(chartType, config, data) {
         alert("Invalid chart type");
     }
 
-    d3.selectAll("text")
+    d3.select("#" + config.drawTarget).selectAll("text")
         .attr("font-family", "times new roman")
         .attr("font-size", "14px")
         .attr("fill", "black")

@@ -19,6 +19,10 @@ Array.prototype.sum = function() {
     return total;
 };
 
+/**
+ * Defines a universal tooltip for the visualization tool with some inline CSS 
+ * @type {object}
+ */
 var tooltip = d3.select("body")
     .append("div")
         .attr("class", "refinery-utility-tooltip")
@@ -34,7 +38,10 @@ var tooltip = d3.select("body")
         .style("border-radius", "3px")
         .style("padding", "1px 4px 1px 4px");
 
-// give events some fancy functions
+/**
+ * Mouse events for the cursor as it goes across various bars
+ * @type {object}
+ */
 var events = {
     onMouseMove: function(data, g, events) {
         if (events.tooltipFlag) {
