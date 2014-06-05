@@ -52,15 +52,11 @@ File Structure
 =================
 There is generally no need to know much about the file structure unless you plan on hacking this up a bit.
 
-
 ```src/js/```
 
 The ```pre.js``` includes a useful tooltip thing as well as loads events for the tooltip.
 
 The ```draw.js``` file contains an "adapter" function that invokes one of the four charting function depending on its arguments. It is preferable that you use this instead of manually calling one of the chart functions to make your life easier. It also performs deep copies so objects don't get messed up.
-
-
-
 
 ```src/js/charts/```
 
