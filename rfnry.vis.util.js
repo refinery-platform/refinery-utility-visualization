@@ -75,6 +75,20 @@ var events = {
     tooltipFlag: false
 };
 
+function trim(text, maxLength, connector) {
+    // create test svg element to calculate length and stuff
+    var test = d3.select("body").append("svg")
+        .attr("id", "test")
+        .attr("width", 0).attr("height", 0)
+        .selectAll("text")
+            .data([1]).enter().append("text")
+                .text(text);
+
+    //console.log(test);
+    console.log(test[0][0].getBBox().width);
+}
+
+trim("HEUHEUEHUEHUE", 1, 1);
 /**
  *  Draws a plain bar chart in a target area with bar lengths relative to a
  *  global maximum. Also pass in events so they can be attached as well as 
@@ -512,6 +526,12 @@ function layer(data, config, events) {
             yShift: config.height * vTop * 0.7
         });
     }
+
+    var tmp = d3.select(partitions[2][1][0][0]).selectAll("text")[0]
+        .map(function(d) {
+            console.log(d.getBBox().width);
+        });
+    //console.log(tmp);
 }
 /**
  *  Plots a stacked bar chart

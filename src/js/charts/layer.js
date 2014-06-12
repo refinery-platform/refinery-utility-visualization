@@ -145,4 +145,10 @@ function layer(data, config, events) {
             yShift: config.height * vTop * 0.7
         });
     }
+
+    var tmp = d3.select(partitions[2][1][0][0]).selectAll("text")[0]
+        .map(function(d) {
+            console.log(d.getBBox().width);
+        });
+    //console.log(tmp);
 }

@@ -70,3 +70,18 @@ var events = {
     tooltip: tooltip,
     tooltipFlag: false
 };
+
+function trim(text, maxLength, connector) {
+    // create test svg element to calculate length and stuff
+    var test = d3.select("body").append("svg")
+        .attr("id", "test")
+        .attr("width", 0).attr("height", 0)
+        .selectAll("text")
+            .data([1]).enter().append("text")
+                .text(text);
+
+    //console.log(test);
+    console.log(test[0][0].getBBox().width);
+}
+
+trim("HEUHEUEHUEHUE", 1, 1);
