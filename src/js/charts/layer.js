@@ -146,6 +146,47 @@ function layer(data, config, events) {
         });
     }
 
+/*
+    var test = d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it")[0][0].huehue = "oh yes ohpe this works";
+
+    console.log(d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it")[0][0].huehue);
+
+    console.log(d3.select(partitions[2][1][0][0]).selectAll("text"));
+*/
+
+/*
+    d3.select(partitions[2][1][0][0]).selectAll("text")[0].map(function(d) {
+        d.on("mouseover", function(i) {
+            console.log("hello " + i);
+        });
+    });
+*/
+    // fill in the fullText thing
     d3.select(partitions[2][1][0][0]).selectAll("text")
-        .attr("hue", "oh this is it");
+        .attr("fullText", function(d) { 
+            return d;
+        });
+
+    // trim the things
+    d3.select(partitions[2][1][0][0]).selectAll("text")
+        .text(function(d) { 
+            return trim(d, config.width * hRight);
+        });
+
+    //test
+    d3.select(partitions[2][1][0][0]).selectAll(".tick")
+        .on("mousemove", function(d) { 
+            labelEvents.onMouseMove(d, this, labelEvents);
+        })
+        .on("mouseover", function(d) { 
+            labelEvents.onMouseOver(d, this, labelEvents);
+        })
+        .on("mouseout", function(d) {
+            labelEvents.onMouseOut(d, this, labelEvents);
+        })
+        .on("click", function(d) {
+            labelEvents.onClick(d, this, labelEvents);
+        });
 }

@@ -24,12 +24,28 @@ Array.prototype.sum = function() {
 };
 
 /**
- * Defines a universal tooltip for the visualization tool with some inline CSS 
+ * Defines a universal barTooltip for the visualization tool with some inline CSS 
  * @type {object}
  */
-var tooltip = d3.select("body")
+var barTooltip = d3.select("body")
     .append("div")
-        .attr("class", "refinery-utility-tooltip")
+        .attr("class", "refinery-utility-barTooltip")
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("text-align", "center")
+        .attr("width", "100px")
+        .style("background-color", "#000")
+        .style("opacity", "0.8")
+        .style("color", "#fff")
+        .style("font-weight", "normal")
+        .style("font-size", "11.9px")
+        .style("border-radius", "3px")
+        .style("padding", "1px 4px 1px 4px");
+
+
+var labelTooltip = d3.select("body")
+    .append("div")
+        .attr("class", "refinery-utility-labelTooltip")
         .style("opacity", 0)
         .style("position", "absolute")
         .style("text-align", "center")
@@ -48,8 +64,8 @@ var tooltip = d3.select("body")
  */
 var events = {
     onMouseMove: function(data, g, events) {
-        if (events.tooltipFlag) {
-            events.tooltip
+        if (events.barTooltipFlag) {
+            events.barTooltip
                 .html(data.id + "<br>" + data.value)
                 .style("opacity", 0.9)
                 .style("top", (d3.event.pageY - 10) + "px")
@@ -57,23 +73,58 @@ var events = {
         }
     },
     onMouseOver: function(data, g, events) {
-        events.tooltipFlag = true;
+        events.barTooltipFlag = true;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 0.6);
         d3.select(g).attr("opacity", 1);
     },
     onMouseOut: function(data, g, events) {
-        events.tooltipFlag = false;
+        events.barTooltipFlag = false;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 1);
-        events.tooltip.style("opacity", 0);
+        events.barTooltip.style("opacity", 0);
     },
     onClick: function(data, g, events) {
         console.log("clicky action going on");
     },
-    tooltip: tooltip,
-    tooltipFlag: false
+    barTooltip: barTooltip,
+    barTooltipFlag: false
 };
+
+var labelEvents = {
+    onMouseMove: function(data, g, events) {
+        console.log("mouse moving");
+        if (labelEvents.labelTooltipFlag) {
+            console.log(labelEvents);
+            console.log(labelTooltip);
+            
+            labelTooltip
+                .html(data)
+                .style("opacity", 0.9)
+                .style("top", (d3.event.pageY - 10) + "px")
+                .style("left", (d3.event.pageX + 10) + "px");
+
+        }
+    },
+    onMouseOver: function(data, g, events) {
+        console.log("mouse overing");
+        labelEvents.labelTooltipFlag = true;
+    },
+    onMouseOut: function(data, g, events) {
+        console.log("mouse outing");
+        labelEvents.labelTooltip = false;
+        labelTooltip.style("opacity", 0);
+    },
+    onClick: function(data, g, events) {
+        console.log("CLICKY THING OGIN GOIN TOIJEOIFDJ");
+        console.log(data);
+        console.log(g);
+    },
+    lableTooltip: labelTooltip,
+    labelTooltipFlag: false
+};
+
+console.log(labelTooltip);
 
 function getTextLength(text) {
     d3.selectAll("#test").remove();
@@ -542,8 +593,49 @@ function layer(data, config, events) {
         });
     }
 
+/*
+    var test = d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it")[0][0].huehue = "oh yes ohpe this works";
+
+    console.log(d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it")[0][0].huehue);
+
+    console.log(d3.select(partitions[2][1][0][0]).selectAll("text"));
+*/
+
+/*
+    d3.select(partitions[2][1][0][0]).selectAll("text")[0].map(function(d) {
+        d.on("mouseover", function(i) {
+            console.log("hello " + i);
+        });
+    });
+*/
+    // fill in the fullText thing
     d3.select(partitions[2][1][0][0]).selectAll("text")
-        .attr("hue", "oh this is it");
+        .attr("fullText", function(d) { 
+            return d;
+        });
+
+    // trim the things
+    d3.select(partitions[2][1][0][0]).selectAll("text")
+        .text(function(d) { 
+            return trim(d, config.width * hRight);
+        });
+
+    //test
+    d3.select(partitions[2][1][0][0]).selectAll(".tick")
+        .on("mousemove", function(d) { 
+            labelEvents.onMouseMove(d, this, labelEvents);
+        })
+        .on("mouseover", function(d) { 
+            labelEvents.onMouseOver(d, this, labelEvents);
+        })
+        .on("mouseout", function(d) {
+            labelEvents.onMouseOut(d, this, labelEvents);
+        })
+        .on("click", function(d) {
+            labelEvents.onClick(d, this, labelEvents);
+        });
 }
 /**
  *  Plots a stacked bar chart
