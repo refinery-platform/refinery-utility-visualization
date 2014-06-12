@@ -99,19 +99,11 @@ function trim(text, maxLength) {
         var tmpText = text.substring(0, text.length / 2 - i) + ".." + text.substring(text.length / 2 + i, text.length);
 
         if (getTextLength(tmpText) <= maxLength) {
-            console.log(tmpText);
             return tmpText;
         }
     }
 }
 
-console.log("testing: " + getTextLength("HEUHEUEHUEHUE"));
-
-trim("HEUHEUEHUEHUE", 100);
-
-trim("HEUHEUEHUEHUEa", 100);
-
-trim("HEUHEUEHUEHUEeee", 100);
 /**
  *  Draws a plain bar chart in a target area with bar lengths relative to a
  *  global maximum. Also pass in events so they can be attached as well as 
@@ -550,11 +542,8 @@ function layer(data, config, events) {
         });
     }
 
-    var tmp = d3.select(partitions[2][1][0][0]).selectAll("text")[0]
-        .map(function(d) {
-            console.log(d.getBBox().width);
-        });
-    //console.log(tmp);
+    d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it");
 }
 /**
  *  Plots a stacked bar chart

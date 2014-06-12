@@ -146,9 +146,6 @@ function layer(data, config, events) {
         });
     }
 
-    var tmp = d3.select(partitions[2][1][0][0]).selectAll("text")[0]
-        .map(function(d) {
-            console.log(d.getBBox().width);
-        });
-    //console.log(tmp);
+    d3.select(partitions[2][1][0][0]).selectAll("text")
+        .attr("hue", "oh this is it");
 }

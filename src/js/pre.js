@@ -95,16 +95,7 @@ function trim(text, maxLength) {
         var tmpText = text.substring(0, text.length / 2 - i) + ".." + text.substring(text.length / 2 + i, text.length);
 
         if (getTextLength(tmpText) <= maxLength) {
-            console.log(tmpText);
             return tmpText;
         }
     }
 }
-
-console.log("testing: " + getTextLength("HEUHEUEHUEHUE"));
-
-trim("HEUHEUEHUEHUE", 100);
-
-trim("HEUHEUEHUEHUEa", 100);
-
-trim("HEUHEUEHUEHUEeee", 100);
