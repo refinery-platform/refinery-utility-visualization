@@ -71,17 +71,40 @@ var events = {
     tooltipFlag: false
 };
 
-function trim(text, maxLength, connector) {
-    // create test svg element to calculate length and stuff
+function getTextLength(text) {
+    d3.selectAll("#test").remove();
     var test = d3.select("body").append("svg")
         .attr("id", "test")
         .attr("width", 0).attr("height", 0)
         .selectAll("text")
-            .data([1]).enter().append("text")
-                .text(text);
+        .data([1]).enter().append("text")
+            .text(text);
 
-    //console.log(test);
-    console.log(test[0][0].getBBox().width);
+    return test[0][0].getBBox().width;
 }
 
-trim("HEUHEUEHUEHUE", 1, 1);
+function trim(text, maxLength) {
+
+    if (getTextLength(text) <= maxLength) {
+        // no trimming needed!
+        return text;
+    }
+
+    // loop until no need to cut down no more
+    for (var i = 0; i < (text.length / 2); i++) {
+        var tmpText = text.substring(0, text.length / 2 - i) + ".." + text.substring(text.length / 2 + i, text.length);
+
+        if (getTextLength(tmpText) <= maxLength) {
+            console.log(tmpText);
+            return tmpText;
+        }
+    }
+}
+
+console.log("testing: " + getTextLength("HEUHEUEHUEHUE"));
+
+trim("HEUHEUEHUEHUE", 100);
+
+trim("HEUHEUEHUEHUEa", 100);
+
+trim("HEUHEUEHUEHUEeee", 100);
