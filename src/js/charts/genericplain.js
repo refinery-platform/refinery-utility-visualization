@@ -7,10 +7,13 @@
  *  @param {object} config - contains orientation, dimension, draw target, etc
  *  @param {object} events - attach mouse events to the bars. May have noticed some redundancy, but that's not a big issue
  */
-function genericPlain(data, config, events) {
-
-    var width = config.width, height = config.height, globalMax = config.globalMax,
-        isVert = (config.orientation === "vertical")? true : false;
+function genericplain(data, config, events) {
+    var width = config.width, 
+        height = config.height, 
+        globalMax = config.globalMax,
+        isVert = (config.orientation === "vertical")? true : false, 
+        color = config.color || d3.scale.category10().domain(data.map(function(d) { return d.id; }));
+    
     var barPadding = (isVert)? 0.01 * width : 0.01 * height;
     var barThickness = height / data.length - barPadding;
     var xScale = d3.scale.linear()
@@ -26,7 +29,7 @@ function genericPlain(data, config, events) {
             .domain(data.map(function(d) { return d.id; }))
             .rangeRoundBands([0, width], 0);
         yScale = d3.scale.linear()
-            .domain([0, globalMax]) 
+            .domain([0, globalMax])
             .range([height, 0]);
     }
 
@@ -49,7 +52,7 @@ function genericPlain(data, config, events) {
                 else { return barThickness; }
             })
             .style("fill", function(d) { 
-                return config.color(d.id);
+                return color(d.id);
             })
             .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
             .on("mouseover", function(d) { events.onMouseOver(d, this, events); })

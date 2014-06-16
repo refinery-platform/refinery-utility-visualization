@@ -9,7 +9,7 @@ function group(data, config, events) {
     var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hMid = 0.8, vMid = 0.8;
-    var partitions = genericSVGFormat({
+    var partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget});
     var width = config.width * hMid;
     var height = config.height * vMid;
@@ -55,7 +55,7 @@ function group(data, config, events) {
     }   
 
     for (i = 0; i < fData.length; i++) {
-        genericPlain(fData[i], configSet[i], events);
+        genericplain(fData[i], configSet[i], events);
     }
 
     // x-axis

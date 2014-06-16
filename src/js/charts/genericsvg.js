@@ -4,8 +4,7 @@
  *  that this method was convenient for this library.
  *  @param {object} config - includes, target, height, width, and partition dimensions
  */
-function genericSVGFormat(config) {
-
+function genericsvg(config) {
     // assume default 0.1-0.8-0.1 partitioning
     var width = config.width, height = config.height, drawTarget = config.drawTarget,
         hLeft = config.hLeft || 0.1, hMid = config.hMid || 0.8, hRight = config.hRight || 0.1,

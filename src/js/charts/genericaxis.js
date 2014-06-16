@@ -2,7 +2,7 @@
  *  Draws an axes according to the appropriate configurations - there are many
  *  @param {object} config - contains the configurations, but some defaults exist
  */
-function genericAxis(config) {
+function genericaxis(config, labelEvents) {
     
     var orientation = config.orientation, 
         drawTarget = config.drawTarget, 
@@ -25,5 +25,18 @@ function genericAxis(config) {
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
-            .call(axis);
+            .call(axis)
+            .selectAll(".tick")
+                .on("mousemove", function(d) { 
+                    labelEvents.onMouseMove(d, this, labelEvents);
+                })
+                .on("mouseover", function(d) { 
+                    labelEvents.onMouseOver(d, this, labelEvents);
+                })
+                .on("mouseout", function(d) {
+                    labelEvents.onMouseOut(d, this, labelEvents);
+                })
+                .on("click", function(d) {
+                    labelEvents.onClick(d, this, labelEvents);
+                });
 }

@@ -13,16 +13,17 @@ function draw(chartType, config, data) {
     // make deep copies for new ones
     var nData = jQuery.extend(true, {}, data);
     var nConfig = jQuery.extend(true, {}, config);
-    var nEvents = jQuery.extend(true, {}, events);
+    var nBarEvents = jQuery.extend(true, {}, barEvents);
+    var nLabelEvents = jQuery.extend(true, {}, labelEvents);
 
     if (chartType === "group") {
-        group(nData, nConfig, nEvents);
+        group(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "layer") {
-        layer(nData, nConfig, nEvents);
+        layer(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "simple") {
-        simplePlain(nData, nConfig, nEvents);
+        simplePlain(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "stack") {
-        stack(nData, nConfig, nEvents);
+        stack(nData, nConfig, nBarEvents, nLabelEvents);
     } else {
         alert("Invalid chart type");
     }

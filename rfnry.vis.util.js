@@ -59,32 +59,32 @@ var labelTooltip = d3.select("body")
         .style("padding", "1px 4px 1px 4px");
 
 /**
- * Mouse events for the cursor as it goes across various bars
+ * Mouse barEvents for the cursor as it goes across various bars
  * @type {object}
  */
-var events = {
-    onMouseMove: function(data, g, events) {
-        if (events.barTooltipFlag) {
-            events.barTooltip
+var barEvents = {
+    onMouseMove: function(data, g, barEvents) {
+        if (barEvents.barTooltipFlag) {
+            barEvents.barTooltip
                 .html(data.id + "<br>" + data.value)
                 .style("opacity", 0.9)
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
     },
-    onMouseOver: function(data, g, events) {
-        events.barTooltipFlag = true;
+    onMouseOver: function(data, g, barEvents) {
+        barEvents.barTooltipFlag = true;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 0.6);
         d3.select(g).attr("opacity", 1);
     },
-    onMouseOut: function(data, g, events) {
-        events.barTooltipFlag = false;
+    onMouseOut: function(data, g, barEvents) {
+        barEvents.barTooltipFlag = false;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 1);
-        events.barTooltip.style("opacity", 0);
+        barEvents.barTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, events) {
+    onClick: function(data, g, barEvents) {
         console.log("clicky action going on");
     },
     barTooltip: barTooltip,
@@ -92,7 +92,7 @@ var events = {
 };
 
 var labelEvents = {
-    onMouseMove: function(data, g, events) {
+    onMouseMove: function(data, g, barEvents) {
         console.log("mouse moving");
         if (labelEvents.labelTooltipFlag) {
             console.log(labelEvents);
@@ -106,16 +106,16 @@ var labelEvents = {
 
         }
     },
-    onMouseOver: function(data, g, events) {
+    onMouseOver: function(data, g, barEvents) {
         console.log("mouse overing");
         labelEvents.labelTooltipFlag = true;
     },
-    onMouseOut: function(data, g, events) {
+    onMouseOut: function(data, g, barEvents) {
         console.log("mouse outing");
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, events) {
+    onClick: function(data, g, barEvents) {
         console.log("CLICKY THING OGIN GOIN TOIJEOIFDJ");
         console.log(data);
         console.log(g);
@@ -123,8 +123,6 @@ var labelEvents = {
     lableTooltip: labelTooltip,
     labelTooltipFlag: false
 };
-
-console.log(labelTooltip);
 
 function getTextLength(text) {
     d3.selectAll("#test").remove();
@@ -139,7 +137,6 @@ function getTextLength(text) {
 }
 
 function trim(text, maxLength) {
-
     if (getTextLength(text) <= maxLength) {
         // no trimming needed!
         return text;
@@ -164,10 +161,13 @@ function trim(text, maxLength) {
  *  @param {object} config - contains orientation, dimension, draw target, etc
  *  @param {object} events - attach mouse events to the bars. May have noticed some redundancy, but that's not a big issue
  */
-function genericPlain(data, config, events) {
-
-    var width = config.width, height = config.height, globalMax = config.globalMax,
-        isVert = (config.orientation === "vertical")? true : false;
+function genericplain(data, config, events) {
+    var width = config.width, 
+        height = config.height, 
+        globalMax = config.globalMax,
+        isVert = (config.orientation === "vertical")? true : false, 
+        color = config.color || d3.scale.category10().domain(data.map(function(d) { return d.id; }));
+    
     var barPadding = (isVert)? 0.01 * width : 0.01 * height;
     var barThickness = height / data.length - barPadding;
     var xScale = d3.scale.linear()
@@ -183,7 +183,7 @@ function genericPlain(data, config, events) {
             .domain(data.map(function(d) { return d.id; }))
             .rangeRoundBands([0, width], 0);
         yScale = d3.scale.linear()
-            .domain([0, globalMax]) 
+            .domain([0, globalMax])
             .range([height, 0]);
     }
 
@@ -206,7 +206,7 @@ function genericPlain(data, config, events) {
                 else { return barThickness; }
             })
             .style("fill", function(d) { 
-                return config.color(d.id);
+                return color(d.id);
             })
             .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
             .on("mouseover", function(d) { events.onMouseOver(d, this, events); })
@@ -219,8 +219,7 @@ function genericPlain(data, config, events) {
  *  that this method was convenient for this library.
  *  @param {object} config - includes, target, height, width, and partition dimensions
  */
-function genericSVGFormat(config) {
-
+function genericsvg(config) {
     // assume default 0.1-0.8-0.1 partitioning
     var width = config.width, height = config.height, drawTarget = config.drawTarget,
         hLeft = config.hLeft || 0.1, hMid = config.hMid || 0.8, hRight = config.hRight || 0.1,
@@ -282,7 +281,7 @@ function genericSVGFormat(config) {
  *  Draws an axes according to the appropriate configurations - there are many
  *  @param {object} config - contains the configurations, but some defaults exist
  */
-function genericAxis(config) {
+function genericaxis(config, labelEvents) {
     
     var orientation = config.orientation, 
         drawTarget = config.drawTarget, 
@@ -305,22 +304,37 @@ function genericAxis(config) {
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
-            .call(axis);
+            .call(axis)
+            .selectAll(".tick")
+                .on("mousemove", function(d) { 
+                    labelEvents.onMouseMove(d, this, labelEvents);
+                })
+                .on("mouseover", function(d) { 
+                    labelEvents.onMouseOver(d, this, labelEvents);
+                })
+                .on("mouseout", function(d) {
+                    labelEvents.onMouseOut(d, this, labelEvents);
+                })
+                .on("click", function(d) {
+                    labelEvents.onClick(d, this, labelEvents);
+                });
 }
 /**
  *  Plots a simple bar chart
  *  @param {object} data - the data set to work with
  *  @param {object} config - various configurations for the chart
- *  @param {object} events - set of events to be attached to the chart
+ *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function simplePlain(data, config, events) {
-
+function simplePlain(data, config, barEvents, labelEvents) {
     var isVert = (config.orientation === "vertical")? true : false;
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1;
-    var partitions = genericSVGFormat({
-            width: config.width, height: config.height, drawTarget: config.drawTarget});
+    var hLeft = 0.1, hMid = 0.8, vMid = 0.8;
     var width = config.width * hMid;
-    var height = config.height * vMid;
+    var height = config.height * vMid;    
+
+    // partition
+    var partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget});
+
+    // format
     var fData = [];
     for (var i = 0; i < data.items.length; i++) {
         fData.push({
@@ -328,30 +342,31 @@ function simplePlain(data, config, events) {
             value: data.matrix[i].sum()
         });
     }
+
+    // plot
     var globalMax = fData.map(function(d) { return d.value; }).max();
     var gWidth = width;
     var gHeight = height;
-    genericPlain(fData, {
+    genericplain(fData, {
         globalMax: globalMax,
         orientation: config.orientation,
         width: width,
         height: height,
-        drawTarget: partitions[1][1][0][0],
-        color: d3.scale.category10().domain(fData.map(function(d) { return d.id; }))
-    }, events);
+        drawTarget: partitions[1][1][0][0]
+    }, barEvents);
 
     // x-axis
-    genericAxis({
+    genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         tickSize: (isVert)? 0 : 6,
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
-    });
+    }, labelEvents);
 
     // y-axis
-    genericAxis({
+    genericaxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         tickSize: (isVert)? 6 : 0,
@@ -359,7 +374,9 @@ function simplePlain(data, config, events) {
             d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
         xShift: hLeft * config.width
-    });
+    }, labelEvents);
+
+    console.log(labelEvents);
 }
 /**
  *  Plots a grouped bar chart
@@ -372,7 +389,7 @@ function group(data, config, events) {
     var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hMid = 0.8, vMid = 0.8;
-    var partitions = genericSVGFormat({
+    var partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget});
     var width = config.width * hMid;
     var height = config.height * vMid;
@@ -418,7 +435,7 @@ function group(data, config, events) {
     }   
 
     for (i = 0; i < fData.length; i++) {
-        genericPlain(fData[i], configSet[i], events);
+        genericplain(fData[i], configSet[i], events);
     }
 
     // x-axis
@@ -766,16 +783,17 @@ function draw(chartType, config, data) {
     // make deep copies for new ones
     var nData = jQuery.extend(true, {}, data);
     var nConfig = jQuery.extend(true, {}, config);
-    var nEvents = jQuery.extend(true, {}, events);
+    var nBarEvents = jQuery.extend(true, {}, barEvents);
+    var nLabelEvents = jQuery.extend(true, {}, labelEvents);
 
     if (chartType === "group") {
-        group(nData, nConfig, nEvents);
+        group(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "layer") {
-        layer(nData, nConfig, nEvents);
+        layer(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "simple") {
-        simplePlain(nData, nConfig, nEvents);
+        simplePlain(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "stack") {
-        stack(nData, nConfig, nEvents);
+        stack(nData, nConfig, nBarEvents, nLabelEvents);
     } else {
         alert("Invalid chart type");
     }

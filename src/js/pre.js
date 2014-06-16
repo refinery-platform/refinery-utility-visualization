@@ -55,32 +55,32 @@ var labelTooltip = d3.select("body")
         .style("padding", "1px 4px 1px 4px");
 
 /**
- * Mouse events for the cursor as it goes across various bars
+ * Mouse barEvents for the cursor as it goes across various bars
  * @type {object}
  */
-var events = {
-    onMouseMove: function(data, g, events) {
-        if (events.barTooltipFlag) {
-            events.barTooltip
+var barEvents = {
+    onMouseMove: function(data, g, barEvents) {
+        if (barEvents.barTooltipFlag) {
+            barEvents.barTooltip
                 .html(data.id + "<br>" + data.value)
                 .style("opacity", 0.9)
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
     },
-    onMouseOver: function(data, g, events) {
-        events.barTooltipFlag = true;
+    onMouseOver: function(data, g, barEvents) {
+        barEvents.barTooltipFlag = true;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 0.6);
         d3.select(g).attr("opacity", 1);
     },
-    onMouseOut: function(data, g, events) {
-        events.barTooltipFlag = false;
+    onMouseOut: function(data, g, barEvents) {
+        barEvents.barTooltipFlag = false;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 1);
-        events.barTooltip.style("opacity", 0);
+        barEvents.barTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, events) {
+    onClick: function(data, g, barEvents) {
         console.log("clicky action going on");
     },
     barTooltip: barTooltip,
@@ -88,7 +88,7 @@ var events = {
 };
 
 var labelEvents = {
-    onMouseMove: function(data, g, events) {
+    onMouseMove: function(data, g, barEvents) {
         console.log("mouse moving");
         if (labelEvents.labelTooltipFlag) {
             console.log(labelEvents);
@@ -102,16 +102,16 @@ var labelEvents = {
 
         }
     },
-    onMouseOver: function(data, g, events) {
+    onMouseOver: function(data, g, barEvents) {
         console.log("mouse overing");
         labelEvents.labelTooltipFlag = true;
     },
-    onMouseOut: function(data, g, events) {
+    onMouseOut: function(data, g, barEvents) {
         console.log("mouse outing");
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, events) {
+    onClick: function(data, g, barEvents) {
         console.log("CLICKY THING OGIN GOIN TOIJEOIFDJ");
         console.log(data);
         console.log(g);
@@ -119,8 +119,6 @@ var labelEvents = {
     lableTooltip: labelTooltip,
     labelTooltipFlag: false
 };
-
-console.log(labelTooltip);
 
 function getTextLength(text) {
     d3.selectAll("#test").remove();
@@ -135,7 +133,6 @@ function getTextLength(text) {
 }
 
 function trim(text, maxLength) {
-
     if (getTextLength(text) <= maxLength) {
         // no trimming needed!
         return text;
