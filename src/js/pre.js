@@ -89,11 +89,7 @@ var barEvents = {
 
 var labelEvents = {
     onMouseMove: function(data, g, barEvents) {
-        console.log("mouse moving");
-        if (labelEvents.labelTooltipFlag) {
-            console.log(labelEvents);
-            console.log(labelTooltip);
-            
+        if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
                 .style("opacity", 0.9)
@@ -103,18 +99,13 @@ var labelEvents = {
         }
     },
     onMouseOver: function(data, g, barEvents) {
-        console.log("mouse overing");
         labelEvents.labelTooltipFlag = true;
     },
     onMouseOut: function(data, g, barEvents) {
-        console.log("mouse outing");
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
     onClick: function(data, g, barEvents) {
-        console.log("CLICKY THING OGIN GOIN TOIJEOIFDJ");
-        console.log(data);
-        console.log(g);
     },
     lableTooltip: labelTooltip,
     labelTooltipFlag: false

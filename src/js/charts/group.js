@@ -2,10 +2,9 @@
  *  Plots a grouped bar chart
  *  @param {object} data - the data set to work with
  *  @param {object} config - various configurations for the chart
- *  @param {object} events - set of events to be attached to the chart
+ *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function group(data, config, events) {
-
+function group(data, config, barEvents, labelEvents) {
     var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hMid = 0.8, vMid = 0.8;
@@ -55,11 +54,11 @@ function group(data, config, events) {
     }   
 
     for (i = 0; i < fData.length; i++) {
-        genericplain(fData[i], configSet[i], events);
+        genericplain(fData[i], configSet[i], barEvents);
     }
 
     // x-axis
-    genericAxis({
+    genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
@@ -67,11 +66,12 @@ function group(data, config, events) {
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
         yShift: 0,
-        tickSize: (isVert)? 0 : 6
-    });
+        tickSize: (isVert)? 0 : 6,
+        maxLabelSize: (isVert)? gWidth * 0.9 : 1000
+    }, labelEvents);
 
     // y-axis
-    genericAxis({
+    genericaxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         scale: (isVert)?
@@ -79,6 +79,7 @@ function group(data, config, events) {
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
         xShift: config.width * 0.1,
         yShift: 0,
-        tickSize: (isVert)? 6 : 0
-    });
+        tickSize: (isVert)? 6 : 0,
+        maxLabelSize: config.width * 0.1 * 0.8
+    }, labelEvents);
 }

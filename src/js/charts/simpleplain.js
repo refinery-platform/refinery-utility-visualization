@@ -31,7 +31,8 @@ function simplePlain(data, config, barEvents, labelEvents) {
         orientation: config.orientation,
         width: width,
         height: height,
-        drawTarget: partitions[1][1][0][0]
+        drawTarget: partitions[1][1][0][0],
+        maxLabelSize: config.width * hLeft * 0.8
     }, barEvents);
 
     // x-axis
@@ -54,6 +55,4 @@ function simplePlain(data, config, barEvents, labelEvents) {
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
         xShift: hLeft * config.width
     }, labelEvents);
-
-    console.log(labelEvents);
 }

@@ -93,11 +93,7 @@ var barEvents = {
 
 var labelEvents = {
     onMouseMove: function(data, g, barEvents) {
-        console.log("mouse moving");
-        if (labelEvents.labelTooltipFlag) {
-            console.log(labelEvents);
-            console.log(labelTooltip);
-            
+        if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
                 .style("opacity", 0.9)
@@ -107,18 +103,13 @@ var labelEvents = {
         }
     },
     onMouseOver: function(data, g, barEvents) {
-        console.log("mouse overing");
         labelEvents.labelTooltipFlag = true;
     },
     onMouseOut: function(data, g, barEvents) {
-        console.log("mouse outing");
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
     onClick: function(data, g, barEvents) {
-        console.log("CLICKY THING OGIN GOIN TOIJEOIFDJ");
-        console.log(data);
-        console.log(g);
     },
     lableTooltip: labelTooltip,
     labelTooltipFlag: false
@@ -292,6 +283,7 @@ function genericaxis(config, labelEvents) {
         tickSize = (config.tickSize === undefined)? 6 : config.tickSize, 
         axisClass = config.axisClass || "refinery-utility-axis", 
         blank = config.blank || false;
+        maxLabelSize = config.maxLabelSize || 1000;
 
     if (blank) {
         axisClass = "refinery-utility-blankaxis";
@@ -299,25 +291,33 @@ function genericaxis(config, labelEvents) {
 
     var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
 
-    d3.select(drawTarget).selectAll("axis").data([1]).enter().append("g")
+    var g = d3.select(drawTarget);
+
+    g.selectAll("axis").data([1]).enter().append("g")
         .attr("class", axisClass)
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
-            .call(axis)
-            .selectAll(".tick")
-                .on("mousemove", function(d) { 
-                    labelEvents.onMouseMove(d, this, labelEvents);
-                })
-                .on("mouseover", function(d) { 
-                    labelEvents.onMouseOver(d, this, labelEvents);
-                })
-                .on("mouseout", function(d) {
-                    labelEvents.onMouseOut(d, this, labelEvents);
-                })
-                .on("click", function(d) {
-                    labelEvents.onClick(d, this, labelEvents);
-                });
+            .call(axis);
+    
+    g.selectAll("text")
+        .text(function(n) {
+            return trim(n, maxLabelSize);
+        });
+
+    g.selectAll(".tick")
+        .on("mousemove", function(d) { 
+            labelEvents.onMouseMove(d, this, labelEvents);
+        })
+        .on("mouseover", function(d) { 
+            labelEvents.onMouseOver(d, this, labelEvents);
+        })
+        .on("mouseout", function(d) {
+            labelEvents.onMouseOut(d, this, labelEvents);
+        })
+        .on("click", function(d) {
+            labelEvents.onClick(d, this, labelEvents);
+        });
 }
 /**
  *  Plots a simple bar chart
@@ -352,7 +352,8 @@ function simplePlain(data, config, barEvents, labelEvents) {
         orientation: config.orientation,
         width: width,
         height: height,
-        drawTarget: partitions[1][1][0][0]
+        drawTarget: partitions[1][1][0][0],
+        maxLabelSize: config.width * hLeft * 0.8
     }, barEvents);
 
     // x-axis
@@ -375,17 +376,14 @@ function simplePlain(data, config, barEvents, labelEvents) {
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
         xShift: hLeft * config.width
     }, labelEvents);
-
-    console.log(labelEvents);
 }
 /**
  *  Plots a grouped bar chart
  *  @param {object} data - the data set to work with
  *  @param {object} config - various configurations for the chart
- *  @param {object} events - set of events to be attached to the chart
+ *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function group(data, config, events) {
-
+function group(data, config, barEvents, labelEvents) {
     var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hMid = 0.8, vMid = 0.8;
@@ -435,11 +433,11 @@ function group(data, config, events) {
     }   
 
     for (i = 0; i < fData.length; i++) {
-        genericplain(fData[i], configSet[i], events);
+        genericplain(fData[i], configSet[i], barEvents);
     }
 
     // x-axis
-    genericAxis({
+    genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
@@ -447,11 +445,12 @@ function group(data, config, events) {
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
         yShift: 0,
-        tickSize: (isVert)? 0 : 6
-    });
+        tickSize: (isVert)? 0 : 6,
+        maxLabelSize: (isVert)? gWidth * 0.9 : 1000
+    }, labelEvents);
 
     // y-axis
-    genericAxis({
+    genericaxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         scale: (isVert)?
@@ -459,8 +458,9 @@ function group(data, config, events) {
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
         xShift: config.width * 0.1,
         yShift: 0,
-        tickSize: (isVert)? 6 : 0
-    });
+        tickSize: (isVert)? 6 : 0,
+        maxLabelSize: config.width * 0.1 * 0.8
+    }, labelEvents);
 }
 /**
  *  Plots a layered bar chart
