@@ -2,14 +2,13 @@
  *  Plots a layered bar chart
  *  @param {object} data - the data set to work with
  *  @param {object} config - various configurations for the chart
- *  @param {object} events - set of events to be attached to the chart
+ *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function layer(data, config, events) {
-
+function layer(data, config, barEvents, labelEvents) {
     var i = 0;
     var isVert = (config.orientation === "vertical")? true : false;
     var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1;
-    var partitions = genericSVGFormat({
+    var partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
@@ -63,9 +62,9 @@ function layer(data, config, events) {
     for (i = 0; i < formatData.length; i++) {
         if (isVert) {
             configSet[i].color = tmpFunc2;
-            genericPlain(formatData[formatData.length - 1 -i], configSet[i], events);
+            genericplain(formatData[formatData.length - 1 -i], configSet[i], barEvents);
         } else {
-            genericPlain(formatData[i], configSet[i], events);
+            genericplain(formatData[i], configSet[i], barEvents);
         }
     }
 
@@ -73,13 +72,14 @@ function layer(data, config, events) {
     // axes cannot be done like in simple and group due to more partitioning
     // x-axis
     if (isVert) {
-        genericAxis({
+        genericaxis({
             orientation: "bottom",
             drawTarget: partitions[1][2][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
             yShift: -config.height * vBot * 0.55,
-            tickSize: 0
-        });
+            tickSize: 0,
+            maxLabelSize: (width / formatData.length) * 0.9
+        }, labelEvents);
     } else {
         aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
             .data(formatData).enter().append("g")
@@ -90,11 +90,11 @@ function layer(data, config, events) {
                 });
 
         for (i = 0; i < aGSet[0].length; i++) {
-            genericAxis({
+            genericaxis({
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
-            });
+            }, labelEvents);
         }
     }
 
@@ -109,84 +109,42 @@ function layer(data, config, events) {
                 });
 
         for (i = 0; i < aGSet[0].length; i++) {
-            genericAxis({
+            genericaxis({
                 orientation: "left",
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
                 tickAmt: 3
-            });
+            }, labelEvents);
         }
     } else {
-        genericAxis({
+        genericaxis({
             orientation: "left",
             drawTarget: partitions[0][1][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gHeight], 0),
             xShift: config.width * hLeft,
-            tickSize: 0
-        });
+            tickSize: 0,
+            maxLabelSize: config.width * hLeft * 0.9
+        }, labelEvents);
     }
 
     // add the labels or something
     if (isVert) {
-        genericAxis({
+        genericaxis({
             orientation: "right",
             drawTarget: partitions[2][1][0][0],
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([height, 0], 0),
-            blank: true
-        });
+            blank: true,
+            maxLabelSize: config.width * 0.1 * 0.9
+        }, labelEvents);
     } else {
-        genericAxis({
+        genericaxis({
             orientation: "bottom",
             drawTarget: partitions[1][0][0][0],
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
             blank: true,
-            xShift: -config.width * hLeft * 0.2,
-            yShift: config.height * vTop * 0.7
-        });
+            maxLabelSize: (width / formatData.length) * 0.9,
+            yShift: config.height * vTop * 0.5
+        }, labelEvents);
     }
-
-/*
-    var test = d3.select(partitions[2][1][0][0]).selectAll("text")
-        .attr("hue", "oh this is it")[0][0].huehue = "oh yes ohpe this works";
-
-    console.log(d3.select(partitions[2][1][0][0]).selectAll("text")
-        .attr("hue", "oh this is it")[0][0].huehue);
-
-    console.log(d3.select(partitions[2][1][0][0]).selectAll("text"));
-*/
-
-/*
-    d3.select(partitions[2][1][0][0]).selectAll("text")[0].map(function(d) {
-        d.on("mouseover", function(i) {
-            console.log("hello " + i);
-        });
-    });
-*/
-    // fill in the fullText thing
-    d3.select(partitions[2][1][0][0]).selectAll("text")
-        .attr("fullText", function(d) { 
-            return d;
-        });
-
-    // trim the things
-    d3.select(partitions[2][1][0][0]).selectAll("text")
-        .text(function(d) { 
-            return trim(d, config.width * hRight);
-        });
-
-    //test
-    d3.select(partitions[2][1][0][0]).selectAll(".tick")
-        .on("mousemove", function(d) { 
-            labelEvents.onMouseMove(d, this, labelEvents);
-        })
-        .on("mouseover", function(d) { 
-            labelEvents.onMouseOver(d, this, labelEvents);
-        })
-        .on("mouseout", function(d) {
-            labelEvents.onMouseOut(d, this, labelEvents);
-        })
-        .on("click", function(d) {
-            labelEvents.onClick(d, this, labelEvents);
-        });
 }

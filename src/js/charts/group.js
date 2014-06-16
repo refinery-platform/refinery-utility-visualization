@@ -40,7 +40,6 @@ function group(data, config, barEvents, labelEvents) {
                 }
             });
 
-    function tmpGetID(d) { return d.id; }
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
         configSet.push({
@@ -48,8 +47,7 @@ function group(data, config, barEvents, labelEvents) {
             height: gHeight,
             orientation: config.orientation,
             drawTarget: gSet[0][i],
-            globalMax: globalMax,
-            color: d3.scale.category10().domain(fData[i].map(tmpGetID))
+            globalMax: globalMax
         });
     }   
 
