@@ -81,7 +81,7 @@ var barEvents = {
         barEvents.barTooltip.style("opacity", 0);
     },
     onClick: function(data, g, barEvents) {
-        console.log("clicky action going on");
+        console.log("clicky bar action going on");
     },
     barTooltip: barTooltip,
     barTooltipFlag: false
@@ -95,7 +95,6 @@ var labelEvents = {
                 .style("opacity", 0.9)
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
-
         }
     },
     onMouseOver: function(data, g, barEvents) {
@@ -106,6 +105,7 @@ var labelEvents = {
         labelTooltip.style("opacity", 0);
     },
     onClick: function(data, g, barEvents) {
+        console.log("clicky label action going on");
     },
     lableTooltip: labelTooltip,
     labelTooltipFlag: false

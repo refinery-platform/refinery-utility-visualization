@@ -31,8 +31,7 @@ function simplePlain(data, config, barEvents, labelEvents) {
         orientation: config.orientation,
         width: width,
         height: height,
-        drawTarget: partitions[1][1][0][0],
-        maxLabelSize: config.width * hLeft * 0.8
+        drawTarget: partitions[1][1][0][0]
     }, barEvents);
 
     // x-axis
@@ -42,7 +41,8 @@ function simplePlain(data, config, barEvents, labelEvents) {
         tickSize: (isVert)? 0 : 6,
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0) : 
-            d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
+            d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+        maxLabelSize: (isVert)? (width / fData.length) * 0.9 : 1000
     }, labelEvents);
 
     // y-axis
@@ -53,6 +53,7 @@ function simplePlain(data, config, barEvents, labelEvents) {
         scale: (isVert)?
             d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]) :
             d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([gHeight, 0], 0),
+        maxLabelSize: config.width * 0.1 * 0.9,
         xShift: hLeft * config.width
     }, labelEvents);
 }

@@ -2,15 +2,15 @@
  *  Plots a stacked bar chart
  *  @param {object} data - the data set to work with
  *  @param {object} config - various configurations for the chart
- *  @param {object} events - set of events to be attached to the chart
+ *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function stack(data, config, events) {
+function stack(data, config, barEvents, labelEvents) {
 	
     var isVert = (config.orientation === "vertical")? true : false;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var itemMax = data.matrix.map(function(d) { return d.sum(); }).max();
     var color = d3.scale.ordinal().domain(data.categories).range(d3.scale.category10().range());
-    var partitions = genericSVGFormat({
+    var partitions = genericsvg({
         width: config.width, height: config.height, drawTarget: config.drawTarget
     });
     var width = config.width * 0.8, height = config.height * 0.8;
@@ -68,10 +68,10 @@ function stack(data, config, events) {
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
                 .style("fill", function(d) { return color(d.name); })
-                .on("mousemove", function(d) { events.onMouseMove({id: d.name, value: d.y1 - d.y0}, this, events); })
-                .on("mouseover", function(d) { events.onMouseOver({id: d.name, value: d.y1 - d.y0}, this, events); })
-                .on("mouseout", function(d) { events.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, events); })
-                .on("click", function(d) { events.onClick({id: d.name, value: d.y1 - d.y0}, this, events); });
+                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
+                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
+                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
+                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.y1 - d.y0}, this, barEvents); });
     } else {
         items = d3.select(partitions[1][1][0][0]).selectAll(".item")
             .data(nData).enter().append("g")
@@ -85,30 +85,32 @@ function stack(data, config, events) {
                 .attr("width", function(d) { return xScale(d.x1) - xScale(d.x0); })
                 .attr("height", yScale.rangeBand())
                 .style("fill", function(d) { return color(d.name); })
-                .on("mousemove", function(d) { events.onMouseMove({id: d.name, value: d.x1 - d.x0}, this, events); })
-                .on("mouseover", function(d) { events.onMouseOver({id: d.name, value: d.x1 - d.x0}, this, events); })
-                .on("mouseout", function(d) { events.onMouseOut({id: d.name, value: d.x1 - d.x0}, this, events); })
-                .on("click", function(d) { events.onClick({id: d.name, value: d.x1 - d.x0}, this, events); });
+                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
+                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
+                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
+                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.x1 - d.x0}, this, barEvents); });
     }
 
     // x-axis
-    genericAxis({
+    genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
             d3.scale.linear().domain([0, itemMax]).range([0, width]),
-        tickSize: (isVert)? 0: 6
-    });
+        tickSize: (isVert)? 0: 6,
+        maxLabelSize: (isVert)? (width / nData.length) * 0.9 : 1000
+    }, labelEvents);
 
     // y-axis
-    genericAxis({
+    genericaxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         scale: (isVert)?
             d3.scale.linear().domain([0, itemMax]).range([height, 0]):
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0),
         xShift: config.width * 0.1,
-        tickSize: (isVert)? 6 : 0
-    });
+        tickSize: (isVert)? 6 : 0,
+        maxLabelSize: config.width * 0.1 * 0.9
+    }, labelEvents);
 }

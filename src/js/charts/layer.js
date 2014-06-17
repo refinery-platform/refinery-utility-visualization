@@ -76,7 +76,7 @@ function layer(data, config, barEvents, labelEvents) {
             orientation: "bottom",
             drawTarget: partitions[1][2][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
-            yShift: -config.height * vBot * 0.55,
+            //yShift: -config.height * vBot * 0.55,
             tickSize: 0,
             maxLabelSize: (width / formatData.length) * 0.9
         }, labelEvents);
