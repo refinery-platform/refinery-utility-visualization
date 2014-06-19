@@ -35,6 +35,9 @@ function draw(chartType, config, data) {
         .attr("stroke", "none");
 }
 
+/**
+ *  Wrapper object. Return statement in src/js/wrap/footer.foo
+ */
 var util = {
   draw: draw
 };

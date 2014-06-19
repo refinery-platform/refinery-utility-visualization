@@ -1,4 +1,6 @@
-// some stuff that makes life easier
+/**
+ *  Max function for numerical array found on Stack Overflow
+ */
 Array.prototype.max = function() {
     var max = 0;
     var i = this.length;
@@ -9,7 +11,9 @@ Array.prototype.max = function() {
     return max;
 };
 
-// super optimized sum function found on StackOverflow!
+/**
+ *  Super optimized numerical sum function from Stack Overflow
+ */
 Array.prototype.sum = function() {
     var total = 0;
     var i = this.length;
@@ -20,8 +24,8 @@ Array.prototype.sum = function() {
 };
 
 /**
- * Defines a universal barTooltip for the visualization tool with some inline CSS 
- * @type {object}
+ *  Defines a universal bar tooltip
+ *  @type {object}
  */
 var barTooltip = d3.select("body")
     .append("div")
@@ -38,7 +42,10 @@ var barTooltip = d3.select("body")
         .style("border-radius", "3px")
         .style("padding", "1px 4px 1px 4px");
 
-
+/**
+ *  Defines a universal label tooltip
+ *  @type {object}
+ */
 var labelTooltip = d3.select("body")
     .append("div")
         .attr("class", "refinery-utility-labelTooltip")
@@ -55,7 +62,7 @@ var labelTooltip = d3.select("body")
         .style("padding", "1px 4px 1px 4px");
 
 /**
- * Mouse barEvents for the cursor as it goes across various bars
+ * Mouse events for the cursor as it goes across various bars
  * @type {object}
  */
 var barEvents = {
@@ -87,6 +94,10 @@ var barEvents = {
     barTooltipFlag: false
 };
 
+/**
+ *  Mouse events for the cursor as it goes across axes labels and others
+ *  @type {object}
+ */
 var labelEvents = {
     onMouseMove: function(data, g, barEvents) {
         if (labelEvents.labelTooltipFlag) {            
@@ -111,6 +122,10 @@ var labelEvents = {
     labelTooltipFlag: false
 };
 
+/**
+ *  Plots a 0x0 px SVG and adds the argument to calculate the pixel length of word
+ *  @param {string} - The word whose length you want to find
+ */
 function getTextLength(text) {
     d3.selectAll("#test").remove();
     var test = d3.select("body").append("svg")
@@ -123,6 +138,11 @@ function getTextLength(text) {
     return test[0][0].getBBox().width;
 }
 
+/**
+ *  Trims a string given a maximum pixel length if the current string exceeds the max pixel length
+ *  @param {string} - The string that you want to trim
+ *  @param {number} - Upper bound of pixel length the resulting string should have
+ */
 function trim(text, maxLength) {
     if (getTextLength(text) <= maxLength) {
         // no trimming needed!

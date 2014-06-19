@@ -273,7 +273,6 @@ function genericsvg(config) {
  *  @param {object} config - contains the configurations, but some defaults exist
  */
 function genericaxis(config, labelEvents) {
-    
     var orientation = config.orientation, 
         drawTarget = config.drawTarget, 
         scale = config.scale, 
