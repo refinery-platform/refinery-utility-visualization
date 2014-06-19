@@ -123,10 +123,10 @@ var labelEvents = {
 };
 
 /**
- *  Plots a 0x0 px SVG and adds the argument to calculate the pixel length of word
- *  @param {string} - The word whose length you want to find
+ *  Make a 0x0 px test space for get getTextLength / Height functions
+ *  @param {string} - Make SVG test space with this string
  */
-function getTextLength(text) {
+function makeTestTextSpace(text) {
     d3.selectAll("#test").remove();
     var test = d3.select("body").append("svg")
         .attr("id", "test")
@@ -135,7 +135,25 @@ function getTextLength(text) {
         .data([1]).enter().append("text")
             .text(text);
 
-    return test[0][0].getBBox().width;
+    return test[0][0].getBBox();
+}
+
+
+/**
+ *  Gets pixel length of string
+ *  @param {string} - The string whose pixel length you want to find
+ */
+function getTextLength(text) {
+    return makeTestTextSpace(text).width;
+}
+
+
+/**
+ *  Get pixel height of string
+ *  @param {string} - The string whose pixel height you want to find
+ */
+function getTextHeight(text) {
+    return makeTestTextSpace(text).height;
 }
 
 /**
@@ -156,5 +174,13 @@ function trim(text, maxLength) {
         if (getTextLength(tmpText) <= maxLength) {
             return tmpText;
         }
+    }
+}
+
+function getAxisTickAmt(orientation, length) {
+    if (orientation === "vertical") {
+        return Math.round(length / (10 * getTextHeight("W"))) + 1;
+    } else {
+        return Math.round(length / (10 * getTextLength("W"))) + 1;
     }
 }

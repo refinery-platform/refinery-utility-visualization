@@ -13,7 +13,7 @@ function layer(data, config, barEvents, labelEvents) {
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
     var width = config.width * hMid;
-    var height = (isVert)? config.height * vMid : config.height * vMid;
+    var height = config.height * vMid;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var formatData = [];
     for (i = 0; i < data.categories.length; i++) {
@@ -27,7 +27,8 @@ function layer(data, config, barEvents, labelEvents) {
         formatData.push(itemArr);
     }
 
-    var gPadding = (isVert)? width * 0.05 : height * 0.05;
+    //var gPadding = 0;
+    var gPadding = (isVert)? getTextHeight("1234567890") : getTextLength("W");
     var gWidth = (isVert)? width : width / formatData.length - gPadding;
     var gHeight = (isVert)? height / formatData.length - gPadding : height;
     var gSet = d3.select((isVert)? partitions[1][1][0][0] : partitions[1][1][0][0]).selectAll("g")
@@ -93,7 +94,8 @@ function layer(data, config, barEvents, labelEvents) {
             genericaxis({
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
-                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
+                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+                tickAmt: getAxisTickAmt(config.orientation, config.width * 0.8)
             }, labelEvents);
         }
     }
@@ -114,7 +116,7 @@ function layer(data, config, barEvents, labelEvents) {
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
-                tickAmt: 3
+                tickAmt: getAxisTickAmt(config.orientation, config.height * 0.8)
             }, labelEvents);
         }
     } else {
@@ -144,7 +146,9 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
             blank: true,
             maxLabelSize: (width / formatData.length) * 0.9,
-            yShift: config.height * vTop * 0.5
+            yShift: (config.height * 0.1 - getTextHeight("sample")) * 0.5
         }, labelEvents);
     }
+
+    console.log("Final shift: " + ((config.height * 0.1 - getTextHeight("sample")) * 0.5));
 }

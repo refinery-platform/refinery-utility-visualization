@@ -2,7 +2,9 @@ var rfnry = {
     vis: {
         util: (function() {
         
-// some stuff that makes life easier
+/**
+ *  Max function for numerical array found on Stack Overflow
+ */
 Array.prototype.max = function() {
     var max = 0;
     var i = this.length;
@@ -13,7 +15,9 @@ Array.prototype.max = function() {
     return max;
 };
 
-// super optimized sum function found on StackOverflow!
+/**
+ *  Super optimized numerical sum function from Stack Overflow
+ */
 Array.prototype.sum = function() {
     var total = 0;
     var i = this.length;
@@ -24,8 +28,8 @@ Array.prototype.sum = function() {
 };
 
 /**
- * Defines a universal barTooltip for the visualization tool with some inline CSS 
- * @type {object}
+ *  Defines a universal bar tooltip
+ *  @type {object}
  */
 var barTooltip = d3.select("body")
     .append("div")
@@ -42,7 +46,10 @@ var barTooltip = d3.select("body")
         .style("border-radius", "3px")
         .style("padding", "1px 4px 1px 4px");
 
-
+/**
+ *  Defines a universal label tooltip
+ *  @type {object}
+ */
 var labelTooltip = d3.select("body")
     .append("div")
         .attr("class", "refinery-utility-labelTooltip")
@@ -59,7 +66,7 @@ var labelTooltip = d3.select("body")
         .style("padding", "1px 4px 1px 4px");
 
 /**
- * Mouse barEvents for the cursor as it goes across various bars
+ * Mouse events for the cursor as it goes across various bars
  * @type {object}
  */
 var barEvents = {
@@ -91,6 +98,10 @@ var barEvents = {
     barTooltipFlag: false
 };
 
+/**
+ *  Mouse events for the cursor as it goes across axes labels and others
+ *  @type {object}
+ */
 var labelEvents = {
     onMouseMove: function(data, g, barEvents) {
         if (labelEvents.labelTooltipFlag) {            
@@ -115,7 +126,11 @@ var labelEvents = {
     labelTooltipFlag: false
 };
 
-function getTextLength(text) {
+/**
+ *  Make a 0x0 px test space for get getTextLength / Height functions
+ *  @param {string} - Make SVG test space with this string
+ */
+function makeTestTextSpace(text) {
     d3.selectAll("#test").remove();
     var test = d3.select("body").append("svg")
         .attr("id", "test")
@@ -124,9 +139,32 @@ function getTextLength(text) {
         .data([1]).enter().append("text")
             .text(text);
 
-    return test[0][0].getBBox().width;
+    return test[0][0].getBBox();
 }
 
+
+/**
+ *  Gets pixel length of string
+ *  @param {string} - The string whose pixel length you want to find
+ */
+function getTextLength(text) {
+    return makeTestTextSpace(text).width;
+}
+
+
+/**
+ *  Get pixel height of string
+ *  @param {string} - The string whose pixel height you want to find
+ */
+function getTextHeight(text) {
+    return makeTestTextSpace(text).height;
+}
+
+/**
+ *  Trims a string given a maximum pixel length if the current string exceeds the max pixel length
+ *  @param {string} - The string that you want to trim
+ *  @param {number} - Upper bound of pixel length the resulting string should have
+ */
 function trim(text, maxLength) {
     if (getTextLength(text) <= maxLength) {
         // no trimming needed!
@@ -143,6 +181,13 @@ function trim(text, maxLength) {
     }
 }
 
+function getAxisTickAmt(orientation, length) {
+    if (orientation === "vertical") {
+        return Math.round(length / (10 * getTextHeight("W"))) + 1;
+    } else {
+        return Math.round(length / (10 * getTextLength("W"))) + 1;
+    }
+}
 /**
  *  Draws a plain bar chart in a target area with bar lengths relative to a
  *  global maximum. Also pass in events so they can be attached as well as 
@@ -475,7 +520,7 @@ function layer(data, config, barEvents, labelEvents) {
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
         });
     var width = config.width * hMid;
-    var height = (isVert)? config.height * vMid : config.height * vMid;
+    var height = config.height * vMid;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var formatData = [];
     for (i = 0; i < data.categories.length; i++) {
@@ -489,7 +534,8 @@ function layer(data, config, barEvents, labelEvents) {
         formatData.push(itemArr);
     }
 
-    var gPadding = (isVert)? width * 0.05 : height * 0.05;
+    //var gPadding = 0;
+    var gPadding = (isVert)? getTextHeight("1234567890") : getTextLength("W");
     var gWidth = (isVert)? width : width / formatData.length - gPadding;
     var gHeight = (isVert)? height / formatData.length - gPadding : height;
     var gSet = d3.select((isVert)? partitions[1][1][0][0] : partitions[1][1][0][0]).selectAll("g")
@@ -555,7 +601,8 @@ function layer(data, config, barEvents, labelEvents) {
             genericaxis({
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
-                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth])
+                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+                tickAmt: getAxisTickAmt(config.orientation, config.width * 0.8)
             }, labelEvents);
         }
     }
@@ -576,7 +623,7 @@ function layer(data, config, barEvents, labelEvents) {
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
-                tickAmt: 3
+                tickAmt: getAxisTickAmt(config.orientation, config.height * 0.8)
             }, labelEvents);
         }
     } else {
@@ -606,9 +653,11 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
             blank: true,
             maxLabelSize: (width / formatData.length) * 0.9,
-            yShift: config.height * vTop * 0.5
+            yShift: (config.height * 0.1 - getTextHeight("sample")) * 0.5
         }, labelEvents);
     }
+
+    console.log("Final shift: " + ((config.height * 0.1 - getTextHeight("sample")) * 0.5));
 }
 /**
  *  Plots a stacked bar chart
@@ -763,6 +812,9 @@ function draw(chartType, config, data) {
         .attr("stroke", "none");
 }
 
+/**
+ *  Wrapper object. Return statement in src/js/wrap/footer.foo
+ */
 var util = {
   draw: draw
 };
