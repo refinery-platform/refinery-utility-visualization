@@ -177,10 +177,3 @@ function trim(text, maxLength) {
     }
 }
 
-function getAxisTickAmt(orientation, length) {
-    if (orientation === "vertical") {
-        return Math.round(length / (10 * getTextHeight("W"))) + 1;
-    } else {
-        return Math.round(length / (10 * getTextLength("W"))) + 1;
-    }
-}

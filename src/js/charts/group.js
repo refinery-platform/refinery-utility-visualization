@@ -78,6 +78,6 @@ function group(data, config, barEvents, labelEvents) {
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0,
-        maxLabelSize: config.width * 0.1 * 0.8
+        maxLabelSize: config.width * 0.1 * 0.9
     }, labelEvents);
 }

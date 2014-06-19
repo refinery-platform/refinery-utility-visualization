@@ -77,7 +77,6 @@ function layer(data, config, barEvents, labelEvents) {
             orientation: "bottom",
             drawTarget: partitions[1][2][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
-            //yShift: -config.height * vBot * 0.55,
             tickSize: 0,
             maxLabelSize: (width / formatData.length) * 0.9
         }, labelEvents);
@@ -95,7 +94,7 @@ function layer(data, config, barEvents, labelEvents) {
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
-                tickAmt: getAxisTickAmt(config.orientation, config.width * 0.8)
+                tickAmt: 3
             }, labelEvents);
         }
     }
@@ -116,7 +115,7 @@ function layer(data, config, barEvents, labelEvents) {
                 drawTarget: aGSet[0][i],
                 scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
-                tickAmt: getAxisTickAmt(config.orientation, config.height * 0.8)
+                tickAmt: 3
             }, labelEvents);
         }
     } else {
@@ -146,9 +145,7 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
             blank: true,
             maxLabelSize: (width / formatData.length) * 0.9,
-            yShift: (config.height * 0.1 - getTextHeight("sample")) * 0.5
+            yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5
         }, labelEvents);
     }
-
-    console.log("Final shift: " + ((config.height * 0.1 - getTextHeight("sample")) * 0.5));
 }
