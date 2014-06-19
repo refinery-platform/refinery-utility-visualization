@@ -579,7 +579,8 @@ function layer(data, config, barEvents, labelEvents) {
             drawTarget: partitions[1][2][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
             tickSize: 0,
-            maxLabelSize: (width / formatData.length) * 0.9
+            maxLabelSize: (width / formatData.length) * 0.9,
+            yShift: -getTextHeight("W")
         }, labelEvents);
     } else {
         aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
