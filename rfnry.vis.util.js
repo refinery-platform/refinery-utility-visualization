@@ -199,12 +199,10 @@ function genericplain(data, config, events) {
         color = config.color || d3.scale.category10().domain(data.map(function(d) { return d.id; })),
         barPadding = config.barPadding || (isVert)? 0.01 * width : 0.01 * height,
         barThickness =  config.barThickness || ((isVert)? width : height) / data.length - barPadding,
-        xScale = config.xScale || (isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0)
-                                    : d3.scale.linear().domain([0, globalMax]).range([0, width]),
+        xScale = config.xScale || ((isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0)
+                                    : d3.scale.linear().domain([0, globalMax]).range([0, width])),
         yScale = config.yScale || ((isVert)? d3.scale.linear().domain([0, globalMax]).range([height, 0])
                                     : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0));
-    console.log("Inside genplain");
-    console.log(config.yScale == yScale);
 
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
@@ -360,25 +358,12 @@ function simplePlain(data, config, barEvents, labelEvents) {
     if (config.applyLog) {
         if (isVert) {
             xGraphScale = d3.scale.ordinal().domain(fData.map(function(d) { return d.id; })).rangeRoundBands([0, mainWidth], 0);
-            yGraphScale = function(n) {
-                return d3.scale.log().domain([1, globalMax]).range([mainHeight, 0])(n);
-                //return mainHeight - d3.scale.log().domain([1, globalMax]).range([mainHeight, 0])(n); 
-            };
-
-            console.log(yGraphScale(92));
-            console.log(yGraphScale(80));
-            console.log(yGraphScale(77));
-            console.log(yGraphScale(78));
-            console.log(yGraphScale(63));
-            console.log(mainHeight);
-            console.log("Did them log transformations");
+            yGraphScale = d3.scale.log().domain([1, globalMax]).range([mainHeight, 0]);
         } else {
-
+            xGraphScale = d3.scale.log().domain([1, globalMax]).range([0, mainWidth]);
+            yGraphScale = d3.scale.ordinal().domain(fData.map(function(d) { return d.id; })).rangeRoundBands([0, mainHeight], 0);
         }
     } 
-
-    console.log(xGraphScale);
-    console.log(yGraphScale);
 
     // plot
     genericplain(fData, {
@@ -391,13 +376,33 @@ function simplePlain(data, config, barEvents, labelEvents) {
         yScale: yGraphScale
     }, barEvents);
 
+    var xAxisScale;
+    var yAxisScale;
+
+    if (config.applyLog) {
+        if (isVert) {
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            yAxisScale = d3.scale.log().domain([1, globalMax]).range([mainHeight, 0]);
+        } else {
+            xAxisScale = d3.scale.log().domain([1, globalMax]).range([0, mainWidth]);
+            yAxisScale = d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0);
+        }
+    } else {
+        if (isVert) {
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            yAxisScale = d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]);
+        } else {
+            xAxisScale = d3.scale.linear().domain([0, globalMax]).range([0, mainWidth]);
+            yAxisScale = d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0);
+        }
+    }
+
     // x-axis
     genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         tickSize: (isVert)? 0 : 6,
-        scale: (isVert)? d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0) 
-                    : d3.scale.linear().domain([0, globalMax]).range([0, mainWidth]),
+        scale: xAxisScale,
         maxLabelSize: (isVert)? (mainWidth / fData.length) * 0.9 : 1000
     }, labelEvents);
 
@@ -406,8 +411,7 @@ function simplePlain(data, config, barEvents, labelEvents) {
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         tickSize: (isVert)? 6 : 0,
-        scale: (isVert)? d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]) 
-                    : d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0),
+        scale: yAxisScale,
         maxLabelSize: config.width * 0.1 * 0.9,
         xShift: hLeft * config.width
     }, labelEvents);

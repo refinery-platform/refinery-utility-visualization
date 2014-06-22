@@ -15,12 +15,10 @@ function genericplain(data, config, events) {
         color = config.color || d3.scale.category10().domain(data.map(function(d) { return d.id; })),
         barPadding = config.barPadding || (isVert)? 0.01 * width : 0.01 * height,
         barThickness =  config.barThickness || ((isVert)? width : height) / data.length - barPadding,
-        xScale = config.xScale || (isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0)
-                                    : d3.scale.linear().domain([0, globalMax]).range([0, width]),
+        xScale = config.xScale || ((isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0)
+                                    : d3.scale.linear().domain([0, globalMax]).range([0, width])),
         yScale = config.yScale || ((isVert)? d3.scale.linear().domain([0, globalMax]).range([height, 0])
                                     : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0));
-    console.log("Inside genplain");
-    console.log(config.yScale == yScale);
 
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
