@@ -29,8 +29,9 @@
     <form id="orientationSelector">
     	<input type="radio" name="orientationSelector" value="horizontal" checked>Horizontal</input>
     	<input type="radio" name="orientationSelector" value="vertical">Vertical</input>
+        <input type="checkbox" name="logSelector" id="logTransformation" value="Log Transformation">Apply Log Transformation</input>
     </form>
-
+        
     <br>
     <div id="drawAreaWrapper">
         <div class="drawArea" id="draw1"></div>
@@ -61,6 +62,7 @@
 
         $(document).ready(function() {
             $("#simple").click(function(event) {
+                config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
                 rfnry.vis.util.draw("simple", config, data);
@@ -68,6 +70,7 @@
             });
 
             $("#group").click(function(event) {
+                config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
                 rfnry.vis.util.draw("group", config, data);
@@ -75,6 +78,7 @@
             });
             
             $("#layer").click(function(event) {
+                config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
                 rfnry.vis.util.draw("layer", config, data);
@@ -82,6 +86,7 @@
             });
 
             $("#stack").click(function(event) {
+                config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
                 rfnry.vis.util.draw("stack", config, data);

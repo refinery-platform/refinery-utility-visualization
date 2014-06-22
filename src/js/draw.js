@@ -33,6 +33,8 @@ function draw(chartType, config, data) {
         .attr("font-size", "14px")
         .attr("fill", "black")
         .attr("stroke", "none");
+
+    console.log("applyLog: " + config.applyLog);
 }
 
 /**

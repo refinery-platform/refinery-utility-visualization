@@ -8,17 +8,16 @@ function genericaxis(config, labelEvents) {
         scale = config.scale, 
         xShift = config.xShift || 0, 
         yShift = config.yShift || 0, 
-        tickAmt = config.tickAmt || 5,
-        tickSize = (config.tickSize === undefined)? 6 : config.tickSize, 
+        tickSize = config.tickSize || 6, 
         axisClass = config.axisClass || "refinery-utility-axis", 
         blank = config.blank || false;
-        maxLabelSize = config.maxLabelSize || 1000;
+        maxLabelSize = config.maxLabelSize || Infinity;
 
     if (blank) {
         axisClass = "refinery-utility-blankaxis";
     }
 
-    var axis = d3.svg.axis().scale(scale).orient(orientation).ticks(tickAmt).tickSize(tickSize);
+    var axis = d3.svg.axis().scale(scale).orient(orientation).tickSize(tickSize);
 
     var g = d3.select(drawTarget);
 
@@ -30,21 +29,13 @@ function genericaxis(config, labelEvents) {
             .call(axis);
     
     g.selectAll("text")
-        .text(function(n) {
-            return trim(n, maxLabelSize);
+        .text(function(d) {
+            return trim(d, maxLabelSize);
         });
 
     g.selectAll(".tick")
-        .on("mousemove", function(d) { 
-            labelEvents.onMouseMove(d, this, labelEvents);
-        })
-        .on("mouseover", function(d) { 
-            labelEvents.onMouseOver(d, this, labelEvents);
-        })
-        .on("mouseout", function(d) {
-            labelEvents.onMouseOut(d, this, labelEvents);
-        })
-        .on("click", function(d) {
-            labelEvents.onClick(d, this, labelEvents);
-        });
+        .on("mousemove", function(d) { labelEvents.onMouseMove(d, this, labelEvents); })
+        .on("mouseover", function(d) { labelEvents.onMouseOver(d, this, labelEvents); })
+        .on("mouseout", function(d) { labelEvents.onMouseOut(d, this, labelEvents); })
+        .on("click", function(d) { labelEvents.onClick(d, this, labelEvents); });
 }
