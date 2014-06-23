@@ -5,15 +5,16 @@
  *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
 function group(data, config, barEvents, labelEvents) {
-    var i = 0;
-    var isVert = (config.orientation === "vertical")? true : false;
-    var hMid = 0.8, vMid = 0.8;
-    var partitions = genericsvg({
-            width: config.width, height: config.height, drawTarget: config.drawTarget});
-    var width = config.width * hMid;
-    var height = config.height * vMid;
-    var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
-    var fData = [];
+    var i = 0,
+        isVert = (config.orientation === "vertical")? true : false,
+        hMid = 0.8, 
+        vMid = 0.8,
+        partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget}),
+        mainWidth = config.width * hMid,
+        mainHeight = config.height * vMid,
+        globalMax = data.matrix.map(function(d) { return d.max(); }).max(),
+        fData = [];
+
     for (i = 0; i < data.items.length; i++) {
         var catArr = [];
         for (var j = 0; j < data.matrix[i].length; j++) {
@@ -25,20 +26,20 @@ function group(data, config, barEvents, labelEvents) {
         fData.push(catArr);
     }
 
-    var gPadding = (isVert)? width * 0.01 : height * 0.01;
-    var gWidth = (isVert)? width / fData.length - gPadding : width;
-    var gHeight = (isVert)? height : height / fData.length - gPadding;
-    var gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
-        .data(fData).enter().append("g")
-            .attr("width", gWidth)
-            .attr("height", gHeight)
-            .attr("transform", function(d, i) { 
-                if (isVert) {
-                   return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
-                } else {
-                    return "translate(0, " + (i * (gHeight + gPadding)) + ")";
-                }
-            });
+    var gPadding = (isVert)? mainWidth * 0.01 : mainHeight * 0.01,
+        gWidth = (isVert)? mainWidth / fData.length - gPadding : mainWidth,
+        gHeight = (isVert)? mainHeight : mainHeight / fData.length - gPadding,
+        gSet = d3.select(partitions[1][1][0][0]).selectAll("g")
+            .data(fData).enter().append("g")
+                .attr("width", gWidth)
+                .attr("height", gHeight)
+                .attr("transform", function(d, i) { 
+                    if (isVert) {
+                       return "translate(" + (i * (gWidth + gPadding)) + ", 0)"; 
+                    } else {
+                        return "translate(0, " + (i * (gHeight + gPadding)) + ")";
+                    }
+                });
 
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
@@ -47,11 +48,33 @@ function group(data, config, barEvents, labelEvents) {
             height: gHeight,
             orientation: config.orientation,
             drawTarget: gSet[0][i],
-            globalMax: globalMax
+            globalMax: globalMax,
+            xScale: xGraphScale,
+            yScale: yGraphScale
         });
     }   
 
+    function tmpGetId(d) {
+        return d.id;
+    }
+
     for (i = 0; i < fData.length; i++) {
+        var xGraphScale,
+            yGraphScale;
+
+        if (config.applyLog) {
+            if (isVert) {
+                xGraphScale = d3.scale.ordinal().domain(fData[i].map(tmpGetId)).rangeRoundBands([0, gWidth], 0);
+                yGraphScale = d3.scale.log().domain([1, globalMax]).range([gHeight, 0]);
+            } else {
+                xGraphScale = d3.scale.log().domain([1, globalMax]).range([0, gWidth]);
+                yGraphScale = d3.scale.ordinal().domain(fData[i].map(tmpGetId)).rangeRoundBands([0, gHeight], 0);
+            }
+        }
+
+        configSet[i].xScale = xGraphScale;
+        configSet[i].yScale = yGraphScale;
+
         genericplain(fData[i], configSet[i], barEvents);
     }
 
@@ -60,7 +83,7 @@ function group(data, config, barEvents, labelEvents) {
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0) :
             d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
         xShift: 0,
         yShift: 0,
@@ -73,8 +96,8 @@ function group(data, config, barEvents, labelEvents) {
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
         scale: (isVert)?
-            d3.scale.linear().domain([0, globalMax]).range([height, 0]) :
-            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([height, 0], 0),
+            d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]) :
+            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0),
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0,
