@@ -4,7 +4,7 @@
  *  @param {object} config - various configurations for the chart
  *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
-function simplePlain(data, config, barEvents, labelEvents) {
+function simpleplain(data, config, barEvents, labelEvents) {
     var isVert = (config.orientation === "vertical")? true : false,
         hLeft = 0.1, hMid = 0.8, vMid = 0.8,
         mainWidth = config.width * hMid,

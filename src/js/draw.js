@@ -21,7 +21,7 @@ function draw(chartType, config, data) {
     } else if (chartType === "layer") {
         layer(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "simple") {
-        simplePlain(nData, nConfig, nBarEvents, nLabelEvents);
+        simpleplain(nData, nConfig, nBarEvents, nLabelEvents);
     } else if (chartType === "stack") {
         stack(nData, nConfig, nBarEvents, nLabelEvents);
     } else {

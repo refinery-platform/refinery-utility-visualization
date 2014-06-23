@@ -5,17 +5,18 @@
  *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
 function layer(data, config, barEvents, labelEvents) {
-    var i = 0;
-    var isVert = (config.orientation === "vertical")? true : false;
-    var hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1;
-    var partitions = genericsvg({
+    var i = 0,
+        isVert = (config.orientation === "vertical")? true : false,
+        hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1,
+        partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
             hLeft: hLeft, hMid: hMid, hRight: hRight, vTop: vTop, vMid: vMid, vBot: vBot
-        });
-    var width = config.width * hMid;
-    var height = config.height * vMid;
-    var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
-    var formatData = [];
+        }),
+        mainWidth = config.width * hMid,
+        mainHeight = config.height * vMid,
+        globalMax = data.matrix.map(function(d) { return d.max(); }).max(),
+        fData = [];
+    
     for (i = 0; i < data.categories.length; i++) {
         var itemArr = [];
         for (var j = 0; j < data.matrix.length; j++) {
@@ -24,15 +25,15 @@ function layer(data, config, barEvents, labelEvents) {
                 value: data.matrix[j][i]
             });
         }
-        formatData.push(itemArr);
+        fData.push(itemArr);
     }
 
     //var gPadding = 0;
-    var gPadding = (isVert)? getTextHeight("1234567890") : getTextLength("W");
-    var gWidth = (isVert)? width : width / formatData.length - gPadding;
-    var gHeight = (isVert)? height / formatData.length - gPadding : height;
-    var gSet = d3.select((isVert)? partitions[1][1][0][0] : partitions[1][1][0][0]).selectAll("g")
-        .data(formatData).enter().append("g")
+    var gPadding = (isVert)? getTextHeight("1234567890") : getTextLength("W"),
+        gWidth = (isVert)? mainWidth : mainWidth / fData.length - gPadding,
+        gHeight = (isVert)? mainHeight / fData.length - gPadding : mainHeight,
+        gSet = d3.select((isVert)? partitions[1][1][0][0] : partitions[1][1][0][0]).selectAll("g")
+        .data(fData).enter().append("g")
             .attr("width", gWidth)
             .attr("height", gHeight)
             .attr("transform", function(d, i) {
@@ -58,18 +59,38 @@ function layer(data, config, barEvents, labelEvents) {
         });
     }
 
-    var tmpScale2 = d3.scale.category10().range().slice(0, formatData.length).reverse();
+    var tmpScale2 = d3.scale.category10().range().slice(0, fData.length).reverse();
     function tmpFunc2(n) { return tmpScale[i]; }
-    for (i = 0; i < formatData.length; i++) {
+    function tmpGetId(d) { return d.id; }
+    for (i = 0; i < fData.length; i++) {
+        var xGraphScale,
+            yGraphScale;
+
+        if (config.applyLog) {
+            if (isVert) {
+                xGraphScale = d3.scale.ordinal().domain(fData[fData.length - 1 - i].map(tmpGetId)).rangeRoundBands([0, gWidth], 0);
+                yGraphScale = d3.scale.log().domain([1, globalMax]).range([gHeight, 0]);
+            } else {
+                xGraphScale = d3.scale.log().domain([1, globalMax]).range([0, gWidth]);
+                yGraphScale = d3.scale.ordinal().domain(fData[i].map(tmpGetId)).rangeRoundBands([0, gHeight], 0);
+            }
+        }
+
+        configSet[i].xScale = xGraphScale;
+        configSet[i].yScale = yGraphScale;
+
         if (isVert) {
             configSet[i].color = tmpFunc2;
-            genericplain(formatData[formatData.length - 1 -i], configSet[i], barEvents);
+            genericplain(fData[fData.length - 1 - i], configSet[i], barEvents);
         } else {
-            genericplain(formatData[i], configSet[i], barEvents);
+            genericplain(fData[i], configSet[i], barEvents);
         }
     }
 
-    var aGSet;
+    var aGSet,
+        xAxisLogScale = d3.scale.log().domain([1, globalMax]).range([0, gWidth]),
+        yAxisLogScale = d3.scale.log().domain([1, globalMax]).range([gHeight, 0]);
+
     // axes cannot be done like in simple and group due to more partitioning
     // x-axis
     if (isVert) {
@@ -78,12 +99,12 @@ function layer(data, config, barEvents, labelEvents) {
             drawTarget: partitions[1][2][0][0],
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
             tickSize: 0,
-            maxLabelSize: (width / formatData.length) * 0.9,
+            maxLabelSize: (mainWidth / fData.length) * 0.9,
             yShift: -getTextHeight("W")
         }, labelEvents);
     } else {
         aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
-            .data(formatData).enter().append("g")
+            .data(fData).enter().append("g")
                 .attr("width", gWidth)
                 .attr("height", config.height * vBot)
                 .attr("transform", function(d, i) {
@@ -94,7 +115,8 @@ function layer(data, config, barEvents, labelEvents) {
             genericaxis({
                 orientation: "bottom",
                 drawTarget: aGSet[0][i],
-                scale: d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+                scale: (config.applyLog)? xAxisLogScale 
+                            : d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
                 tickAmt: 3
             }, labelEvents);
         }
@@ -103,7 +125,7 @@ function layer(data, config, barEvents, labelEvents) {
     // y-axis
     if (isVert) {
         aGSet = d3.select(partitions[0][1][0][0]).selectAll("g")
-            .data(formatData).enter().append("g")
+            .data(fData).enter().append("g")
                 .attr("width", config.width * hLeft)
                 .attr("height", gHeight)
                 .attr("transform", function(d, i) {
@@ -114,7 +136,8 @@ function layer(data, config, barEvents, labelEvents) {
             genericaxis({
                 orientation: "left",
                 drawTarget: aGSet[0][i],
-                scale: d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
+                scale: (config.applyLog)? yAxisLogScale
+                            : d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
                 tickAmt: 3
             }, labelEvents);
@@ -135,7 +158,7 @@ function layer(data, config, barEvents, labelEvents) {
         genericaxis({
             orientation: "right",
             drawTarget: partitions[2][1][0][0],
-            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([height, 0], 0),
+            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([mainHeight, 0], 0),
             blank: true,
             maxLabelSize: config.width * 0.1 * 0.9
         }, labelEvents);
@@ -143,9 +166,9 @@ function layer(data, config, barEvents, labelEvents) {
         genericaxis({
             orientation: "bottom",
             drawTarget: partitions[1][0][0][0],
-            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, width], 0),
+            scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, mainWidth], 0),
             blank: true,
-            maxLabelSize: (width / formatData.length) * 0.9,
+            maxLabelSize: (mainWidth / fData.length) * 0.9,
             yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5
         }, labelEvents);
     }
