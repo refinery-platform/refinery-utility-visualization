@@ -204,9 +204,6 @@ function genericplain(data, config, events) {
         yScale = config.yScale || ((isVert)? d3.scale.linear().domain([0, globalMax]).range([height, 0])
                                     : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0));
 
-    console.log(xScale.domain());
-    console.log(xScale.range());
-
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
             .attr("x", function(d) {
@@ -498,13 +495,32 @@ function group(data, config, barEvents, labelEvents) {
         genericplain(fData[i], configSet[i], barEvents);
     }
 
+    var xAxisScale,
+        yAxisScale;
+
+    if (config.applyLog) {
+        if (isVert) {
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            yAxisScale = d3.scale.log().domain([1, globalMax]).range([mainHeight, 0]);
+        } else {
+            xAxisScale = d3.scale.log().domain([1, globalMax]).range([0, gWidth]);
+            yAxisScale = d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0);
+        }
+    } else {
+        if (isVert) {
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            yAxisScale = d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]);
+        } else {
+            xAxisScale = d3.scale.linear().domain([0, globalMax]).range([0, gWidth]);
+            yAxisScale = d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0);
+        }
+    }
+
     // x-axis
     genericaxis({
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
-        scale: (isVert)?
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0) :
-            d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
+        scale: xAxisScale,
         xShift: 0,
         yShift: 0,
         tickSize: (isVert)? 0 : 6,
@@ -515,9 +531,7 @@ function group(data, config, barEvents, labelEvents) {
     genericaxis({
         orientation: "left",
         drawTarget: partitions[0][1][0][0],
-        scale: (isVert)?
-            d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]) :
-            d3.scale.ordinal().domain(data.items.reverse()).rangeRoundBands([mainHeight, 0], 0),
+        scale: yAxisScale,
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0,
