@@ -20,10 +20,6 @@ function genericplain(data, config, events) {
         yScale = config.yScale || ((isVert)? d3.scale.linear().domain([0, globalMax]).range([height, 0])
                                     : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0));
 
-        console.log(xScale.domain());
-        console.log(xScale.range());
-        console.log(data.map(function(d) { return d.id; }));
-
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
             .attr("x", function(d) {
