@@ -28,7 +28,7 @@ The example above would draw a stack bar chart of the data provided in an area i
 2. The second argument takes a data object, more specifically a matrix of the data set. The example supplied in the example folder looks something like the following:
 
       ```
-      data = {
+      var data = {
             items: ["apple", "bear", "cat", "dinosaur", "elephant", "fish"],
             categories: ["agility", "buffness", "conspicuousness", 
                          "dangerousness", "elasticity", "frugality"],
