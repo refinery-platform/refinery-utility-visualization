@@ -19,7 +19,7 @@ Use
 ===
 To use the library, you can simply do a call such as:
 
-```rfnry.vis.util.draw("stack", data, config)```
+```rfnry.vis.util.draw("stack", config, data);```
 
 The example above would draw a stack bar chart of the data provided in an area indicated in the config object.
 
@@ -53,7 +53,8 @@ The example above would draw a stack bar chart of the data provided in an area i
             height: 800,
             width: 1000,
             drawTarget: nameOfSomeDiv,
-            orientation: vertical
+            orientation: vertical,
+            applyLog: false
       }
       ```
       
