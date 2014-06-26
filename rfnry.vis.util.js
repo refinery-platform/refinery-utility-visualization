@@ -199,10 +199,10 @@ function genericplain(data, config, events) {
         color = config.color || d3.scale.category10().domain(data.map(function(d) { return d.id; })),
         barPadding = config.barPadding || (isVert)? 0.01 * width : 0.01 * height,
         barThickness =  config.barThickness || ((isVert)? width : height) / data.length - barPadding,
-        xScale = config.xScale || ((isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0)
+        xScale = config.xScale || ((isVert)? d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, width], 0.05)
                                     : d3.scale.linear().domain([0, globalMax]).range([0, width])),
         yScale = config.yScale || ((isVert)? d3.scale.linear().domain([0, globalMax]).range([height, 0])
-                                    : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0));
+                                    : d3.scale.ordinal().domain(data.map(function(d) { return d.id; })).rangeRoundBands([0, height], 0.05));
 
     d3.select(config.drawTarget).selectAll("rect")
         .data(data).enter().append("rect").attr("class", "bar")
@@ -380,19 +380,19 @@ function simpleplain(data, config, barEvents, labelEvents) {
 
     if (config.applyLog) {
         if (isVert) {
-            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0.05);
             yAxisScale = d3.scale.log().domain([1, globalMax]).range([mainHeight, 0]);
         } else {
             xAxisScale = d3.scale.log().domain([1, globalMax]).range([0, mainWidth]);
-            yAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainHeight], 0);
+            yAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainHeight], 0.05);
         }
     } else {
         if (isVert) {
-            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0);
+            xAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainWidth], 0.05);
             yAxisScale = d3.scale.linear().domain([0, globalMax]).range([mainHeight, 0]);
         } else {
             xAxisScale = d3.scale.linear().domain([0, globalMax]).range([0, mainWidth]);
-            yAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainHeight], 0);
+            yAxisScale = d3.scale.ordinal().domain(data.items).rangeRoundBands([0, mainHeight], 0.05);
         }
     }
 
