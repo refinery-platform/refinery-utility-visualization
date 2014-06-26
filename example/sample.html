@@ -64,7 +64,7 @@
 
         $(document).ready(function() {
             $("#simple").click(function(event) {
-                color = d3.scale.category20().range();
+                color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
@@ -74,7 +74,7 @@
             });
 
             $("#group").click(function(event) {
-                color = d3.scale.category20().range();
+                color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
@@ -84,7 +84,7 @@
             });
             
             $("#layer").click(function(event) {
-                color = d3.scale.category20().range();
+                color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
@@ -94,7 +94,7 @@
             });
 
             $("#stack").click(function(event) {
-                color = d3.scale.category20().range();
+                color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
