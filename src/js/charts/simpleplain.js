@@ -6,12 +6,13 @@
  */
 function simpleplain(data, config, barEvents, labelEvents) {
     var isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hLeft = 0.1, hMid = 0.8, vMid = 0.8,
         mainWidth = config.width * hMid,
         mainHeight = config.height * vMid,  
         partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget}),
         fData = [];
-    
+
     for (var i = 0; i < data.items.length; i++) {
         fData.push({ id: data.items[i], value: data.matrix[i].sum() });
     }
@@ -30,6 +31,7 @@ function simpleplain(data, config, barEvents, labelEvents) {
         }
     } 
 
+    function tmpGetId(d) { return d.id; }
     // plot
     genericplain(fData, {
         globalMax: globalMax,
@@ -38,7 +40,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         height: mainHeight,
         drawTarget: partitions[1][1][0][0],
         xScale: xGraphScale,
-        yScale: yGraphScale
+        yScale: yGraphScale,
+        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color)
     }, barEvents);
 
     var xAxisScale,

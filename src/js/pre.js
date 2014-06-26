@@ -99,7 +99,7 @@ var barEvents = {
  *  @type {object}
  */
 var labelEvents = {
-    onMouseMove: function(data, g, barEvents) {
+    onMouseMove: function(data, g, labelEvents) {
         if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
@@ -108,14 +108,14 @@ var labelEvents = {
                 .style("left", (d3.event.pageX + 10) + "px");
         }
     },
-    onMouseOver: function(data, g, barEvents) {
+    onMouseOver: function(data, g, labelEvents) {
         labelEvents.labelTooltipFlag = true;
     },
-    onMouseOut: function(data, g, barEvents) {
+    onMouseOut: function(data, g, labelEvents) {
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, barEvents) {
+    onClick: function(data, g, labelEvents) {
         console.log("clicky label action going on");
     },
     lableTooltip: labelTooltip,

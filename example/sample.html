@@ -47,7 +47,7 @@
             width: 1080
         }
 
-        data = {
+        var data = {
             items: ["apple", "bear", "cat", "dinosaur", "elephant", "fish"],
             categories: ["agility", "buffness", "conspicuousness", "dangerousness", "elasticity", "frugality"],
             matrix: [
@@ -60,8 +60,12 @@
             ]
         }
 
+        var color;
+
         $(document).ready(function() {
             $("#simple").click(function(event) {
+                color = d3.scale.category20().range();
+                config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
@@ -70,6 +74,8 @@
             });
 
             $("#group").click(function(event) {
+                color = d3.scale.category20().range();
+                config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
@@ -78,6 +84,8 @@
             });
             
             $("#layer").click(function(event) {
+                color = d3.scale.category20().range();
+                config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();
@@ -86,6 +94,8 @@
             });
 
             $("#stack").click(function(event) {
+                color = d3.scale.category20().range();
+                config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
                 config.drawTarget = $("input[name='drawSelector']:checked").val();
                 config.orientation = $("input[name='orientationSelector']:checked").val();

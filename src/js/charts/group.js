@@ -7,6 +7,7 @@
 function group(data, config, barEvents, labelEvents) {
     var i = 0,
         isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hMid = 0.8, 
         vMid = 0.8,
         partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget}),
@@ -41,6 +42,8 @@ function group(data, config, barEvents, labelEvents) {
                     }
                 });
 
+    function tmpGetId(d) { return d.id; }
+
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
         configSet.push({
@@ -50,13 +53,10 @@ function group(data, config, barEvents, labelEvents) {
             drawTarget: gSet[0][i],
             globalMax: globalMax,
             xScale: xGraphScale,
-            yScale: yGraphScale
+            yScale: yGraphScale,
+            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color)
         });
     }   
-
-    function tmpGetId(d) {
-        return d.id;
-    }
 
     for (i = 0; i < fData.length; i++) {
         var xGraphScale,

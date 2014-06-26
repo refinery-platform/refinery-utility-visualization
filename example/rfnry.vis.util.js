@@ -103,7 +103,7 @@ var barEvents = {
  *  @type {object}
  */
 var labelEvents = {
-    onMouseMove: function(data, g, barEvents) {
+    onMouseMove: function(data, g, labelEvents) {
         if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
@@ -112,14 +112,14 @@ var labelEvents = {
                 .style("left", (d3.event.pageX + 10) + "px");
         }
     },
-    onMouseOver: function(data, g, barEvents) {
+    onMouseOver: function(data, g, labelEvents) {
         labelEvents.labelTooltipFlag = true;
     },
-    onMouseOut: function(data, g, barEvents) {
+    onMouseOut: function(data, g, labelEvents) {
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
     },
-    onClick: function(data, g, barEvents) {
+    onClick: function(data, g, labelEvents) {
         console.log("clicky label action going on");
     },
     lableTooltip: labelTooltip,
@@ -340,12 +340,13 @@ function genericaxis(config, labelEvents) {
  */
 function simpleplain(data, config, barEvents, labelEvents) {
     var isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hLeft = 0.1, hMid = 0.8, vMid = 0.8,
         mainWidth = config.width * hMid,
         mainHeight = config.height * vMid,  
         partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget}),
         fData = [];
-    
+
     for (var i = 0; i < data.items.length; i++) {
         fData.push({ id: data.items[i], value: data.matrix[i].sum() });
     }
@@ -364,6 +365,7 @@ function simpleplain(data, config, barEvents, labelEvents) {
         }
     } 
 
+    function tmpGetId(d) { return d.id; }
     // plot
     genericplain(fData, {
         globalMax: globalMax,
@@ -372,7 +374,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         height: mainHeight,
         drawTarget: partitions[1][1][0][0],
         xScale: xGraphScale,
-        yScale: yGraphScale
+        yScale: yGraphScale,
+        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color)
     }, barEvents);
 
     var xAxisScale,
@@ -424,6 +427,7 @@ function simpleplain(data, config, barEvents, labelEvents) {
 function group(data, config, barEvents, labelEvents) {
     var i = 0,
         isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hMid = 0.8, 
         vMid = 0.8,
         partitions = genericsvg({width: config.width, height: config.height, drawTarget: config.drawTarget}),
@@ -458,6 +462,8 @@ function group(data, config, barEvents, labelEvents) {
                     }
                 });
 
+    function tmpGetId(d) { return d.id; }
+
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
         configSet.push({
@@ -467,13 +473,10 @@ function group(data, config, barEvents, labelEvents) {
             drawTarget: gSet[0][i],
             globalMax: globalMax,
             xScale: xGraphScale,
-            yScale: yGraphScale
+            yScale: yGraphScale,
+            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color)
         });
     }   
-
-    function tmpGetId(d) {
-        return d.id;
-    }
 
     for (i = 0; i < fData.length; i++) {
         var xGraphScale,
@@ -547,6 +550,7 @@ function group(data, config, barEvents, labelEvents) {
 function layer(data, config, barEvents, labelEvents) {
     var i = 0,
         isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1,
         partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
@@ -584,8 +588,7 @@ function layer(data, config, barEvents, labelEvents) {
                 }
             });
 
-    var tmpScale = d3.scale.category10().range();
-    function tmpFunc(n) { return tmpScale[i]; }
+    function tmpFunc(n) { return color[i]; }
 
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
@@ -599,7 +602,8 @@ function layer(data, config, barEvents, labelEvents) {
         });
     }
 
-    var tmpScale2 = d3.scale.category10().range().slice(0, fData.length).reverse();
+    var tmpScale2 = color.slice(0, fData.length).reverse();
+
     function tmpFunc2(n) { return tmpScale2[i]; }
     function tmpGetId(d) { return d.id; }
     for (i = 0; i < fData.length; i++) {
@@ -720,11 +724,11 @@ function layer(data, config, barEvents, labelEvents) {
  *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
 function stack(data, config, barEvents, labelEvents) {
-	
     var isVert = (config.orientation === "vertical")? true : false;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var itemMax = data.matrix.map(function(d) { return d.sum(); }).max();
-    var color = d3.scale.ordinal().domain(data.categories).range(d3.scale.category10().range());
+    var tmpColor = config.color || d3.scale.category10().range();
+    var color = d3.scale.ordinal().domain(data.categories).range(tmpColor);
     var partitions = genericsvg({
         width: config.width, height: config.height, drawTarget: config.drawTarget
     });

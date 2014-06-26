@@ -7,6 +7,7 @@
 function layer(data, config, barEvents, labelEvents) {
     var i = 0,
         isVert = (config.orientation === "vertical")? true : false,
+        color = config.color || d3.scale.category10().range(),
         hLeft = 0.1, hMid = 0.8, hRight = 0.1, vTop = 0.1, vMid = 0.8, vBot = 0.1,
         partitions = genericsvg({
             width: config.width, height: config.height, drawTarget: config.drawTarget,
@@ -44,8 +45,7 @@ function layer(data, config, barEvents, labelEvents) {
                 }
             });
 
-    var tmpScale = d3.scale.category10().range();
-    function tmpFunc(n) { return tmpScale[i]; }
+    function tmpFunc(n) { return color[i]; }
 
     var configSet = [];
     for (i = 0; i < gSet[0].length; i++) {
@@ -59,7 +59,8 @@ function layer(data, config, barEvents, labelEvents) {
         });
     }
 
-    var tmpScale2 = d3.scale.category10().range().slice(0, fData.length).reverse();
+    var tmpScale2 = color.slice(0, fData.length).reverse();
+
     function tmpFunc2(n) { return tmpScale2[i]; }
     function tmpGetId(d) { return d.id; }
     for (i = 0; i < fData.length; i++) {

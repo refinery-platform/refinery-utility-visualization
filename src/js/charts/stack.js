@@ -5,11 +5,11 @@
  *  @param {object} barEvents - set of barEvents to be attached to the chart
  */
 function stack(data, config, barEvents, labelEvents) {
-	
     var isVert = (config.orientation === "vertical")? true : false;
     var globalMax = data.matrix.map(function(d) { return d.max(); }).max();
     var itemMax = data.matrix.map(function(d) { return d.sum(); }).max();
-    var color = d3.scale.ordinal().domain(data.categories).range(d3.scale.category10().range());
+    var tmpColor = config.color || d3.scale.category10().range();
+    var color = d3.scale.ordinal().domain(data.categories).range(tmpColor);
     var partitions = genericsvg({
         width: config.width, height: config.height, drawTarget: config.drawTarget
     });
