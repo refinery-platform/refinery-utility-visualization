@@ -600,7 +600,7 @@ function layer(data, config, barEvents, labelEvents) {
     }
 
     var tmpScale2 = d3.scale.category10().range().slice(0, fData.length).reverse();
-    function tmpFunc2(n) { return tmpScale[i]; }
+    function tmpFunc2(n) { return tmpScale2[i]; }
     function tmpGetId(d) { return d.id; }
     for (i = 0; i < fData.length; i++) {
         var xGraphScale,
