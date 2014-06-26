@@ -1,6 +1,6 @@
 {
   "name": "refinery-utility-visualization",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Making data look pretty.",
   "devDependencies": {
     "grunt": "~0.4.2",

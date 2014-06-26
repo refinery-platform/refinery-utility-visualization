@@ -1,6 +1,6 @@
 {
     "name": "refinery-visualization-utility",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "main": "rfnry-vis-util.js",
     "dependencies": {
         "d3": "latest",
