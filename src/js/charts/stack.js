@@ -41,7 +41,7 @@ function stack(data, config, barEvents, labelEvents) {
     var xScale = (isVert)? 
         d3.scale.ordinal()
             .domain(nData.map(function(d) { return d.item; }))
-            .rangeRoundBands([0, width], 0.1) :
+            .rangeRoundBands([0, width], 0.05) :
         d3.scale.linear()
             .domain([0, d3.max(nData, function(d) { return d.total; })])
             .range([0, width]);
@@ -52,7 +52,7 @@ function stack(data, config, barEvents, labelEvents) {
             .range([height, 0]) :
         d3.scale.ordinal()
             .domain(nData.map(function(d) { return d.item; }))
-            .rangeRoundBands([0, height], 0.1);
+            .rangeRoundBands([0, height], 0.05);
 
     var items;
 
@@ -96,7 +96,7 @@ function stack(data, config, barEvents, labelEvents) {
         orientation: "bottom",
         drawTarget: partitions[1][2][0][0],
         scale: (isVert)?
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0) :
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0.05) :
             d3.scale.linear().domain([0, itemMax]).range([0, width]),
         tickSize: (isVert)? 0: 6,
         maxLabelSize: (isVert)? (width / nData.length) * 0.9 : 1000
@@ -108,7 +108,7 @@ function stack(data, config, barEvents, labelEvents) {
         drawTarget: partitions[0][1][0][0],
         scale: (isVert)?
             d3.scale.linear().domain([0, itemMax]).range([height, 0]):
-            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0),
+            d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0.05),
         xShift: config.width * 0.1,
         tickSize: (isVert)? 6 : 0,
         maxLabelSize: config.width * 0.1 * 0.9
