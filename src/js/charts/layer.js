@@ -55,7 +55,8 @@ function layer(data, config, barEvents, labelEvents) {
             orientation: config.orientation,
             drawTarget: gSet[0][i],
             globalMax: globalMax,
-            color: tmpFunc
+            color: tmpFunc,
+            barCallbacks: config.barCallbacks
         });
     }
 
@@ -101,7 +102,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
             tickSize: 0,
             maxLabelSize: (mainWidth / fData.length) * 0.9,
-            yShift: -getTextHeight("W")
+            yShift: -getTextHeight("W"),
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     } else {
         aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
@@ -118,7 +120,8 @@ function layer(data, config, barEvents, labelEvents) {
                 drawTarget: aGSet[0][i],
                 scale: (config.applyLog)? xAxisLogScale 
                             : d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
-                tickAmt: 3
+                tickAmt: 3,
+                labelCallbacks: config.labelCallbacks
             }, labelEvents);
         }
     }
@@ -140,7 +143,8 @@ function layer(data, config, barEvents, labelEvents) {
                 scale: (config.applyLog)? yAxisLogScale
                             : d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
-                tickAmt: 3
+                tickAmt: 3,
+                labelCallbacks: config.labelCallbacks
             }, labelEvents);
         }
     } else {
@@ -150,7 +154,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gHeight], 0),
             xShift: config.width * hLeft,
             tickSize: 0,
-            maxLabelSize: config.width * hLeft * 0.9
+            maxLabelSize: config.width * hLeft * 0.9,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     }
 
@@ -161,7 +166,8 @@ function layer(data, config, barEvents, labelEvents) {
             drawTarget: partitions[2][1][0][0],
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([mainHeight, 0], 0),
             blank: true,
-            maxLabelSize: config.width * 0.1 * 0.9
+            maxLabelSize: config.width * 0.1 * 0.9,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     } else {
         genericaxis({
@@ -170,7 +176,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, mainWidth], 0),
             blank: true,
             maxLabelSize: (mainWidth / fData.length) * 0.9,
-            yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5
+            yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     }
 }

@@ -41,7 +41,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         drawTarget: partitions[1][1][0][0],
         xScale: xGraphScale,
         yScale: yGraphScale,
-        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color)
+        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color),
+        barCallbacks: config.barCallbacks
     }, barEvents);
 
     var xAxisScale,
@@ -71,7 +72,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         drawTarget: partitions[1][2][0][0],
         tickSize: (isVert)? 0 : 6,
         scale: xAxisScale,
-        maxLabelSize: (isVert)? (mainWidth / fData.length) * 0.9 : 1000
+        maxLabelSize: (isVert)? (mainWidth / fData.length) * 0.9 : 1000,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 
     // y-axis
@@ -81,6 +83,7 @@ function simpleplain(data, config, barEvents, labelEvents) {
         tickSize: (isVert)? 6 : 0,
         scale: yAxisScale,
         maxLabelSize: config.width * 0.1 * 0.9,
-        xShift: hLeft * config.width
+        xShift: hLeft * config.width,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 }

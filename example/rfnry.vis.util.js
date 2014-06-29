@@ -70,7 +70,7 @@ var labelTooltip = d3.select("body")
  * @type {object}
  */
 var barEvents = {
-    onMouseMove: function(data, g, barEvents) {
+    onMouseMove: function(data, g, barEvents, userDefined) {
         if (barEvents.barTooltipFlag) {
             barEvents.barTooltip
                 .html(data.id + "<br>" + data.value)
@@ -78,21 +78,37 @@ var barEvents = {
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
+
+        if (userDefined && userDefined.onMouseMove) {
+            userDefined.onMouseMove();
+        }
     },
-    onMouseOver: function(data, g, barEvents) {
+    onMouseOver: function(data, g, barEvents, userDefined) {
         barEvents.barTooltipFlag = true;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 0.6);
         d3.select(g).attr("opacity", 1);
+
+        if (userDefined && userDefined.onMouseOver) {
+            userDefined.onMouseOver();
+        }
     },
-    onMouseOut: function(data, g, barEvents) {
+    onMouseOut: function(data, g, barEvents, userDefined) {
         barEvents.barTooltipFlag = false;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 1);
         barEvents.barTooltip.style("opacity", 0);
+
+        if (userDefined && userDefined.onMouseOut) {
+            userDefined.onMouseOut();
+        }
     },
-    onClick: function(data, g, barEvents) {
+    onClick: function(data, g, barEvents, userDefined) {
         console.log("clicky bar action going on");
+
+        if (userDefined && userDefined.onClick) {
+            userDefined.onClick();
+        }
     },
     barTooltip: barTooltip,
     barTooltipFlag: false
@@ -103,7 +119,7 @@ var barEvents = {
  *  @type {object}
  */
 var labelEvents = {
-    onMouseMove: function(data, g, labelEvents) {
+    onMouseMove: function(data, g, labelEvents, userDefined) {
         if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
@@ -111,16 +127,32 @@ var labelEvents = {
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
+
+        if (userDefined && userDefined.onMouseMove) {
+            userDefined.onMouseMove();
+        }
     },
-    onMouseOver: function(data, g, labelEvents) {
+    onMouseOver: function(data, g, labelEvents, userDefined) {
         labelEvents.labelTooltipFlag = true;
+
+        if (userDefined && userDefined.onMouseOver) {
+            userDefined.onMouseOver();
+        }
     },
-    onMouseOut: function(data, g, labelEvents) {
+    onMouseOut: function(data, g, labelEvents, userDefined) {
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
+
+        if (userDefined && userDefined.onMouseOut) {
+            userDefined.onMouseOut();
+        }
     },
-    onClick: function(data, g, labelEvents) {
+    onClick: function(data, g, labelEvents, userDefined) {
         console.log("clicky label action going on");
+
+        if (userDefined && userDefined.onClick) {
+            userDefined.onClick();
+        }
     },
     lableTooltip: labelTooltip,
     labelTooltipFlag: false
@@ -225,10 +257,10 @@ function genericplain(data, config, events) {
             .style("fill", function(d) { 
                 return color(d.id);
             })
-            .on("mousemove", function(d) { events.onMouseMove(d, this, events); })
-            .on("mouseover", function(d) { events.onMouseOver(d, this, events); })
-            .on("mouseout", function(d) { events.onMouseOut(d, this, events); })
-            .on("click", function(d) { events.onClick(d, this, events); });
+            .on("mousemove", function(d) { events.onMouseMove(d, this, events, config.barCallbacks); })
+            .on("mouseover", function(d) { events.onMouseOver(d, this, events, config.barCallbacks); })
+            .on("mouseout", function(d) { events.onMouseOut(d, this, events, config.barCallbacks); })
+            .on("click", function(d) { events.onClick(d, this, events, config.barCallbacks); });
 }
 /**
  *  Partitions the draw target into a 3 by 3 grid that is easier to work with.
@@ -327,10 +359,10 @@ function genericaxis(config, labelEvents) {
         });
 
     g.selectAll(".tick")
-        .on("mousemove", function(d) { labelEvents.onMouseMove(d, this, labelEvents); })
-        .on("mouseover", function(d) { labelEvents.onMouseOver(d, this, labelEvents); })
-        .on("mouseout", function(d) { labelEvents.onMouseOut(d, this, labelEvents); })
-        .on("click", function(d) { labelEvents.onClick(d, this, labelEvents); });
+        .on("mousemove", function(d) { labelEvents.onMouseMove(d, this, labelEvents, config.labelCallbacks); })
+        .on("mouseover", function(d) { labelEvents.onMouseOver(d, this, labelEvents, config.labelCallbacks); })
+        .on("mouseout", function(d) { labelEvents.onMouseOut(d, this, labelEvents, config.labelCallbacks); })
+        .on("click", function(d) { labelEvents.onClick(d, this, labelEvents, config.labelCallbacks); });
 }
 /**
  *  Plots a simple bar chart
@@ -375,7 +407,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         drawTarget: partitions[1][1][0][0],
         xScale: xGraphScale,
         yScale: yGraphScale,
-        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color)
+        color: d3.scale.ordinal().domain(fData.map(tmpGetId)).range(color),
+        barCallbacks: config.barCallbacks
     }, barEvents);
 
     var xAxisScale,
@@ -405,7 +438,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         drawTarget: partitions[1][2][0][0],
         tickSize: (isVert)? 0 : 6,
         scale: xAxisScale,
-        maxLabelSize: (isVert)? (mainWidth / fData.length) * 0.9 : 1000
+        maxLabelSize: (isVert)? (mainWidth / fData.length) * 0.9 : 1000,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 
     // y-axis
@@ -415,7 +449,8 @@ function simpleplain(data, config, barEvents, labelEvents) {
         tickSize: (isVert)? 6 : 0,
         scale: yAxisScale,
         maxLabelSize: config.width * 0.1 * 0.9,
-        xShift: hLeft * config.width
+        xShift: hLeft * config.width,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 }
 /**
@@ -474,7 +509,8 @@ function group(data, config, barEvents, labelEvents) {
             globalMax: globalMax,
             xScale: xGraphScale,
             yScale: yGraphScale,
-            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color)
+            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color),
+            barCallbacks: config.barCallbacks
         });
     }   
 
@@ -527,7 +563,8 @@ function group(data, config, barEvents, labelEvents) {
         xShift: 0,
         yShift: 0,
         tickSize: (isVert)? 0 : 6,
-        maxLabelSize: (isVert)? gWidth * 0.9 : 1000
+        maxLabelSize: (isVert)? gWidth * 0.9 : 1000,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 
     // y-axis
@@ -538,7 +575,8 @@ function group(data, config, barEvents, labelEvents) {
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0,
-        maxLabelSize: config.width * 0.1 * 0.9
+        maxLabelSize: config.width * 0.1 * 0.9,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 }
 /**
@@ -598,7 +636,8 @@ function layer(data, config, barEvents, labelEvents) {
             orientation: config.orientation,
             drawTarget: gSet[0][i],
             globalMax: globalMax,
-            color: tmpFunc
+            color: tmpFunc,
+            barCallbacks: config.barCallbacks
         });
     }
 
@@ -644,7 +683,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gWidth], 0),
             tickSize: 0,
             maxLabelSize: (mainWidth / fData.length) * 0.9,
-            yShift: -getTextHeight("W")
+            yShift: -getTextHeight("W"),
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     } else {
         aGSet = d3.select(partitions[1][2][0][0]).selectAll("g")
@@ -661,7 +701,8 @@ function layer(data, config, barEvents, labelEvents) {
                 drawTarget: aGSet[0][i],
                 scale: (config.applyLog)? xAxisLogScale 
                             : d3.scale.linear().domain([0, globalMax]).range([0, gWidth]),
-                tickAmt: 3
+                tickAmt: 3,
+                labelCallbacks: config.labelCallbacks
             }, labelEvents);
         }
     }
@@ -683,7 +724,8 @@ function layer(data, config, barEvents, labelEvents) {
                 scale: (config.applyLog)? yAxisLogScale
                             : d3.scale.linear().domain([0, globalMax]).range([gHeight, 0]),
                 xShift: config.width * hLeft,
-                tickAmt: 3
+                tickAmt: 3,
+                labelCallbacks: config.labelCallbacks
             }, labelEvents);
         }
     } else {
@@ -693,7 +735,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.items).rangeRoundBands([0, gHeight], 0),
             xShift: config.width * hLeft,
             tickSize: 0,
-            maxLabelSize: config.width * hLeft * 0.9
+            maxLabelSize: config.width * hLeft * 0.9,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     }
 
@@ -704,7 +747,8 @@ function layer(data, config, barEvents, labelEvents) {
             drawTarget: partitions[2][1][0][0],
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([mainHeight, 0], 0),
             blank: true,
-            maxLabelSize: config.width * 0.1 * 0.9
+            maxLabelSize: config.width * 0.1 * 0.9,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     } else {
         genericaxis({
@@ -713,7 +757,8 @@ function layer(data, config, barEvents, labelEvents) {
             scale: d3.scale.ordinal().domain(data.categories).rangeRoundBands([0, mainWidth], 0),
             blank: true,
             maxLabelSize: (mainWidth / fData.length) * 0.9,
-            yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5
+            yShift: (config.height * 0.1 - getTextHeight("Wgy")) * 0.5,
+            labelCallbacks: config.labelCallbacks
         }, labelEvents);
     }
 }
@@ -787,10 +832,10 @@ function stack(data, config, barEvents, labelEvents) {
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
                 .style("fill", function(d) { return color(d.name); })
-                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
-                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
-                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, barEvents); })
-                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.y1 - d.y0}, this, barEvents); });
+                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.y1 - d.y0}, this, barEvents, config.barCallbacks); })
+                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.y1 - d.y0}, this, barEvents, config.barCallbacks); })
+                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.y1 - d.y0}, this, barEvents, config.barCallbacks); })
+                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.y1 - d.y0}, this, barEvents, config.barCallbacks); });
     } else {
         items = d3.select(partitions[1][1][0][0]).selectAll(".item")
             .data(nData).enter().append("g")
@@ -804,10 +849,10 @@ function stack(data, config, barEvents, labelEvents) {
                 .attr("width", function(d) { return xScale(d.x1) - xScale(d.x0); })
                 .attr("height", yScale.rangeBand())
                 .style("fill", function(d) { return color(d.name); })
-                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
-                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
-                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.x1 - d.x0}, this, barEvents); })
-                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.x1 - d.x0}, this, barEvents); });
+                .on("mousemove", function(d) { barEvents.onMouseMove({id: d.name, value: d.x1 - d.x0}, this, barEvents, config.barCallbacks); })
+                .on("mouseover", function(d) { barEvents.onMouseOver({id: d.name, value: d.x1 - d.x0}, this, barEvents, config.barCallbacks); })
+                .on("mouseout", function(d) { barEvents.onMouseOut({id: d.name, value: d.x1 - d.x0}, this, barEvents, config.barCallbacks); })
+                .on("click", function(d) { barEvents.onClick({id: d.name, value: d.x1 - d.x0}, this, barEvents, config.barCallbacks); });
     }
 
     // x-axis
@@ -818,7 +863,8 @@ function stack(data, config, barEvents, labelEvents) {
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, width], 0.05) :
             d3.scale.linear().domain([0, itemMax]).range([0, width]),
         tickSize: (isVert)? 0: 6,
-        maxLabelSize: (isVert)? (width / nData.length) * 0.9 : 1000
+        maxLabelSize: (isVert)? (width / nData.length) * 0.9 : 1000,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 
     // y-axis
@@ -830,7 +876,8 @@ function stack(data, config, barEvents, labelEvents) {
             d3.scale.ordinal().domain(data.items).rangeRoundBands([0, height], 0.05),
         xShift: config.width * 0.1,
         tickSize: (isVert)? 6 : 0,
-        maxLabelSize: config.width * 0.1 * 0.9
+        maxLabelSize: config.width * 0.1 * 0.9,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 }
 /**

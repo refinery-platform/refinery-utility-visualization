@@ -34,8 +34,8 @@ function genericaxis(config, labelEvents) {
         });
 
     g.selectAll(".tick")
-        .on("mousemove", function(d) { labelEvents.onMouseMove(d, this, labelEvents); })
-        .on("mouseover", function(d) { labelEvents.onMouseOver(d, this, labelEvents); })
-        .on("mouseout", function(d) { labelEvents.onMouseOut(d, this, labelEvents); })
-        .on("click", function(d) { labelEvents.onClick(d, this, labelEvents); });
+        .on("mousemove", function(d) { labelEvents.onMouseMove(d, this, labelEvents, config.labelCallbacks); })
+        .on("mouseover", function(d) { labelEvents.onMouseOver(d, this, labelEvents, config.labelCallbacks); })
+        .on("mouseout", function(d) { labelEvents.onMouseOut(d, this, labelEvents, config.labelCallbacks); })
+        .on("click", function(d) { labelEvents.onClick(d, this, labelEvents, config.labelCallbacks); });
 }

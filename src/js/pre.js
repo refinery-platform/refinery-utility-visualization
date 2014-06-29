@@ -66,7 +66,7 @@ var labelTooltip = d3.select("body")
  * @type {object}
  */
 var barEvents = {
-    onMouseMove: function(data, g, barEvents) {
+    onMouseMove: function(data, g, barEvents, userDefined) {
         if (barEvents.barTooltipFlag) {
             barEvents.barTooltip
                 .html(data.id + "<br>" + data.value)
@@ -74,21 +74,37 @@ var barEvents = {
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
+
+        if (userDefined && userDefined.onMouseMove) {
+            userDefined.onMouseMove();
+        }
     },
-    onMouseOver: function(data, g, barEvents) {
+    onMouseOver: function(data, g, barEvents, userDefined) {
         barEvents.barTooltipFlag = true;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 0.6);
         d3.select(g).attr("opacity", 1);
+
+        if (userDefined && userDefined.onMouseOver) {
+            userDefined.onMouseOver();
+        }
     },
-    onMouseOut: function(data, g, barEvents) {
+    onMouseOut: function(data, g, barEvents, userDefined) {
         barEvents.barTooltipFlag = false;
         d3.select(g.parentNode).selectAll(".bar")
                 .attr("opacity", 1);
         barEvents.barTooltip.style("opacity", 0);
+
+        if (userDefined && userDefined.onMouseOut) {
+            userDefined.onMouseOut();
+        }
     },
-    onClick: function(data, g, barEvents) {
+    onClick: function(data, g, barEvents, userDefined) {
         console.log("clicky bar action going on");
+
+        if (userDefined && userDefined.onClick) {
+            userDefined.onClick();
+        }
     },
     barTooltip: barTooltip,
     barTooltipFlag: false
@@ -99,7 +115,7 @@ var barEvents = {
  *  @type {object}
  */
 var labelEvents = {
-    onMouseMove: function(data, g, labelEvents) {
+    onMouseMove: function(data, g, labelEvents, userDefined) {
         if (labelEvents.labelTooltipFlag) {            
             labelTooltip
                 .html(data)
@@ -107,16 +123,32 @@ var labelEvents = {
                 .style("top", (d3.event.pageY - 10) + "px")
                 .style("left", (d3.event.pageX + 10) + "px");
         }
+
+        if (userDefined && userDefined.onMouseMove) {
+            userDefined.onMouseMove();
+        }
     },
-    onMouseOver: function(data, g, labelEvents) {
+    onMouseOver: function(data, g, labelEvents, userDefined) {
         labelEvents.labelTooltipFlag = true;
+
+        if (userDefined && userDefined.onMouseOver) {
+            userDefined.onMouseOver();
+        }
     },
-    onMouseOut: function(data, g, labelEvents) {
+    onMouseOut: function(data, g, labelEvents, userDefined) {
         labelEvents.labelTooltip = false;
         labelTooltip.style("opacity", 0);
+
+        if (userDefined && userDefined.onMouseOut) {
+            userDefined.onMouseOut();
+        }
     },
-    onClick: function(data, g, labelEvents) {
+    onClick: function(data, g, labelEvents, userDefined) {
         console.log("clicky label action going on");
+
+        if (userDefined && userDefined.onClick) {
+            userDefined.onClick();
+        }
     },
     lableTooltip: labelTooltip,
     labelTooltipFlag: false

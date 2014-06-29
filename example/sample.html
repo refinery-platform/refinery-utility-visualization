@@ -60,6 +60,36 @@
             ]
         }
 
+        config.barCallbacks = {
+            onMouseMove: function(data, g, events) {
+                console.log("User defined bar callback: onMouseMove");
+            },
+            onMouseOver: function(data, g, events) {
+                console.log("User defined bar callback: onMouseOver");
+            },
+            onMouseOut: function(data, g, events) {
+                console.log("User defined bar callback: onMouseOut");
+            },
+            onClick: function(data, g, events) {
+                console.log("User defined bar callback: onClick");
+            }
+        }
+
+        config.labelCallbacks = {
+            onMouseMove: function(data, g, events) {
+                console.log("User defined label callback: onMouseMove");
+            },
+            onMouseOver: function(data, g, events) {
+                console.log("User defined label callback: onMouseOver");
+            },
+            onMouseOut: function(data, g, events) {
+                console.log("User defined label callback: onMouseOut");
+            },
+            onClick: function(data, g, events) {
+                console.log("User defined label callback: onClick");
+            }
+        }
+
         var color;
 
         $(document).ready(function() {

@@ -54,7 +54,8 @@ function group(data, config, barEvents, labelEvents) {
             globalMax: globalMax,
             xScale: xGraphScale,
             yScale: yGraphScale,
-            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color)
+            color: d3.scale.ordinal().domain(fData[i].map(tmpGetId)).range(color),
+            barCallbacks: config.barCallbacks
         });
     }   
 
@@ -107,7 +108,8 @@ function group(data, config, barEvents, labelEvents) {
         xShift: 0,
         yShift: 0,
         tickSize: (isVert)? 0 : 6,
-        maxLabelSize: (isVert)? gWidth * 0.9 : 1000
+        maxLabelSize: (isVert)? gWidth * 0.9 : 1000,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 
     // y-axis
@@ -118,6 +120,7 @@ function group(data, config, barEvents, labelEvents) {
         xShift: config.width * 0.1,
         yShift: 0,
         tickSize: (isVert)? 6 : 0,
-        maxLabelSize: config.width * 0.1 * 0.9
+        maxLabelSize: config.width * 0.1 * 0.9,
+        labelCallbacks: config.labelCallbacks
     }, labelEvents);
 }
