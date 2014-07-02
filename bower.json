@@ -1,7 +1,8 @@
 {
     "name": "refinery-visualization-utility",
-    "version": "0.4.0",
+    "version": "1.0.0",
     "main": "rfnry-vis-util.js",
+    "description": "Chart plotting library that supports simple plain bar charts, grouped bar charts, layered bar charts, and stacked bar charts",
     "dependencies": {
         "d3": "latest",
         "jQuery": "latest"
