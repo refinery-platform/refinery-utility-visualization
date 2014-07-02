@@ -899,6 +899,19 @@ function draw(chartType, config, data) {
     // delete old svg
     d3.select("#" + config.drawTarget).html("");
 
+    // check if data contains negative values
+    var hasNegative = false;
+    data.matrix.map(function(d) { 
+        d.map(function(d) {
+            if (d < 0) {
+                alert("Error: data set contains negative values");
+                hasNegative = true;
+            }
+        }); 
+    });
+
+    if (hasNegative) return;
+
     // make deep copies for new ones
     var nData = jQuery.extend(true, {}, data);
     var nConfig = jQuery.extend(true, {}, config);
