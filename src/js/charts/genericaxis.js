@@ -26,6 +26,7 @@ function genericaxis(config, labelEvents) {
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
+            .style("cursor", "default")
             .call(axis);
     
     g.selectAll("text")

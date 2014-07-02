@@ -5,7 +5,9 @@
  *  @param {object} config - { height: number, width: number, drawTarget: string, orientation: string }
  *  @param {object} data - { items: Array[string], categories: Array[string], matrix: Array[Array[number]]}
  */
+
 function draw(chartType, config, data) {
+    var i, j, tmp;
 
     // delete old svg
     d3.select("#" + config.drawTarget).html("");
@@ -15,6 +17,26 @@ function draw(chartType, config, data) {
     var nConfig = jQuery.extend(true, {}, config);
     var nBarEvents = jQuery.extend(true, {}, barEvents);
     var nLabelEvents = jQuery.extend(true, {}, labelEvents);
+
+    // sort nData given config flags
+    // transform data into data structure
+    var res = [];
+    for (i = 0; i < data.items.length; i++) {
+        res.push({id: data.items[i], value: data.matrix[i].sum() });
+    }
+
+    // I am so sorry but it was easy to rationalize about
+    for (i = 0; i < res.length; i++) {
+        for (j = 0; j < res.length - i - 1; j++) {
+            if ((config.sort === "sum")? (res[j].value < res[j+1].value) : 
+                    (config.sort === "label")? (res[j].id > res[j+1].id) : false) {
+                swap(res, j , j + 1);
+                swap(nData.items, j, j + 1);
+                swap(nData.matrix, j, j + 1);
+                swap(nConfig.color, j, j + 1);
+            }
+        }
+    }
 
     if (chartType === "group") {
         group(nData, nConfig, nBarEvents, nLabelEvents);

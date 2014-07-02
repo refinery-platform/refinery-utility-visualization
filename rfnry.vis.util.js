@@ -213,7 +213,11 @@ function trim(text, maxLength) {
     }
 }
 
-
+function swap(arr, a, b) {
+    var tmp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = tmp;
+}
 /**
  *  Draws a plain bar chart in a target area with bar lengths relative to a
  *  global maximum. Also pass in events so they can be attached as well as 
@@ -351,6 +355,7 @@ function genericaxis(config, labelEvents) {
         .attr("transform", "translate(" + xShift + ", " + yShift + ")")
             .style("fill", "none")
             .style("stroke", (blank)? "none" : "black")
+            .style("cursor", "default")
             .call(axis);
     
     g.selectAll("text")
@@ -887,7 +892,9 @@ function stack(data, config, barEvents, labelEvents) {
  *  @param {object} config - { height: number, width: number, drawTarget: string, orientation: string }
  *  @param {object} data - { items: Array[string], categories: Array[string], matrix: Array[Array[number]]}
  */
+
 function draw(chartType, config, data) {
+    var i, j, tmp;
 
     // delete old svg
     d3.select("#" + config.drawTarget).html("");
@@ -897,6 +904,28 @@ function draw(chartType, config, data) {
     var nConfig = jQuery.extend(true, {}, config);
     var nBarEvents = jQuery.extend(true, {}, barEvents);
     var nLabelEvents = jQuery.extend(true, {}, labelEvents);
+
+    // sort nData given config flags
+    // transform data into data structure
+    var res = [];
+    for (i = 0; i < data.items.length; i++) {
+        res.push({id: data.items[i], value: data.matrix[i].sum() });
+    }
+
+    console.log(res);
+
+    // I am so sorry but it was easy to rationalize about
+    for (i = 0; i < res.length; i++) {
+        for (j = 0; j < res.length - i - 1; j++) {
+            if ((config.sort === "sum")? (res[j].value < res[j+1].value) : 
+                    (config.sort === "label")? (res[j].id > res[j+1].id): false) {
+                swap(res, j , j + 1);
+                swap(nData.items, j, j + 1);
+                swap(nData.matrix, j, j + 1);
+                swap(nConfig.color, j, j + 1);
+            }
+        }
+    }
 
     if (chartType === "group") {
         group(nData, nConfig, nBarEvents, nLabelEvents);
