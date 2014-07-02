@@ -912,13 +912,11 @@ function draw(chartType, config, data) {
         res.push({id: data.items[i], value: data.matrix[i].sum() });
     }
 
-    console.log(res);
-
     // I am so sorry but it was easy to rationalize about
     for (i = 0; i < res.length; i++) {
         for (j = 0; j < res.length - i - 1; j++) {
             if ((config.sort === "sum")? (res[j].value < res[j+1].value) : 
-                    (config.sort === "label")? (res[j].id > res[j+1].id): false) {
+                    (config.sort === "label")? (res[j].id > res[j+1].id) : false) {
                 swap(res, j , j + 1);
                 swap(nData.items, j, j + 1);
                 swap(nData.matrix, j, j + 1);

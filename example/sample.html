@@ -32,6 +32,12 @@
         <input type="checkbox" name="logSelector" id="logTransformation" value="Log Transformation">Apply Log Transformation</input>
     </form>
         
+    <form id="sortSelector">
+        <input type="radio" name="sortSelector" value="none" checked>None</input>
+        <input type="radio" name="sortSelector" value="label">Label</input>
+        <input type="radio" name="sortSelector" value="sum">Sum</input>
+    </form>
+
     <br>
     <div id="drawAreaWrapper">
         <div class="drawArea" id="draw1"></div>
@@ -92,10 +98,9 @@
 
         var color;
 
-        config.sort = "sum";
-
         $(document).ready(function() {
             $("#simple").click(function(event) {
+                config.sort = $("input[name='sortSelector']:checked").val();
                 color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
@@ -106,6 +111,7 @@
             });
 
             $("#group").click(function(event) {
+                config.sort = $("input[name='sortSelector']:checked").val();
                 color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
@@ -116,6 +122,7 @@
             });
             
             $("#layer").click(function(event) {
+                config.sort = $("input[name='sortSelector']:checked").val();
                 color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
@@ -126,6 +133,7 @@
             });
 
             $("#stack").click(function(event) {
+                config.sort = $("input[name='sortSelector']:checked").val();
                 color = d3.scale.category10().range();
                 config.color = color;
                 config.applyLog = document.getElementById("logTransformation").checked;
